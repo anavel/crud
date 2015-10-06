@@ -1,0 +1,21 @@
+{
+    "name": "ablunier/crudoado",
+    "description": "",
+    "authors": [
+        {
+            "name": "Adrian P. Blunier",
+            "email": "adrian@blunier.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "5.0.*",
+        "doctrine/dbal": "~2.3",
+    },
+    "autoload": {
+        "psr-4": {
+            "ANavallaSuiza\\Crudoado\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
