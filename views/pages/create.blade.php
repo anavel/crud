@@ -20,10 +20,10 @@
     <form class="form-horizontal">
         <div class="box-header">
             <div class="box-title">
-                <a href="{{ URL::previous() }}"><i class="fa fa-arrow-left"></i> Back</a>
+                <a href="{{ URL::previous() }}"><i class="fa fa-arrow-left"></i> {{ trans('crudoado::messages.back_button') }}</a>
             </div>
             <div class="box-tools">
-                <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save</button>
+                <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> {{ trans('crudoado::messages.save_button') }}</button>
             </div>
         </div>
 
@@ -37,8 +37,8 @@
         </div>
 
         <div class="box-footer clearfix">
-            <a href="#" class="btn btn-default">Cancel</a>
-            <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save</button>
+            <a href="#" class="btn btn-default">{{ trans('crudoado::messages.cancel_button') }}</a>
+            <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> {{ trans('crudoado::messages.save_button') }}</button>
         </div>
     </form>
 </div>
