@@ -2,12 +2,14 @@
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractorContract;
+use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use EasySlugger\Slugger;
 
 class Model implements ModelAbstractorContract
 {
-    protected $dbal;
+    protected $modelManager;
     protected $slugger;
+    protected $dbal;
 
     protected $allConfiguredModels;
     protected $model;
@@ -16,9 +18,10 @@ class Model implements ModelAbstractorContract
     protected $slug;
     protected $name;
 
-    public function __construct(array $allConfiguredModels)
+    public function __construct(array $allConfiguredModels, ModelManager $modelManager)
     {
         $this->allConfiguredModels = $allConfiguredModels;
+        $this->modelManager = $modelManager;
         $this->slugger = new Slugger();
     }
 
@@ -38,6 +41,8 @@ class Model implements ModelAbstractorContract
                     $this->model = $config;
                     $this->config = [];
                 }
+
+                $this->dbal = $this->modelManager->getAbstractionLayer($this->model);
 
                 break;
             }
@@ -71,7 +76,14 @@ class Model implements ModelAbstractorContract
 
     public function getListFields()
     {
-        return [];
+        $tableColumns = $this->dbal->getTableColumns();
+
+        $fields = array();
+        foreach ($tableColumns as $name => $column) {
+            $fields[] = new Field($name, $column->getType());
+        }
+
+        return $fields;
     }
 
     public function getDetailFields()

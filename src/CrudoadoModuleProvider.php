@@ -35,10 +35,15 @@ class CrudoadoModuleProvider extends ModuleProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/crudoado.php', 'crudoado');
 
+        $this->app->register('ANavallaSuiza\Laravel\Database\Manager\ModelManagerServiceProvider');
+
         $this->app->bind(
             'ANavallaSuiza\Crudoado\Contracts\Abstractor\Model',
             function () {
-                return new ModelAbstractor(config('crudoado.models'));
+                return new ModelAbstractor(
+                    config('crudoado.models'),
+                    $this->app['ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager']
+                );
             }
         );
 

@@ -12,7 +12,7 @@
         "illuminate/support": "5.0.*",
         "illuminate/translation": "5.0.*",
         "javiereguiluz/easyslugger": "1.0.*",
-        "doctrine/dbal": "~2.3"
+        "ablunier/laravel-database": "dev-master"
     },
     "autoload": {
         "psr-4": {

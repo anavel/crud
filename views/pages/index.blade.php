@@ -46,11 +46,11 @@
                 @forelse ($items as $item)
                 <tr>
                     @foreach ($abstractor->getListFields() as $field)
-                    <td>{{ $item->attributes[$field->getName()] }}</td>
+                    <td>{{ $item->getAttribute($field->name()) }}</td>
                     @endforeach
                     <td>
-                        <a href="{{ route('crudoado.model.show', [$abstractor->getSlug(), 1]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('crudoado::messages.show_button') }}</a>
-                        <a href="{{ route('crudoado.model.edit', [$abstractor->getSlug(), 1]) }}" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i> {{ trans('crudoado::messages.edit_button') }}</a>
+                        <a href="{{ route('crudoado.model.show', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('crudoado::messages.show_button') }}</a>
+                        <a href="{{ route('crudoado.model.edit', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i> {{ trans('crudoado::messages.edit_button') }}</a>
                         <a href="#" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> {{ trans('crudoado::messages.delete_button') }}</a>
                     </td>
                 </tr>
@@ -63,14 +63,10 @@
         </table>
     </div>
 
+    @if ($items->hasMorePages())
     <div class="box-footer clearfix">
-        <ul class="pagination no-margin pull-right">
-            <li><a href="#">«</a></li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">»</a></li>
-        </ul>
+        {!! with(new ANavallaSuiza\Crudoado\View\Presenters\Paginator($items))->render() !!}
     </div>
+    @endif
 </div>
 @stop

@@ -3,14 +3,17 @@ namespace ANavallaSuiza\Crudoado\Http\Controllers;
 
 use ANavallaSuiza\Adoadomin\Http\Controllers\Controller;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractor;
+use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 
 class ModelController extends Controller
 {
     protected $abstractor;
+    protected $manager;
 
-    public function __construct(ModelAbstractor $abstractor)
+    public function __construct(ModelAbstractor $abstractor, ModelManager $manager)
     {
         $this->abstractor = $abstractor;
+        $this->manager = $manager;
     }
 
     /**
@@ -23,9 +26,13 @@ class ModelController extends Controller
     {
         $this->abstractor->loadBySlug($model);
 
+        $repository = $this->manager->getRepository($this->abstractor->getModel());
+
+        $items = $repository->paginate(config('crudoado.list_max_results'));
+
         return view('crudoado::pages.index', [
             'abstractor' => $this->abstractor,
-            'items' => collect()
+            'items' => $items
         ]);
     }
 
