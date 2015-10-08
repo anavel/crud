@@ -10,7 +10,7 @@
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="#"><i class="fa fa-database"></i> CRUDoado</a></li>
-    <li><a href="#">ModelName</li>
+    <li><a href="#">ModelName</a></li>
     <li class="active">Create</li>
 </ol>
 @stop
@@ -19,10 +19,11 @@
 <div class="box">
     <form class="form-horizontal">
         <div class="box-header">
-            <h3 class="box-title">ModelName</h3>
+            <div class="box-title">
+                <a href="{{ URL::previous() }}"><i class="fa fa-arrow-left"></i> Back</a>
+            </div>
             <div class="box-tools">
-                <a href="#"><i class="fa fa-arrow-left"></i> Back</a>
-                <button type="submit" class="btn tn-primary pull-right"><i class="fa fa-plus"></i> Create</button>
+                <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save</button>
             </div>
         </div>
 
@@ -37,8 +38,8 @@
 
         <div class="box-footer clearfix">
             <a href="#" class="btn btn-default">Cancel</a>
-            <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Create</button>
+            <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save</button>
         </div>
     </form>
 </div>
-@show
+@stop
