@@ -14,6 +14,6 @@ class HomeController extends Controller
             throw new \Exception("No models configured.");
         }
 
-        return new RedirectResponse(route('model.index', key($models)));
+        return new RedirectResponse(route('crudoado.model.index', key($models)));
     }
 }
