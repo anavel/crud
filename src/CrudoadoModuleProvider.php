@@ -33,6 +33,8 @@ class CrudoadoModuleProvider extends ModuleProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/crudoado.php', 'crudoado');
+
+        $this->app->register('ANavallaSuiza\Crudoado\Providers\ViewComposersServiceProvider');
     }
 
     /**
