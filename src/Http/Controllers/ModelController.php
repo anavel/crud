@@ -92,7 +92,11 @@ class ModelController extends Controller
      */
     public function edit($model, $id)
     {
-        return view('crudoado::pages.edit');
+        $this->abstractor->loadBySlug($model);
+
+        return view('crudoado::pages.edit', [
+            'abstractor' => $this->abstractor
+        ]);
     }
 
     /**

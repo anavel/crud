@@ -88,6 +88,13 @@ class Model implements ModelAbstractorContract
 
     public function getDetailFields()
     {
-        return [];
+        $tableColumns = $this->dbal->getTableColumns();
+
+        $fields = array();
+        foreach ($tableColumns as $name => $column) {
+            $fields[] = new Field($name, $column->getType());
+        }
+
+        return $fields;
     }
 }
