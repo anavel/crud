@@ -3,7 +3,7 @@
     <section class="sidebar">
         <!-- Sidebar Menu -->
         <ul class="sidebar-menu">
-            <li class="header">HEADER</li>
+            <li class="header">CRUDoado</li>
             <!-- Optionally, you can add icons to the links -->
             <li class="active"><a href="#"><span>Link</span></a></li>
             <li><a href="#"><span>Another Link</span></a></li>

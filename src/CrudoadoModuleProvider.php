@@ -15,8 +15,6 @@ class CrudoadoModuleProvider extends ModuleProvider
 
     public function boot()
     {
-        include __DIR__.'/Http/routes.php';
-
         $this->loadViewsFrom(__DIR__.'/../views', 'crudoado');
 
         //$this->loadTranslationsFrom(__DIR__.'/../lang', 'crudoado');
@@ -51,9 +49,14 @@ class CrudoadoModuleProvider extends ModuleProvider
         return config('crudoado.name');
     }
 
+    public function routes()
+    {
+        return __DIR__.'/Http/routes.php';
+    }
+
     public function mainRoute()
     {
-        return '';
+        return route('crudoado.home');
     }
 
     public function hasSidebar()

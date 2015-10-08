@@ -6,41 +6,44 @@ Route::group(
         'namespace' => 'ANavallaSuiza\Crudoado\Http\Controllers'
     ],
     function () {
-        Route::get('/', 'HomeController@index');
+        Route::get('/', [
+            'as' => 'crudoado.home',
+            'uses' => 'HomeController@index'
+        ]);
 
         // Model CRUD routes
         Route::get('{model}', [
-            'as' => 'model.index',
+            'as' => 'crudoado.model.index',
             'uses' => 'ModelController@index'
         ]);
 
         Route::get('{model}/create', [
-            'as' => 'model.create',
+            'as' => 'crudoado.model.create',
             'uses' => 'ModelController@create'
         ]);
 
         Route::post('{model}', [
-            'as' => 'model.store',
+            'as' => 'crudoado.model.store',
             'uses' => 'ModelController@store'
         ]);
 
         Route::get('{model}/{id}', [
-            'as' => 'model.show',
+            'as' => 'crudoado.model.show',
             'uses' => 'ModelController@show'
         ]);
 
         Route::get('{model}/{id}/edit', [
-            'as' => 'model.edit',
+            'as' => 'crudoado.model.edit',
             'uses' => 'ModelController@edit'
         ]);
 
         Route::put('{model}/{id}', [
-            'as' => 'model.update',
+            'as' => 'crudoado.model.update',
             'uses' => 'ModelController@update'
         ]);
 
         Route::delete('{model}/{id}', [
-            'as' => 'model.destroy',
+            'as' => 'crudoado.model.destroy',
             'uses' => 'ModelController@destroy'
         ]);
     }
