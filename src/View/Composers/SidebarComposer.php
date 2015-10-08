@@ -10,13 +10,13 @@ class SidebarComposer
     {
         $models = config('crudoado.models');
 
-        $uri = Request::route()->uri();
+        $url = Request::url();
 
         $items = [];
 
         foreach ($models as $modelName => $model) {
             $isActive = false;
-            if (strpos($uri, $modelName) !== false) {
+            if (strpos($url, $modelName) !== false) {
                 $isActive = true;
             }
 
