@@ -71,7 +71,16 @@ class ModelController extends Controller
      */
     public function show($model, $id)
     {
-        return view('crudoado::pages.show');
+        $this->abstractor->loadBySlug($model);
+
+        $repository = $this->manager->getRepository($this->abstractor->getModel());
+
+        $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
+
+        return view('crudoado::pages.show', [
+            'abstractor' => $this->abstractor,
+            'item' => $item
+        ]);
     }
 
     /**
