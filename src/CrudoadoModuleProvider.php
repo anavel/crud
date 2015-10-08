@@ -18,7 +18,7 @@ class CrudoadoModuleProvider extends ModuleProvider
     {
         $this->loadViewsFrom(__DIR__.'/../views', 'crudoado');
 
-        //$this->loadTranslationsFrom(__DIR__.'/../lang', 'crudoado');
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'crudoado');
 
         $this->publishes([
             __DIR__.'/../config/crudoado.php' => config_path('crudoado.php'),
