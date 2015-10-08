@@ -1,7 +1,7 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Contracts;
+namespace ANavallaSuiza\Crudoado\Contracts\Abstractor;
 
-interface ModelAbstractor
+interface Model
 {
     public function loadBySlug($slug);
 

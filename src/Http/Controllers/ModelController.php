@@ -2,9 +2,17 @@
 namespace ANavallaSuiza\Crudoado\Http\Controllers;
 
 use ANavallaSuiza\Adoadomin\Http\Controllers\Controller;
+use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractor;
 
 class ModelController extends Controller
 {
+    protected $abstractor;
+
+    public function __construct(ModelAbstractor $abstractor)
+    {
+        $this->abstractor = $abstractor;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +21,12 @@ class ModelController extends Controller
      */
     public function index($model)
     {
-        return view('crudoado::pages.index');
+        $this->abstractor->loadBySlug($model);
+
+        return view('crudoado::pages.index', [
+            'abstractor' => $this->abstractor,
+            'items' => collect()
+        ]);
     }
 
     /**
@@ -24,7 +37,11 @@ class ModelController extends Controller
      */
     public function create($model)
     {
-        return view('crudoado::pages.create');
+        $this->abstractor->loadBySlug($model);
+
+        return view('crudoado::pages.create', [
+            'abstractor' => $this->abstractor
+        ]);
     }
 
     /**

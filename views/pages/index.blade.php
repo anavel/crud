@@ -2,7 +2,7 @@
 
 @section('content-header')
 <h1>
-    ModelName
+    {{ $abstractor->getName() }}
 </h1>
 @stop
 
@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="btn-group">
-                <a href="{{ route('crudoado.model.create', 'ModelName') }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('crudoado::messages.create_button') }}</a>
+                <a href="{{ route('crudoado.model.create', $abstractor->getSlug()) }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('crudoado::messages.create_button') }}</a>
             </div>
         </div>
     </div>
@@ -36,27 +36,29 @@
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>User</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Reason</th>
+                    @foreach ($abstractor->getListFields() as $field)
+                    <th>{{ $field->presentation() }}</th>
+                    @endforeach
                     <th>{{ trans('crudoado::messages.actions_table_header') }}</th>
                 </tr>
             </thead>
             <tbody>
+                @forelse ($items as $item)
                 <tr>
-                    <td>183</td>
-                    <td>John Doe</td>
-                    <td>11-7-2014</td>
-                    <td><span class="label label-success">Approved</span></td>
-                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                    @foreach ($abstractor->getListFields() as $field)
+                    <td>{{ $item->attributes[$field->getName()] }}</td>
+                    @endforeach
                     <td>
-                        <a href="{{ route('crudoado.model.show', ['ModelName', 1]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('crudoado::messages.show_button') }}</a>
-                        <a href="{{ route('crudoado.model.edit', ['ModelName', 1]) }}" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i> {{ trans('crudoado::messages.edit_button') }}</a>
+                        <a href="{{ route('crudoado.model.show', [$abstractor->getSlug(), 1]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('crudoado::messages.show_button') }}</a>
+                        <a href="{{ route('crudoado.model.edit', [$abstractor->getSlug(), 1]) }}" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i> {{ trans('crudoado::messages.edit_button') }}</a>
                         <a href="#" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> {{ trans('crudoado::messages.delete_button') }}</a>
                     </td>
                 </tr>
+                @empty
+                <tr>
+                    <td colspan="{{ count($abstractor->getListFields()) + 1 }}" style="text-align: center;">{{ trans('crudoado::messages.empty_list') }}</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

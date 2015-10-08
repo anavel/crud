@@ -2,7 +2,7 @@
 
 @section('content-header')
 <h1>
-    ModelName
+    {{ $abstractor->getName() }}
     <small>Create</small>
 </h1>
 @stop

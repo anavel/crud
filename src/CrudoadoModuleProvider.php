@@ -2,6 +2,7 @@
 namespace ANavallaSuiza\Crudoado;
 
 use ANavallaSuiza\Adoadomin\Support\ModuleProvider;
+use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Model as ModelAbstractor;
 use Request;
 
 class CrudoadoModuleProvider extends ModuleProvider
@@ -33,6 +34,13 @@ class CrudoadoModuleProvider extends ModuleProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/crudoado.php', 'crudoado');
+
+        $this->app->bind(
+            'ANavallaSuiza\Crudoado\Contracts\Abstractor\Model',
+            function () {
+                return new ModelAbstractor(config('crudoado.models'));
+            }
+        );
 
         $this->app->register('ANavallaSuiza\Crudoado\Providers\ViewComposersServiceProvider');
     }
