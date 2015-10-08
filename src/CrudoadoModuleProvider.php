@@ -61,9 +61,9 @@ class CrudoadoModuleProvider extends ModuleProvider
         return true;
     }
 
-    public function sidebarItems()
+    public function sidebarMenu()
     {
-        return [];
+        return 'crudoado::molecules.sidebar.default';
     }
 
     public function isActive()
