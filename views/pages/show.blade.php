@@ -10,7 +10,7 @@
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="#"><i class="fa fa-database"></i> CRUDoado</a></li>
-    <li><a href="#">ModelName</li>
+    <li><a href="#">ModelName</a></li>
     <li class="active">Show</li>
 </ol>
 @stop
