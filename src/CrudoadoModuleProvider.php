@@ -2,6 +2,7 @@
 namespace ANavallaSuiza\Crudoado;
 
 use ANavallaSuiza\Adoadomin\Support\ModuleProvider;
+use Request;
 
 class CrudoadoModuleProvider extends ModuleProvider
 {
@@ -71,6 +72,12 @@ class CrudoadoModuleProvider extends ModuleProvider
 
     public function isActive()
     {
-        return true;
+        $uri = Request::route()->uri();
+
+        if (strpos($uri, 'crudoado') !== false) {
+            return true;
+        }
+
+        return false;
     }
 }
