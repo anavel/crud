@@ -11,6 +11,7 @@
         "php": ">=5.4.0",
         "illuminate/support": "5.0.*",
         "illuminate/translation": "5.0.*",
+        "javiereguiluz/easyslugger": "1.0.*",
         "doctrine/dbal": "~2.3"
     },
     "autoload": {

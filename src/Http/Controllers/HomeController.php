@@ -3,6 +3,7 @@ namespace ANavallaSuiza\Crudoado\Http\Controllers;
 
 use ANavallaSuiza\Adoadomin\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use EasySlugger\Slugger;
 
 class HomeController extends Controller
 {
@@ -14,6 +15,8 @@ class HomeController extends Controller
             throw new \Exception("No models configured.");
         }
 
-        return new RedirectResponse(route('crudoado.model.index', key($models)));
+        $modelSlug = Slugger::slugify(key($models));
+
+        return new RedirectResponse(route('crudoado.model.index', $modelSlug));
     }
 }
