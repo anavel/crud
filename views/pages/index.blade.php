@@ -52,7 +52,7 @@
                     <td><span class="label label-success">Approved</span></td>
                     <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
                     <td>
-                        <a href="{{ route('crudoado.model.show', ['ModelName', 1]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('crudoado::messages.view_button') }}</a>
+                        <a href="{{ route('crudoado.model.show', ['ModelName', 1]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('crudoado::messages.show_button') }}</a>
                         <a href="{{ route('crudoado.model.edit', ['ModelName', 1]) }}" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i> {{ trans('crudoado::messages.edit_button') }}</a>
                         <a href="#" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> {{ trans('crudoado::messages.delete_button') }}</a>
                     </td>
