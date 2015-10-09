@@ -3,15 +3,15 @@
 return [
     'name' => 'CRUDoado',
 
-    'actions' => ['list', 'create', 'read', 'update', 'delete'],
+    'actions' => ['create', 'read', 'update', 'delete'],
 
     'list_max_results' => 15,
 
     'formats' => [
-        'date' => 'd/m/Y',
-        'time' => 'H:i',
+        'date'     => 'd/m/Y',
+        'time'     => 'H:i',
         'datetime' => 'd/m/Y H:i:s',
-        'number' => '%.2f'
+        'number'   => '%.2f'
     ],
 
     'models' => [

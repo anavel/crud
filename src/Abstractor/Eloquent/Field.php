@@ -2,16 +2,19 @@
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Field as FieldAbstractorContract;
+use Doctrine\DBAL\Types\Type;
 
 class Field implements FieldAbstractorContract
 {
-    protected $name;
     protected $type;
+    protected $name;
+    protected $presentation;
 
-    public function __construct($name, $type)
+    public function __construct(Type $type, $name, $presentation = null)
     {
-        $this->name = $name;
         $this->type = $type;
+        $this->name = $name;
+        $this->presentation = $presentation;
     }
 
     public function name()
@@ -21,7 +24,7 @@ class Field implements FieldAbstractorContract
 
     public function presentation()
     {
-        return $this->name;
+        return $this->presentation ? : $this->name;
     }
 
     public function type()
@@ -29,4 +32,3 @@ class Field implements FieldAbstractorContract
         return $this->type;
     }
 }
-
