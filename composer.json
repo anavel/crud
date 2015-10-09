@@ -19,5 +19,5 @@
             "ANavallaSuiza\\Crudoado\\": "src/"
         }
     },
-    "minimum-stability": "div"
+    "minimum-stability": "dev"
 }
