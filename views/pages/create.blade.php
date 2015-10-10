@@ -18,6 +18,7 @@
 @section('content')
 <div class="box">
     {!! $form->openHtml() !!}
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <div class="box-header">
             <div class="box-title">
                 <a href="{{ URL::previous() }}"><i class="fa fa-arrow-left"></i> {{ trans('crudoado::messages.back_button') }}</a>
