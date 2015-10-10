@@ -4,16 +4,19 @@ namespace ANavallaSuiza\Crudoado\Http\Controllers;
 use ANavallaSuiza\Adoadomin\Http\Controllers\Controller;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractor;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
+use ANavallaSuiza\Crudoado\Contracts\Form\Generator as FormGenerator;
 
 class ModelController extends Controller
 {
     protected $abstractor;
     protected $manager;
+    protected $generator;
 
-    public function __construct(ModelAbstractor $abstractor, ModelManager $manager)
+    public function __construct(ModelAbstractor $abstractor, ModelManager $manager, FormGenerator $generator)
     {
         $this->abstractor = $abstractor;
         $this->manager = $manager;
+        $this->generator = $generator;
     }
 
     /**
@@ -46,8 +49,13 @@ class ModelController extends Controller
     {
         $this->abstractor->loadBySlug($model);
 
+        $this->generator->setModelFields($this->abstractor->getDetailFields());
+
+        $form = $this->generator->getForm(route('crudoado.model.store', $this->abstractor->getSlug()));
+
         return view('crudoado::pages.create', [
-            'abstractor' => $this->abstractor
+            'abstractor' => $this->abstractor,
+            'form' => $form
         ]);
     }
 

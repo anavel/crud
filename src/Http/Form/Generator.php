@@ -47,23 +47,36 @@ class Generator implements GeneratorContract
 
     public function getForm($action)
     {
-        $form = $this->factory->get('form');
+        $form = $this->factory->get('form', []);
 
         $form->attr([
-            'action' => $action,
+            'action'  => $action,
             'enctype' => 'multipart/form-data',
-            'method' => 'post'
+            'method'  => 'post',
+            'class'   => 'form-horizontal'
         ]);
 
+        $formFields = array();
         foreach ($this->fields as $field) {
-            $form->add($this->getFormField($field));
+            $formFields[$field->name()] = $this->getFormField($field);
         }
+        $form->add($formFields);
 
         return $form;
     }
 
-    protected function getFormField(Field $field)
+    protected function getFormField(Field $modelField)
     {
+        if (! array_key_exists($modelField->type()->getName(), $this->databaseTypeToFormType)) {
+            throw new \Exception("No form type found for database type ".$modelField->type()->getName());
+        }
 
+        $formField = $this->factory->get($this->databaseTypeToFormType[$modelField->type()->getName()], []);
+
+        $formField->class('form-control')
+            ->label($modelField->presentation())
+            ->placeholder($modelField->presentation());
+
+        return $formField;
     }
 }
