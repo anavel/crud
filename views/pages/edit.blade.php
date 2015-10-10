@@ -16,5 +16,32 @@
 @stop
 
 @section('content')
+<div class="box">
+    {!! $form->openHtml() !!}
+        <div class="box-header">
+            <div class="box-title">
+                <a href="{{ URL::previous() }}"><i class="fa fa-arrow-left"></i> {{ trans('crudoado::messages.back_button') }}</a>
+            </div>
+            <div class="box-tools">
+                <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> {{ trans('crudoado::messages.save_button') }}</button>
+            </div>
+        </div>
 
-@show
+        <div class="box-body">
+            @foreach ($form as $field)
+            <div class="form-group">
+                <label for="{{ $field->attr('id') }}" class="col-sm-2 control-label">{{ $field->label->html() }}</label>
+                <div class="col-sm-10">
+                    {!! $field->input !!}
+                </div>
+            </div>
+            @endforeach
+        </div>
+
+        <div class="box-footer clearfix">
+            <a href="#" class="btn btn-default">{{ trans('crudoado::messages.cancel_button') }}</a>
+            <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> {{ trans('crudoado::messages.save_button') }}</button>
+        </div>
+    {!! $form->closeHtml() !!}
+</div>
+@stop

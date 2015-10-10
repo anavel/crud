@@ -16,6 +16,11 @@ class Generator implements GeneratorContract
     /**
      *
      */
+    protected $model;
+
+    /**
+     *
+     */
     protected $fields;
 
     /**
@@ -38,6 +43,11 @@ class Generator implements GeneratorContract
     {
         $this->factory = $factory;
         $this->fields = array();
+    }
+
+    public function setModel($model)
+    {
+        $this->model = $model;
     }
 
     public function setModelFields(array $fields)
@@ -76,6 +86,10 @@ class Generator implements GeneratorContract
         $formField->class('form-control')
             ->label($modelField->presentation())
             ->placeholder($modelField->presentation());
+
+        if ($this->model) {
+            $formField->value($this->model->getAttribute($modelField->name()));
+        }
 
         return $formField;
     }

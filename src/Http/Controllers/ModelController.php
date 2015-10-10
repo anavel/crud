@@ -30,7 +30,6 @@ class ModelController extends Controller
         $this->abstractor->loadBySlug($model);
 
         $repository = $this->manager->getRepository($this->abstractor->getModel());
-
         $items = $repository->paginate(config('crudoado.list_max_results'));
 
         return view('crudoado::pages.index', [
@@ -50,7 +49,6 @@ class ModelController extends Controller
         $this->abstractor->loadBySlug($model);
 
         $this->generator->setModelFields($this->abstractor->getDetailFields());
-
         $form = $this->generator->getForm(route('crudoado.model.store', $this->abstractor->getSlug()));
 
         return view('crudoado::pages.create', [
@@ -82,7 +80,6 @@ class ModelController extends Controller
         $this->abstractor->loadBySlug($model);
 
         $repository = $this->manager->getRepository($this->abstractor->getModel());
-
         $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
 
         return view('crudoado::pages.show', [
@@ -102,8 +99,16 @@ class ModelController extends Controller
     {
         $this->abstractor->loadBySlug($model);
 
+        $repository = $this->manager->getRepository($this->abstractor->getModel());
+        $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
+
+        $this->generator->setModel($item);
+        $this->generator->setModelFields($this->abstractor->getDetailFields());
+        $form = $this->generator->getForm(route('crudoado.model.store', $this->abstractor->getSlug()));
+
         return view('crudoado::pages.edit', [
-            'abstractor' => $this->abstractor
+            'abstractor' => $this->abstractor,
+            'form' => $form
         ]);
     }
 
