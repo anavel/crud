@@ -8,8 +8,9 @@
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-database"></i> CRUDoado</a></li>
-    <li class="active">ModelName</li>
+    <li><a href="{{ route('crudoado.home') }}"><i class="fa fa-database"></i> {{ config('crudoado.name') }}</a></li>
+    <li class="active">{{ $abstractor->getName() }}</li>
+
 </ol>
 @stop
 

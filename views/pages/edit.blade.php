@@ -9,8 +9,8 @@
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-database"></i> CRUDoado</a></li>
-    <li><a href="#">ModelName</a></li>
+    <li><a href="{{ route('crudoado.home') }}"><i class="fa fa-database"></i> {{ config('crudoado.name') }}</a></li>
+    <li><a href="{{ route('crudoado.model.index', $abstractor->getSlug()) }}">{{ $abstractor->getName() }}</a></li>
     <li class="active">Edit</li>
 </ol>
 @stop
@@ -19,6 +19,7 @@
 <div class="box">
     {!! $form->openHtml() !!}
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="_method" value="PUT">
         <div class="box-header">
             <div class="box-title">
                 <a href="{{ URL::previous() }}"><i class="fa fa-arrow-left"></i> {{ trans('crudoado::messages.back_button') }}</a>

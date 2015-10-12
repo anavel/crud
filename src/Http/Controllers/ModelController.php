@@ -5,6 +5,7 @@ use ANavallaSuiza\Adoadomin\Http\Controllers\Controller;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractor;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use ANavallaSuiza\Crudoado\Contracts\Form\Generator as FormGenerator;
+use Illuminate\Http\Request;
 
 class ModelController extends Controller
 {
@@ -60,12 +61,26 @@ class ModelController extends Controller
     /**
      * Store a newly created resource in storage.
      *
+     * @param Request $request
      * @param  string  $model
      * @return Response
      */
-    public function store($model)
+    public function store(Request $request, $model)
     {
-        //
+        $this->abstractor->loadBySlug($model);
+
+        $this->generator->setModelFields($this->abstractor->getDetailFields());
+
+        $this->validate($request, $this->generator->getValidationRules());
+
+        session()->flash('adoadomin-alert', [
+            'type'  => 'success',
+            'icon'  => 'fa-check',
+            'title' => trans('crudoado::messages.alert_success_model_store_title'),
+            'text'  => trans('crudoado::messages.alert_success_model_store_text')
+        ]);
+
+        return redirect()->route('crudoado.model.index', $model);
     }
 
     /**
@@ -104,7 +119,7 @@ class ModelController extends Controller
 
         $this->generator->setModel($item);
         $this->generator->setModelFields($this->abstractor->getDetailFields());
-        $form = $this->generator->getForm(route('crudoado.model.store', $this->abstractor->getSlug()));
+        $form = $this->generator->getForm(route('crudoado.model.update', [$this->abstractor->getSlug(), $id]));
 
         return view('crudoado::pages.edit', [
             'abstractor' => $this->abstractor,
@@ -115,23 +130,38 @@ class ModelController extends Controller
     /**
      * Update the specified resource in storage.
      *
+     * @param Request $request
      * @param  string  $model
      * @param  int  $id
      * @return Response
      */
-    public function update($model, $id)
+    public function update(Request $request, $model, $id)
     {
-        //
+        $this->abstractor->loadBySlug($model);
+
+        $this->generator->setModelFields($this->abstractor->getDetailFields());
+
+        $this->validate($request, $this->generator->getValidationRules());
+
+        session()->flash('adoadomin-alert', [
+            'type'  => 'success',
+            'icon'  => 'fa-check',
+            'title' => trans('crudoado::messages.alert_success_model_update_title'),
+            'text'  => trans('crudoado::messages.alert_success_model_update_text')
+        ]);
+
+        return redirect()->route('crudoado.model.index', $model);
     }
 
     /**
      * Remove the specified resource from storage.
      *
+     * @param Request $request
      * @param  string  $model
      * @param  int  $id
      * @return Response
      */
-    public function destroy($model, $id)
+    public function destroy(Request $request, $model, $id)
     {
         //
     }

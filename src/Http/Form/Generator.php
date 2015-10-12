@@ -93,4 +93,9 @@ class Generator implements GeneratorContract
 
         return $formField;
     }
+
+    public function getValidationRules()
+    {
+        return [];
+    }
 }

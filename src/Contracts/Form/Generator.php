@@ -8,4 +8,6 @@ interface Generator
     public function setModelFields(array $fields);
 
     public function getForm($action);
+
+    public function getValidationRules();
 }
