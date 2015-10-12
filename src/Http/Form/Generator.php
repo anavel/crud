@@ -5,6 +5,7 @@ use ANavallaSuiza\Crudoado\Contracts\Form\Generator as GeneratorContract;
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field;
 use Doctrine\DBAL\Types\Type as DbalType;
 use FormManager\FactoryInterface;
+use Request;
 
 class Generator implements GeneratorContract
 {
@@ -89,6 +90,10 @@ class Generator implements GeneratorContract
 
         if ($this->model) {
             $formField->value($this->model->getAttribute($modelField->name()));
+        }
+
+        if (Request::old($modelField->name())) {
+            $formField->value(Request::old($modelField->name()));
         }
 
         return $formField;
