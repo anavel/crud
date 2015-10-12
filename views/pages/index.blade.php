@@ -47,7 +47,7 @@
                 @forelse ($items as $item)
                 <tr>
                     @foreach ($abstractor->getListFields() as $field)
-                    <td>{{ $item->getAttribute($field->name()) }}</td>
+                    <td>{!! $item->getAttribute($field->name()) !!}</td>
                     @endforeach
                     <td>
                         <a href="{{ route('crudoado.model.show', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('crudoado::messages.show_button') }}</a>

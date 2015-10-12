@@ -38,7 +38,7 @@
         <dl class="dl-horizontal">
             @foreach ($abstractor->getDetailFields() as $field)
             <dt>{{ $field->presentation() }}</dt>
-            <dd>{{ $item->getAttribute($field->name()) }}</dd>
+            <dd>{!! $item->getAttribute($field->name()) !!}</dd>
             @endforeach
         </dl>
     </div>
