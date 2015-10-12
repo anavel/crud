@@ -2,8 +2,8 @@
 
 return [
     'create_title'                      => 'Create',
-    'create_edit'                       => 'Edit',
-    'create_show'                       => 'Show',
+    'edit_title'                        => 'Edit',
+    'show_title'                        => 'Show',
     'search_input'                      => 'Search',
     'create_button'                     => 'Create',
     'empty_list'                        => 'Empty table',
