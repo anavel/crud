@@ -8,4 +8,6 @@ interface Field
     public function presentation();
 
     public function type();
+
+    public function getValidationRules();
 }

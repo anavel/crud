@@ -96,6 +96,12 @@ class Generator implements GeneratorContract
 
     public function getValidationRules()
     {
-        return [];
+        $rules = array();
+
+        foreach ($this->fields as $field) {
+            $rules[$field->name()] = $field->getValidationRules();
+        }
+
+        return $rules;
     }
 }

@@ -80,7 +80,7 @@ class Model implements ModelAbstractorContract
 
         $fields = array();
         foreach ($tableColumns as $name => $column) {
-            $fields[] = new Field($column->getType(), $name);
+            $fields[] = new Field($column, $name);
         }
 
         return $fields;
@@ -92,7 +92,7 @@ class Model implements ModelAbstractorContract
 
         $fields = array();
         foreach ($tableColumns as $name => $column) {
-            $fields[] = new Field($column->getType(), $name);
+            $fields[] = new Field($column, $name);
         }
 
         return $fields;

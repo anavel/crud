@@ -2,17 +2,17 @@
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Field as FieldAbstractorContract;
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Schema\Column;
 
 class Field implements FieldAbstractorContract
 {
-    protected $type;
+    protected $dbal;
     protected $name;
     protected $presentation;
 
-    public function __construct(Type $type, $name, $presentation = null)
+    public function __construct(Column $column, $name, $presentation = null)
     {
-        $this->type = $type;
+        $this->dbal = $column;
         $this->name = $name;
         $this->presentation = $presentation;
     }
@@ -29,6 +29,17 @@ class Field implements FieldAbstractorContract
 
     public function type()
     {
-        return $this->type;
+        return $this->dbal->getType();
+    }
+
+    public function getValidationRules()
+    {
+        $rules = array();
+
+        if ($this->dbal->getNotNull()) {
+            $rules[] = 'required';
+        }
+
+        return implode('|', $rules);
     }
 }
