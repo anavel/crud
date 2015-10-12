@@ -16,7 +16,7 @@ Crudoado automates the Create, Read, Update and Delete tasks over your Laravel a
 
 ## Instalation
 
-To use Crudoado first you must install [Adoadomin](https://github.com/ablunier/adoadomin). Crudoado was concived as an Adoadomin module.
+To use Crudoado you must first install [Adoadomin](https://github.com/ablunier/adoadomin). Crudoado was conceived as an Adoadomin module.
 
 With Adoadomin installed and working, require this package with composer:
 
