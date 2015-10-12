@@ -3,7 +3,7 @@
 @section('content-header')
 <h1>
     {{ $abstractor->getName() }}
-    <small>Create</small>
+    <small>{{ trans('crudoado::messages.create_title') }}</small>
 </h1>
 @stop
 
@@ -11,7 +11,7 @@
 <ol class="breadcrumb">
     <li><a href="{{ route('crudoado.home') }}"><i class="fa fa-database"></i> {{ config('crudoado.name') }}</a></li>
     <li><a href="{{ route('crudoado.model.index', $abstractor->getSlug()) }}">{{ $abstractor->getName() }}</a></li>
-    <li class="active">Create</li>
+    <li class="active">{{ trans('crudoado::messages.create_title') }}</li>
 </ol>
 @stop
 
