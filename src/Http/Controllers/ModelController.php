@@ -151,6 +151,15 @@ class ModelController extends Controller
 
         $this->validate($request, $this->generator->getValidationRules());
 
+        $repository = $this->manager->getRepository($this->abstractor->getModel());
+        $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
+
+        foreach ($this->abstractor->getEditFields() as $field) {
+            $item->setAttribute($field->name(), $request->input($field->name()));
+        }
+
+        $item->save();
+
         session()->flash('adoadomin-alert', [
             'type'  => 'success',
             'icon'  => 'fa-check',
