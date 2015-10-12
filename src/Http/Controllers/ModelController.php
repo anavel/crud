@@ -49,7 +49,7 @@ class ModelController extends Controller
     {
         $this->abstractor->loadBySlug($model);
 
-        $this->generator->setModelFields($this->abstractor->getDetailFields());
+        $this->generator->setModelFields($this->abstractor->getEditFields());
         $form = $this->generator->getForm(route('crudoado.model.store', $this->abstractor->getSlug()));
 
         return view('crudoado::pages.create', [
@@ -69,9 +69,17 @@ class ModelController extends Controller
     {
         $this->abstractor->loadBySlug($model);
 
-        $this->generator->setModelFields($this->abstractor->getDetailFields());
+        $this->generator->setModelFields($this->abstractor->getEditFields());
 
         $this->validate($request, $this->generator->getValidationRules());
+
+        $modelInstance = $this->manager->getModelInstance($this->abstractor->getModel());
+
+        foreach ($this->abstractor->getEditFields() as $field) {
+            $modelInstance->setAttribute($field->name(), $request->input($field->name()));
+        }
+
+        $modelInstance->save();
 
         session()->flash('adoadomin-alert', [
             'type'  => 'success',
@@ -118,7 +126,7 @@ class ModelController extends Controller
         $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
 
         $this->generator->setModel($item);
-        $this->generator->setModelFields($this->abstractor->getDetailFields());
+        $this->generator->setModelFields($this->abstractor->getEditFields());
         $form = $this->generator->getForm(route('crudoado.model.update', [$this->abstractor->getSlug(), $id]));
 
         return view('crudoado::pages.edit', [
@@ -139,7 +147,7 @@ class ModelController extends Controller
     {
         $this->abstractor->loadBySlug($model);
 
-        $this->generator->setModelFields($this->abstractor->getDetailFields());
+        $this->generator->setModelFields($this->abstractor->getEditFields());
 
         $this->validate($request, $this->generator->getValidationRules());
 

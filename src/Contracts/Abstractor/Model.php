@@ -18,4 +18,6 @@ interface Model
     public function getListFields();
 
     public function getDetailFields();
+
+    public function getEditFields();
 }

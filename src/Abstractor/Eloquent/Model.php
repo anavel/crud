@@ -4,6 +4,7 @@ namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractorContract;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use EasySlugger\Slugger;
+use Illuminate\Database\Eloquent\Model as LaravelModel;
 
 class Model implements ModelAbstractorContract
 {
@@ -94,6 +95,29 @@ class Model implements ModelAbstractorContract
         foreach ($tableColumns as $name => $column) {
             $fields[] = new Field($column, $name);
         }
+
+        return $fields;
+    }
+
+    public function getEditFields()
+    {
+        $tableColumns = $this->dbal->getTableColumns();
+
+        $fields = array();
+        foreach ($tableColumns as $name => $column) {
+            if (! in_array($name, $this->getReadOnlyFields())) {
+                $fields[] = new Field($column, $name);
+            }
+        }
+
+        return $fields;
+    }
+
+    protected function getReadOnlyFields()
+    {
+        $fields = [LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT];
+
+        $fields[] = $this->dbal->getModel()->getKeyName();
 
         return $fields;
     }
