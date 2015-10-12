@@ -16,6 +16,12 @@
 @stop
 
 @section('content')
+
+@include('crudoado::atoms.delete', [
+    'modelSlug' => $abstractor->getSlug(),
+    'modelId'   => $item->getKey()
+])
+
 <div class="box">
     <div class="box-header">
         <div class="box-title">
@@ -29,7 +35,7 @@
                 <a href="{{ route('crudoado.model.edit', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-primary"><i class="fa fa-pencil"></i> {{ trans('crudoado::messages.edit_button') }}</a>
             </div>
             <div class="btn-group">
-                <a href="#" class="btn btn-danger"><i class="fa fa-trash-o"></i> {{ trans('crudoado::messages.delete_button') }}</a>
+                <a href="#" class="btn btn-danger"  data-toggle="modal" data-target="#delete-modal"><i class="fa fa-trash-o"></i> {{ trans('crudoado::messages.delete_button') }}</a>
             </div>
         </div>
     </div>

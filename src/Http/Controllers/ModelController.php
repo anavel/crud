@@ -73,13 +73,13 @@ class ModelController extends Controller
 
         $this->validate($request, $this->generator->getValidationRules());
 
-        $modelInstance = $this->manager->getModelInstance($this->abstractor->getModel());
+        $item = $this->manager->getModelInstance($this->abstractor->getModel());
 
         foreach ($this->abstractor->getEditFields() as $field) {
-            $modelInstance->setAttribute($field->name(), $request->input($field->name()));
+            $item->setAttribute($field->name(), $request->input($field->name()));
         }
 
-        $modelInstance->save();
+        $item->save();
 
         session()->flash('adoadomin-alert', [
             'type'  => 'success',
@@ -171,6 +171,20 @@ class ModelController extends Controller
      */
     public function destroy(Request $request, $model, $id)
     {
-        //
+        $this->abstractor->loadBySlug($model);
+
+        $repository = $this->manager->getRepository($this->abstractor->getModel());
+        $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
+
+        $item->delete();
+
+        session()->flash('adoadomin-alert', [
+            'type'  => 'success',
+            'icon'  => 'fa-check',
+            'title' => trans('crudoado::messages.alert_success_model_destroy_title'),
+            'text'  => trans('crudoado::messages.alert_success_model_destroy_text')
+        ]);
+
+        return redirect()->route('crudoado.model.index', $model);
     }
 }
