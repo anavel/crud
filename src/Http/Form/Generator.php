@@ -37,7 +37,6 @@ class Generator implements GeneratorContract
         DbalType::DATETIME => 'datetime',
         DbalType::DECIMAL  => 'number',
         DbalType::FLOAT    => 'number',
-
     );
 
     public function __construct(FactoryInterface $factory)
@@ -82,11 +81,17 @@ class Generator implements GeneratorContract
             throw new \Exception("No form type found for database type ".$modelField->type()->getName());
         }
 
-        $formField = $this->factory->get($this->databaseTypeToFormType[$modelField->type()->getName()], []);
+        $formFieldType = $this->databaseTypeToFormType[$modelField->type()->getName()];
+
+        $formField = $this->factory->get($formFieldType, []);
 
         $formField->class('form-control')
             ->label($modelField->presentation())
             ->placeholder($modelField->presentation());
+
+        if ($formFieldType === 'textarea') {
+            $formField->class(config('crudoado.text_editor'));
+        }
 
         if ($this->model) {
             $formField->value($this->model->getAttribute($modelField->name()));

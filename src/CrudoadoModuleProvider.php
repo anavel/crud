@@ -24,6 +24,10 @@ class CrudoadoModuleProvider extends ModuleProvider
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'crudoado');
 
         $this->publishes([
+            __DIR__.'/../public/js' => public_path('vendor/crudoado/js'),
+        ], 'assets');
+
+        $this->publishes([
             __DIR__.'/../config/crudoado.php' => config_path('crudoado.php'),
         ], 'config');
     }

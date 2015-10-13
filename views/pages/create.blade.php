@@ -46,3 +46,7 @@
     {!! $form->closeHtml() !!}
 </div>
 @stop
+
+@section('footer-scripts')
+    <script src="{{ asset('vendor/crudoado/js/app.js') }}" type="text/javascript"></script>
+@stop
