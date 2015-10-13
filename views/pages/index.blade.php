@@ -47,12 +47,21 @@
                 <tr>
                     @foreach ($abstractor->getListFields() as $field)
                         <?php
+                        $isSorting = false;
                         $sortDirection = 'asc';
-                        if (Input::get('sort') === $field->name() && Input::get('direction') === 'asc') {
-                            $sortDirection = 'desc';
+                        if (Input::get('sort') === $field->name()) {
+                            $isSorting = true;
+
+                            if (Input::get('direction') === 'asc') {
+                                $sortDirection = 'desc';
+                            }
                         }
                         ?>
-                    <th><a href="{{ route('crudoado.model.index', [$abstractor->getSlug(), 'sort' => $field->name(), 'direction' => $sortDirection]) }}">{{ $field->presentation() }}</a></th>
+                    <th>
+                        <a href="{{ route('crudoado.model.index', [$abstractor->getSlug(), 'sort' => $field->name(), 'direction' => $sortDirection]) }}">
+                            {{ $field->presentation() }}
+                        </a>
+                    </th>
                     @endforeach
                     <th>{{ trans('crudoado::messages.actions_table_header') }}</th>
                 </tr>
