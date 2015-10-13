@@ -48,8 +48,17 @@
 </div>
 @stop
 
+@section('head')
+    @parent
+
+    <link href="{{ asset('vendor/adoadomin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}" rel="stylesheet" type="text/css" />
+@stop
+
 @section('footer-scripts')
     @parent
+
+    <script src="{{ asset('vendor/adoadomin/plugins/ckeditor/ckeditor.js') }}"></script>
+    <script src="{{ asset('vendor/adoadomin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') }}"></script>
 
     <script src="{{ asset('vendor/crudoado/js/app.js') }}" type="text/javascript"></script>
 @stop

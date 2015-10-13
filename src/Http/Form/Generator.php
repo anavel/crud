@@ -90,7 +90,7 @@ class Generator implements GeneratorContract
             ->placeholder($modelField->presentation());
 
         if ($formFieldType === 'textarea') {
-            $formField->class(config('crudoado.text_editor'));
+            $formField->class('form-control '.config('crudoado.text_editor'));
         }
 
         if ($this->model) {
