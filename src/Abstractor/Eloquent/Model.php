@@ -2,12 +2,15 @@
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractorContract;
+use ANavallaSuiza\Crudoado\Abstractor\ConfigurationReader;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use EasySlugger\Slugger;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
 
 class Model implements ModelAbstractorContract
 {
+    use ConfigurationReader;
+
     protected $modelManager;
     protected $slugger;
     protected $dbal;
@@ -72,16 +75,23 @@ class Model implements ModelAbstractorContract
 
     public function isSoftDeletes()
     {
-
+        return $this->getConfigValue('soft_deletes');
     }
 
     public function getListFields()
     {
         $tableColumns = $this->dbal->getTableColumns();
 
+        $fieldsPresentation = $this->getConfigValue('fields_presentation');
+
         $fields = array();
         foreach ($tableColumns as $name => $column) {
-            $fields[] = new Field($column, $name);
+            $presentation = null;
+            if (array_key_exists($name, $fieldsPresentation)) {
+                $presentation = $fieldsPresentation[$name];
+            }
+
+            $fields[] = new Field($column, $name, $presentation);
         }
 
         return $fields;
@@ -91,9 +101,16 @@ class Model implements ModelAbstractorContract
     {
         $tableColumns = $this->dbal->getTableColumns();
 
+        $fieldsPresentation = $this->getConfigValue('fields_presentation');
+
         $fields = array();
         foreach ($tableColumns as $name => $column) {
-            $fields[] = new Field($column, $name);
+            $presentation = null;
+            if (array_key_exists($name, $fieldsPresentation)) {
+                $presentation = $fieldsPresentation[$name];
+            }
+
+            $fields[] = new Field($column, $name, $presentation);
         }
 
         return $fields;
@@ -103,10 +120,17 @@ class Model implements ModelAbstractorContract
     {
         $tableColumns = $this->dbal->getTableColumns();
 
+        $fieldsPresentation = $this->getConfigValue('fields_presentation');
+
         $fields = array();
         foreach ($tableColumns as $name => $column) {
             if (! in_array($name, $this->getReadOnlyFields())) {
-                $fields[] = new Field($column, $name);
+                $presentation = null;
+                if (array_key_exists($name, $fieldsPresentation)) {
+                    $presentation = $fieldsPresentation[$name];
+                }
+
+                $fields[] = new Field($column, $name, $presentation);
             }
         }
 

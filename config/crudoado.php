@@ -11,6 +11,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Displayed icon
+    |--------------------------------------------------------------------------
+    |
+    */
+    'icon' => 'fa-database',
+
+    /*
+    |--------------------------------------------------------------------------
     | Enabled actions
     |--------------------------------------------------------------------------
     |
@@ -59,22 +67,25 @@ return [
         // or
 
         'Users' => [
-            'icon' => 'fa-database',
             'model' => 'App\User',
+            'icon' => 'fa-database',
             'soft_deletes' => true,
             'fields_presentation' => [
                 'active' => 'Is Active?',
                 'role_id' => 'Role'
             ],
             'list' => [
-                'fields' => ['id', 'username', 'fullname', 'active']
+                'displayed' => ['id', 'username', 'fullname', 'active'],
+                'hidden'    => []
             ],
             'detail' => [
-                'fields' => ['id', 'username', 'password', 'fullname', 'info', 'active']
+                'displayed' => ['id', 'username', 'password', 'fullname', 'info', 'active'],
+                'hidden'    => []
             ],
             'edit' => [
-                'fields' => ['id', 'username', 'password'],
-                'inputs' => [
+                'displayed' => ['id', 'username', 'password'],
+                'hidden'    => [],
+                'form_types' => [
                     'username' => 'email',
                     'password' => 'password'
                 ],
