@@ -48,5 +48,7 @@
 @stop
 
 @section('footer-scripts')
+    @parent
+
     <script src="{{ asset('vendor/crudoado/js/app.js') }}" type="text/javascript"></script>
 @stop
