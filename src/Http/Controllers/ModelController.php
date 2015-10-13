@@ -36,7 +36,7 @@ class ModelController extends Controller
         $repository = $this->manager->getRepository($this->abstractor->getModel());
 
         if ($request->has('search')) {
-            $searchByColumns = $this->abstractor->getListFields();
+            $searchByColumns = array();
 
             foreach ($this->abstractor->getListFields() as $field) {
                 $searchByColumns[] = $field->name();
