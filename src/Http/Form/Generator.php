@@ -98,7 +98,7 @@ class Generator implements GeneratorContract
         }
 
         if (Request::old($modelField->name())) {
-            $formField->value(Request::old($modelField->name()));
+            $formField->val(Request::old($modelField->name()));
         }
 
         return $formField;
