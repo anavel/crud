@@ -26,12 +26,14 @@
         <div class="box-title"></div>
         <div class="box-tools">
             <div class="btn-group">
-                <div class="input-group">
-                    <input name="search" class="form-control pull-right" placeholder="{{ trans('crudoado::messages.search_input') }}" type="text">
-                    <div class="input-group-btn">
-                        <button class="btn btn-default"><i class="fa fa-search"></i></button>
+                <form method="get" action="">
+                    <div class="input-group">
+                        <input name="search" type="text" value="{{ Input::get('search') }}" class="form-control pull-right" placeholder="{{ trans('crudoado::messages.search_input') }}">
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
             <div class="btn-group">
                 <a href="{{ route('crudoado.model.create', $abstractor->getSlug()) }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('crudoado::messages.create_button') }}</a>
@@ -44,7 +46,13 @@
             <thead>
                 <tr>
                     @foreach ($abstractor->getListFields() as $field)
-                    <th>{{ $field->presentation() }}</th>
+                        <?php
+                        $sortDirection = 'asc';
+                        if (Input::get('sort') === $field->name() && Input::get('direction') === 'asc') {
+                            $sortDirection = 'desc';
+                        }
+                        ?>
+                    <th><a href="{{ route('crudoado.model.index', [$abstractor->getSlug(), 'sort' => $field->name(), 'direction' => $sortDirection]) }}">{{ $field->presentation() }}</a></th>
                     @endforeach
                     <th>{{ trans('crudoado::messages.actions_table_header') }}</th>
                 </tr>

@@ -5,6 +5,8 @@ use ANavallaSuiza\Adoadomin\Http\Controllers\Controller;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractor;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use ANavallaSuiza\Crudoado\Contracts\Form\Generator as FormGenerator;
+use ANavallaSuiza\Crudoado\Repository\Criteria\OrderByCriteria;
+use ANavallaSuiza\Crudoado\Repository\Criteria\SearchCriteria;
 use Illuminate\Http\Request;
 
 class ModelController extends Controller
@@ -23,14 +25,30 @@ class ModelController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @param  string  $model
      * @return Response
      */
-    public function index($model)
+    public function index(Request $request, $model)
     {
         $this->abstractor->loadBySlug($model);
 
         $repository = $this->manager->getRepository($this->abstractor->getModel());
+
+        if ($request->has('search')) {
+            $searchByColumns = $this->abstractor->getListFields();
+
+            foreach ($this->abstractor->getListFields() as $field) {
+                $searchByColumns[] = $field->name();
+            }
+
+            $repository->pushCriteria(new SearchCriteria($searchByColumns, $request->get('search')));
+        }
+
+        if ($request->has('sort')) {
+            $repository->pushCriteria(new OrderByCriteria($request->get('sort'), $request->get('direction') === 'desc' ? true : false));
+        }
+
         $items = $repository->paginate(config('crudoado.list_max_results'));
 
         return view('crudoado::pages.index', [

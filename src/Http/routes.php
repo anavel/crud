@@ -7,44 +7,55 @@ Route::group(
     ],
     function () {
         Route::get('/', [
-            'as' => 'crudoado.home',
+            'as'   => 'crudoado.home',
             'uses' => 'HomeController@index'
         ]);
 
         // Model CRUD routes
         Route::get('{model}', [
-            'as' => 'crudoado.model.index',
+            'as'   => 'crudoado.model.index',
             'uses' => 'ModelController@index'
         ]);
 
         Route::get('{model}/create', [
-            'as' => 'crudoado.model.create',
+            'as'   => 'crudoado.model.create',
             'uses' => 'ModelController@create'
         ]);
 
         Route::post('{model}', [
-            'as' => 'crudoado.model.store',
+            'as'   => 'crudoado.model.store',
             'uses' => 'ModelController@store'
         ]);
 
         Route::get('{model}/{id}', [
-            'as' => 'crudoado.model.show',
+            'as'   => 'crudoado.model.show',
             'uses' => 'ModelController@show'
         ]);
 
         Route::get('{model}/{id}/edit', [
-            'as' => 'crudoado.model.edit',
+            'as'   => 'crudoado.model.edit',
             'uses' => 'ModelController@edit'
         ]);
 
         Route::put('{model}/{id}', [
-            'as' => 'crudoado.model.update',
+            'as'   => 'crudoado.model.update',
             'uses' => 'ModelController@update'
         ]);
 
         Route::delete('{model}/{id}', [
-            'as' => 'crudoado.model.destroy',
+            'as'   => 'crudoado.model.destroy',
             'uses' => 'ModelController@destroy'
         ]);
+
+        // Batch actions
+        /*Route::put('{model}/batch', [
+            'as'   => 'crudoado.model.batch-update',
+            'uses' => 'ModelController@batchUpdate'
+        ]);
+
+        Route::delete('{model}/batch', [
+            'as'   => 'crudoado.model.batch-delete',
+            'uses' => 'ModelController@batchDestroy'
+        ]);*/
     }
 );
