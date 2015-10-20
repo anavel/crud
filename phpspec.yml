@@ -1,0 +1,12 @@
+suites:
+    main:
+        namespace: ANavallaSuiza\Crudoado
+        psr4_prefix: ANavallaSuiza\Crudoado
+        src_path: src
+        spec_path: .
+
+extensions:
+    - Pixelindustries\PhpspecTestbench\LaravelExtension
+
+laravel_extension:
+    app_classname: spec\ANavallaSuiza\Crudoado\PhpSpecBootApp
