@@ -82,7 +82,7 @@ class Model implements ModelAbstractorContract
     {
         $tableColumns = $this->dbal->getTableColumns();
 
-        $fieldsPresentation = $this->getConfigValue('fields_presentation');
+        $fieldsPresentation = $this->getConfigValue('fields_presentation') ? : [];
 
         $fields = array();
         foreach ($tableColumns as $name => $column) {
@@ -101,7 +101,7 @@ class Model implements ModelAbstractorContract
     {
         $tableColumns = $this->dbal->getTableColumns();
 
-        $fieldsPresentation = $this->getConfigValue('fields_presentation');
+        $fieldsPresentation = $this->getConfigValue('fields_presentation') ? : [];
 
         $fields = array();
         foreach ($tableColumns as $name => $column) {
@@ -120,7 +120,7 @@ class Model implements ModelAbstractorContract
     {
         $tableColumns = $this->dbal->getTableColumns();
 
-        $fieldsPresentation = $this->getConfigValue('fields_presentation');
+        $fieldsPresentation = $this->getConfigValue('fields_presentation') ? : [];
 
         $fields = array();
         foreach ($tableColumns as $name => $column) {
