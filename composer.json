@@ -16,15 +16,21 @@
         "form-manager/form-manager": "4.7.*"
     },
     "require-dev": {
-        "phpspec/phpspec": "~2.0",
-        "pixelindustries/phpspec-testbench": "1.0.1"
-    },
-    "config": {
-        "bin-dir": "bin/"
+        "orchestra/testbench": "~3.0",
+        "phpunit/phpunit": "~4.0",
+        "mockery/mockery": "0.9.*"
     },
     "autoload": {
+        "classmap": [
+            "tests"
+        ],
         "psr-4": {
             "ANavallaSuiza\\Crudoado\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Crudoado\\Tests\\": "tests"
         }
     },
     "minimum-stability": "stable"
