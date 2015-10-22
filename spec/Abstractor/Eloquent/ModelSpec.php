@@ -5,14 +5,17 @@ namespace spec\ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
+use ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer;
 
 class ModelSpec extends ObjectBehavior
 {
+    protected $config;
+
     public function let(ModelManager $modelManager)
     {
-        $config = require __DIR__.'/../../config.php';
+        $this->config = require __DIR__.'/../../config.php';
 
-        $this->beConstructedWith($config, $modelManager);
+        $this->beConstructedWith($this->config, $modelManager);
     }
 
     public function it_is_initializable()
@@ -41,5 +44,41 @@ class ModelSpec extends ObjectBehavior
         $this->getSlug()->shouldReturn('blog-posts');
         $this->getName()->shouldReturn('Blog Posts');
         $this->getModel()->shouldReturn('App\Post');
+    }
+
+    public function it_returns_list_fields_as_array(ModelManager $modelManager, AbstractionLayer $dbal)
+    {
+        $dbal->getTableColumns()->willReturn(array());
+        $modelManager->getAbstractionLayer('App\User')->willReturn($dbal);
+
+        $this->beConstructedWith($this->config, $modelManager);
+
+        $this->loadBySlug('users');
+
+        $this->getListFields()->shouldBeArray();
+    }
+
+    public function it_returns_detail_fields_as_array(ModelManager $modelManager, AbstractionLayer $dbal)
+    {
+        $dbal->getTableColumns()->willReturn(array());
+        $modelManager->getAbstractionLayer('App\User')->willReturn($dbal);
+
+        $this->beConstructedWith($this->config, $modelManager);
+
+        $this->loadBySlug('users');
+
+        $this->getDetailFields()->shouldBeArray();
+    }
+
+    public function it_returns_edit_fields_as_array(ModelManager $modelManager, AbstractionLayer $dbal)
+    {
+        $dbal->getTableColumns()->willReturn(array());
+        $modelManager->getAbstractionLayer('App\User')->willReturn($dbal);
+
+        $this->beConstructedWith($this->config, $modelManager);
+
+        $this->loadBySlug('users');
+
+        $this->getEditFields()->shouldBeArray();
     }
 }
