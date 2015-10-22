@@ -21,9 +21,6 @@
         "mockery/mockery": "0.9.*"
     },
     "autoload": {
-        "classmap": [
-            "tests"
-        ],
         "psr-4": {
             "ANavallaSuiza\\Crudoado\\": "src/"
         }
