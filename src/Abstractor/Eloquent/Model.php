@@ -88,8 +88,8 @@ class Model implements ModelAbstractorContract
         $columns = array();
         if (! empty($customDisplayedColumns) && is_array($customDisplayedColumns)) {
             foreach ($customDisplayedColumns as $customColumn) {
-                if (! in_array($customColumn, $tableColumns)) {
-                    throw new \Exception("Column ".$customColumn." does not exist");
+                if (! array_key_exists($customColumn, $tableColumns)) {
+                    throw new \Exception("Column ".$customColumn." does not exist on ".$this->getModel());
                 }
 
                 $columns[$customColumn] = $tableColumns[$customColumn];

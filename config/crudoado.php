@@ -74,6 +74,7 @@ return [
                 'active' => 'Is Active?',
                 'role_id' => 'Role'
             ],
+            'relations' => [],
             'list' => [
                 'display' => ['id', 'username', 'fullname', 'active'],
                 'hide'    => []
