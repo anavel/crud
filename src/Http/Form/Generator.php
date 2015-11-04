@@ -78,11 +78,11 @@ class Generator implements GeneratorContract
     protected function getFormField(Field $modelField)
     {
         if ($modelField->hasCustomFormType()) {
-            if (! in_array($modelField->getCustomFieldType(), $this->databaseTypeToFormType)) {
-                throw new \Exception("Unknown form type ".$modelField->getCustomFieldType());
+            if (! in_array($modelField->getCustomFormType(), $this->databaseTypeToFormType)) {
+                throw new \Exception("Unknown form type ".$modelField->getCustomFormType());
             }
 
-            $formFieldType = $modelField->getCustomFieldType();
+            $formFieldType = $modelField->getCustomFormType();
         } else {
             if (! array_key_exists($modelField->type()->getName(), $this->databaseTypeToFormType)) {
                 throw new \Exception("No form type found for database type ".$modelField->type()->getName());
