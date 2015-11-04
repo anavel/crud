@@ -9,5 +9,17 @@ interface Field
 
     public function type();
 
+    public function setCustomFormType($formType);
+
+    public function hasCustomFormType();
+
+    public function getCustomFormType();
+
+    public function setValidationRules($rules);
+
     public function getValidationRules();
+
+    public function setFunctions($functions);
+
+    public function applyFunctions($value);
 }

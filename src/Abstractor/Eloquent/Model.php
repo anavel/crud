@@ -75,17 +75,46 @@ class Model implements ModelAbstractorContract
 
     public function isSoftDeletes()
     {
-        return $this->getConfigValue('soft_deletes');
+        return $this->getConfigValue('soft_deletes') ? true : false;
+    }
+
+    protected function getColumns($action)
+    {
+        $tableColumns = $this->dbal->getTableColumns();
+
+        $customDisplayedColumns = $this->getConfigValue($action, 'display');
+        $customHiddenColumns = $this->getConfigValue($action, 'hide') ? : [];
+
+        $columns = array();
+        if (! empty($customDisplayedColumns) && is_array($customDisplayedColumns)) {
+            foreach ($customDisplayedColumns as $customColumn) {
+                if (! in_array($customColumn, $tableColumns)) {
+                    throw new \Exception("Column ".$customColumn." does not exist");
+                }
+
+                $columns[$customColumn] = $tableColumns[$customColumn];
+            }
+        } else {
+            foreach ($tableColumns as $name => $column) {
+                if (in_array($name, $customHiddenColumns)) {
+                    continue;
+                }
+
+                $columns[$name] = $column;
+            }
+        }
+
+        return $columns;
     }
 
     public function getListFields()
     {
-        $tableColumns = $this->dbal->getTableColumns();
+        $columns = $this->getColumns('list');
 
         $fieldsPresentation = $this->getConfigValue('fields_presentation') ? : [];
 
         $fields = array();
-        foreach ($tableColumns as $name => $column) {
+        foreach ($columns as $name => $column) {
             $presentation = null;
             if (array_key_exists($name, $fieldsPresentation)) {
                 $presentation = $fieldsPresentation[$name];
@@ -99,12 +128,12 @@ class Model implements ModelAbstractorContract
 
     public function getDetailFields()
     {
-        $tableColumns = $this->dbal->getTableColumns();
+        $columns = $this->getColumns('detail');
 
         $fieldsPresentation = $this->getConfigValue('fields_presentation') ? : [];
 
         $fields = array();
-        foreach ($tableColumns as $name => $column) {
+        foreach ($columns as $name => $column) {
             $presentation = null;
             if (array_key_exists($name, $fieldsPresentation)) {
                 $presentation = $fieldsPresentation[$name];
@@ -118,31 +147,48 @@ class Model implements ModelAbstractorContract
 
     public function getEditFields()
     {
-        $tableColumns = $this->dbal->getTableColumns();
+        $columns = $this->getColumns('edit');
 
         $fieldsPresentation = $this->getConfigValue('fields_presentation') ? : [];
+        $formTypes = $this->getConfigValue('edit', 'form_types') ? : [];
+        $validationRules = $this->getConfigValue('edit', 'validation') ? : [];
+        $functions = $this->getConfigValue('edit', 'functions') ? : [];
 
         $fields = array();
-        foreach ($tableColumns as $name => $column) {
-            if (! in_array($name, $this->getReadOnlyFields())) {
+        foreach ($columns as $name => $column) {
+            if (! in_array($name, $this->getReadOnlyColumns())) {
                 $presentation = null;
                 if (array_key_exists($name, $fieldsPresentation)) {
                     $presentation = $fieldsPresentation[$name];
                 }
 
-                $fields[] = new Field($column, $name, $presentation);
+                $field = new Field($column, $name, $presentation);
+
+                if (array_key_exists($name, $formTypes)) {
+                    $field->setCustomFormType($formTypes[$name]);
+                }
+
+                if (array_key_exists($name, $validationRules)) {
+                    $field->setValidationRules($validationRules[$name]);
+                }
+
+                if (array_key_exists($name, $functions)) {
+                    $field->setFunctions($functions[$name]);
+                }
+
+                $fields[] = $field;
             }
         }
 
         return $fields;
     }
 
-    protected function getReadOnlyFields()
+    protected function getReadOnlyColumns()
     {
-        $fields = [LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT];
+        $columns = [LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT];
 
-        $fields[] = $this->dbal->getModel()->getKeyName();
+        $columns[] = $this->dbal->getModel()->getKeyName();
 
-        return $fields;
+        return $columns;
     }
 }

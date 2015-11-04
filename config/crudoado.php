@@ -75,16 +75,16 @@ return [
                 'role_id' => 'Role'
             ],
             'list' => [
-                'displayed' => ['id', 'username', 'fullname', 'active'],
-                'hidden'    => []
+                'display' => ['id', 'username', 'fullname', 'active'],
+                'hide'    => []
             ],
             'detail' => [
-                'displayed' => ['id', 'username', 'password', 'fullname', 'info', 'active'],
-                'hidden'    => []
+                'display' => ['id', 'username', 'password', 'fullname', 'info', 'active'],
+                'hide'    => []
             ],
             'edit' => [
-                'displayed' => ['id', 'username', 'password'],
-                'hidden'    => [],
+                'display' => ['id', 'username', 'password'],
+                'hide'    => [],
                 'form_types' => [
                     'username' => 'email',
                     'password' => 'password'

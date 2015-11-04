@@ -11,15 +11,15 @@ use Illuminate\Http\Request;
 
 class ModelController extends Controller
 {
-    protected $abstractor;
-    protected $manager;
-    protected $generator;
+    protected $modelAbstractor;
+    protected $modelManager;
+    protected $formGenerator;
 
-    public function __construct(ModelAbstractor $abstractor, ModelManager $manager, FormGenerator $generator)
+    public function __construct(ModelAbstractor $modelAbstractor, ModelManager $modelManager, FormGenerator $formGenerator)
     {
-        $this->abstractor = $abstractor;
-        $this->manager = $manager;
-        $this->generator = $generator;
+        $this->modelAbstractor = $modelAbstractor;
+        $this->modelManager = $modelManager;
+        $this->formGenerator = $formGenerator;
     }
 
     /**
@@ -31,14 +31,14 @@ class ModelController extends Controller
      */
     public function index(Request $request, $model)
     {
-        $this->abstractor->loadBySlug($model);
+        $this->modelAbstractor->loadBySlug($model);
 
-        $repository = $this->manager->getRepository($this->abstractor->getModel());
+        $repository = $this->modelManager->getRepository($this->modelAbstractor->getModel());
 
         if ($request->has('search')) {
             $searchByColumns = array();
 
-            foreach ($this->abstractor->getListFields() as $field) {
+            foreach ($this->modelAbstractor->getListFields() as $field) {
                 $searchByColumns[] = $field->name();
             }
 
@@ -52,7 +52,7 @@ class ModelController extends Controller
         $items = $repository->paginate(config('crudoado.list_max_results'));
 
         return view('crudoado::pages.index', [
-            'abstractor' => $this->abstractor,
+            'abstractor' => $this->modelAbstractor,
             'items' => $items
         ]);
     }
@@ -65,13 +65,13 @@ class ModelController extends Controller
      */
     public function create($model)
     {
-        $this->abstractor->loadBySlug($model);
+        $this->modelAbstractor->loadBySlug($model);
 
-        $this->generator->setModelFields($this->abstractor->getEditFields());
-        $form = $this->generator->getForm(route('crudoado.model.store', $this->abstractor->getSlug()));
+        $this->formGenerator->setModelFields($this->modelAbstractor->getEditFields());
+        $form = $this->formGenerator->getForm(route('crudoado.model.store', $this->modelAbstractor->getSlug()));
 
         return view('crudoado::pages.create', [
-            'abstractor' => $this->abstractor,
+            'abstractor' => $this->modelAbstractor,
             'form' => $form
         ]);
     }
@@ -85,16 +85,16 @@ class ModelController extends Controller
      */
     public function store(Request $request, $model)
     {
-        $this->abstractor->loadBySlug($model);
+        $this->modelAbstractor->loadBySlug($model);
 
-        $this->generator->setModelFields($this->abstractor->getEditFields());
+        $this->formGenerator->setModelFields($this->modelAbstractor->getEditFields());
 
-        $this->validate($request, $this->generator->getValidationRules());
+        $this->validate($request, $this->formGenerator->getValidationRules());
 
-        $item = $this->manager->getModelInstance($this->abstractor->getModel());
+        $item = $this->modelManager->getModelInstance($this->modelAbstractor->getModel());
 
-        foreach ($this->abstractor->getEditFields() as $field) {
-            $item->setAttribute($field->name(), $request->input($field->name()));
+        foreach ($this->modelAbstractor->getEditFields() as $field) {
+            $item->setAttribute($field->name(), $field->applyFunctions($request->input($field->name())));
         }
 
         $item->save();
@@ -118,13 +118,13 @@ class ModelController extends Controller
      */
     public function show($model, $id)
     {
-        $this->abstractor->loadBySlug($model);
+        $this->modelAbstractor->loadBySlug($model);
 
-        $repository = $this->manager->getRepository($this->abstractor->getModel());
+        $repository = $this->modelManager->getRepository($this->modelAbstractor->getModel());
         $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
 
         return view('crudoado::pages.show', [
-            'abstractor' => $this->abstractor,
+            'abstractor' => $this->modelAbstractor,
             'item' => $item
         ]);
     }
@@ -138,17 +138,17 @@ class ModelController extends Controller
      */
     public function edit($model, $id)
     {
-        $this->abstractor->loadBySlug($model);
+        $this->modelAbstractor->loadBySlug($model);
 
-        $repository = $this->manager->getRepository($this->abstractor->getModel());
+        $repository = $this->modelManager->getRepository($this->modelAbstractor->getModel());
         $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
 
-        $this->generator->setModel($item);
-        $this->generator->setModelFields($this->abstractor->getEditFields());
-        $form = $this->generator->getForm(route('crudoado.model.update', [$this->abstractor->getSlug(), $id]));
+        $this->formGenerator->setModel($item);
+        $this->formGenerator->setModelFields($this->modelAbstractor->getEditFields());
+        $form = $this->formGenerator->getForm(route('crudoado.model.update', [$this->modelAbstractor->getSlug(), $id]));
 
         return view('crudoado::pages.edit', [
-            'abstractor' => $this->abstractor,
+            'abstractor' => $this->modelAbstractor,
             'form' => $form
         ]);
     }
@@ -163,17 +163,17 @@ class ModelController extends Controller
      */
     public function update(Request $request, $model, $id)
     {
-        $this->abstractor->loadBySlug($model);
+        $this->modelAbstractor->loadBySlug($model);
 
-        $this->generator->setModelFields($this->abstractor->getEditFields());
+        $this->formGenerator->setModelFields($this->modelAbstractor->getEditFields());
 
-        $this->validate($request, $this->generator->getValidationRules());
+        $this->validate($request, $this->formGenerator->getValidationRules());
 
-        $repository = $this->manager->getRepository($this->abstractor->getModel());
+        $repository = $this->modelManager->getRepository($this->modelAbstractor->getModel());
         $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
 
-        foreach ($this->abstractor->getEditFields() as $field) {
-            $item->setAttribute($field->name(), $request->input($field->name()));
+        foreach ($this->modelAbstractor->getEditFields() as $field) {
+            $item->setAttribute($field->name(), $field->applyFunctions($request->input($field->name())));
         }
 
         $item->save();
@@ -198,9 +198,9 @@ class ModelController extends Controller
      */
     public function destroy(Request $request, $model, $id)
     {
-        $this->abstractor->loadBySlug($model);
+        $this->modelAbstractor->loadBySlug($model);
 
-        $repository = $this->manager->getRepository($this->abstractor->getModel());
+        $repository = $this->modelManager->getRepository($this->modelAbstractor->getModel());
         $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
 
         $item->delete();
