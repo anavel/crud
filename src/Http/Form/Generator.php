@@ -37,6 +37,8 @@ class Generator implements GeneratorContract
         DbalType::DATETIME => 'datetime',
         DbalType::DECIMAL  => 'number',
         DbalType::FLOAT    => 'number',
+        'email',
+        'password'
     );
 
     public function __construct(FactoryInterface $factory)
