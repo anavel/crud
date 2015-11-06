@@ -1,5 +1,5 @@
 {
-    "name": "ablunier/crudoado",
+    "name": "anavallasuiza/crudoado",
     "description": "",
     "authors": [
         {
@@ -11,7 +11,7 @@
         "php": ">=5.5.9",
         "illuminate/support": "5.1.*",
         "illuminate/translation": "5.1.*",
-        "ablunier/adoadomin": "dev-master",
+        "anavallasuiza/adoadomin": "dev-master",
         "ablunier/laravel-database": "dev-master",
         "javiereguiluz/easyslugger": "1.0.*",
         "form-manager/form-manager": "4.7.*"
