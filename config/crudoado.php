@@ -74,7 +74,10 @@ return [
                 'active' => 'Is Active?',
                 'role_id' => 'Role'
             ],
-            'relations' => [],
+            'relations' => [
+                // Types: select, select-multiple, check, mini-crud
+                'posts' => 'select-multiple'
+            ],
             'list' => [
                 'display' => ['id', 'username', 'fullname', 'active'],
                 'hide'    => []
@@ -96,7 +99,7 @@ return [
                 ],
                 'functions' => [
                     'fullname' => 'slugify',
-                    'password' => 'encrypt'
+                    'password' => 'bcrypt'
                 ]
             ]
         ]

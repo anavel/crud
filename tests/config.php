@@ -33,7 +33,7 @@ return [
                 ],
                 'functions' => [
                     'fullname' => 'slugify',
-                    'password' => 'encrypt'
+                    'password' => 'bcrypt'
                 ]
             ]
         ]

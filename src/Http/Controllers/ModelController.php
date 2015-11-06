@@ -94,7 +94,10 @@ class ModelController extends Controller
         $item = $this->modelManager->getModelInstance($this->modelAbstractor->getModel());
 
         foreach ($this->modelAbstractor->getEditFields() as $field) {
-            $item->setAttribute($field->name(), $field->applyFunctions($request->input($field->name())));
+            $item->setAttribute(
+                $field->name(),
+                $field->applyFunctions($request->input($field->name()))
+            );
         }
 
         $item->save();
@@ -173,7 +176,10 @@ class ModelController extends Controller
         $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
 
         foreach ($this->modelAbstractor->getEditFields() as $field) {
-            $item->setAttribute($field->name(), $field->applyFunctions($request->input($field->name())));
+            $item->setAttribute(
+                $field->name(),
+                $field->applyFunctions($request->input($field->name()))
+            );
         }
 
         $item->save();

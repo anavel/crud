@@ -80,6 +80,14 @@ class Field implements FieldAbstractorContract
 
     public function applyFunctions($value)
     {
+        foreach ($this->functions as $function) {
+            if (! function_exists($function)) {
+                throw new \Exception("Function ".$function." does not exist");
+            }
+
+            $value = call_user_func($function, $value);
+        }
+
         return $value;
     }
 }
