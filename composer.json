@@ -9,8 +9,8 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "5.0.*",
-        "illuminate/translation": "5.0.*",
+        "illuminate/support": "5.1.*",
+        "illuminate/translation": "5.1.*",
         "ablunier/adoadomin": "dev-master",
         "ablunier/laravel-database": "dev-master",
         "javiereguiluz/easyslugger": "1.0.*",
