@@ -1,16 +1,16 @@
 <?php
 namespace ANavallaSuiza\Crudoado\View\Composers;
 
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractor;
+use ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory as ModelAbstractorFactory;
 use Request;
 
 class SidebarComposer
 {
-    protected $abstractor;
+    protected $modelFactory;
 
-    public function __construct(ModelAbstractor $abstractor)
+    public function __construct(ModelAbstractorFactory $modelFactory)
     {
-        $this->abstractor = $abstractor;
+        $this->modelFactory = $modelFactory;
     }
 
     public function compose($view)
@@ -22,16 +22,16 @@ class SidebarComposer
         $items = [];
 
         foreach ($models as $modelName => $model) {
-            $this->abstractor->loadByName($modelName);
+            $modelAbstractor = $this->modelFactory->getByName($modelName);
 
             $isActive = false;
-            if (strpos($url, $this->abstractor->getSlug()) !== false) {
+            if (strpos($url, $modelAbstractor->getSlug()) !== false) {
                 $isActive = true;
             }
 
             $items[] = [
-                'route' => route('crudoado.model.index', $this->abstractor->getSlug()),
-                'name' => $this->abstractor->getName(),
+                'route' => route('crudoado.model.index', $modelAbstractor->getSlug()),
+                'name' => $modelAbstractor->getName(),
                 'isActive' => $isActive
             ];
         }

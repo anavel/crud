@@ -2,7 +2,7 @@
 namespace ANavallaSuiza\Crudoado;
 
 use ANavallaSuiza\Adoadomin\Support\ModuleProvider;
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Model as ModelAbstractor;
+use ANavallaSuiza\Crudoado\Abstractor\Eloquent\ModelFactory as ModelAbstractorFactory;
 use ANavallaSuiza\Crudoado\Http\Form\Generator as FormGenerator;
 use FormManager\Factory as FormFactory;
 use Request;
@@ -44,9 +44,9 @@ class CrudoadoModuleProvider extends ModuleProvider
         $this->app->register('ANavallaSuiza\Laravel\Database\Manager\ModelManagerServiceProvider');
 
         $this->app->bind(
-            'ANavallaSuiza\Crudoado\Contracts\Abstractor\Model',
+            'ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory',
             function () {
-                return new ModelAbstractor(
+                return new ModelAbstractorFactory(
                     config('crudoado.models'),
                     $this->app['ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager']
                 );

@@ -3,9 +3,9 @@ namespace ANavallaSuiza\Crudoado\Contracts\Abstractor;
 
 interface Model
 {
-    public function loadBySlug($slug);
+    public function setSlug($slug);
 
-    public function loadByName($name);
+    public function setName($name);
 
     public function getSlug();
 

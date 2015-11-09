@@ -3,59 +3,46 @@ namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractorContract;
 use ANavallaSuiza\Crudoado\Abstractor\ConfigurationReader;
-use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
-use EasySlugger\Slugger;
+use ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
 
 class Model implements ModelAbstractorContract
 {
     use ConfigurationReader;
 
-    protected $modelManager;
-    protected $slugger;
     protected $dbal;
 
-    protected $allConfiguredModels;
     protected $model;
     protected $config;
 
     protected $slug;
     protected $name;
 
-    public function __construct(array $allConfiguredModels, ModelManager $modelManager)
+    public function __construct($config, AbstractionLayer $dbal)
     {
-        $this->allConfiguredModels = $allConfiguredModels;
-        $this->modelManager = $modelManager;
-        $this->slugger = new Slugger();
-    }
-
-    public function loadBySlug($slug)
-    {
-        foreach ($this->allConfiguredModels as $modelName => $config) {
-            $modelSlug = $this->slugger->slugify($modelName);
-
-            if ($modelSlug === $slug) {
-                $this->slug = $modelSlug;
-                $this->name = $modelName;
-
-                if (is_array($config)) {
-                    $this->model = $config['model'];
-                    $this->config = $config;
-                } else {
-                    $this->model = $config;
-                    $this->config = [];
-                }
-
-                $this->dbal = $this->modelManager->getAbstractionLayer($this->model);
-
-                break;
-            }
+        if (is_array($config)) {
+            $this->model = $config['model'];
+            $this->config = $config;
+        } else {
+            $this->model = $config;
+            $this->config = [];
         }
+
+        $this->dbal = $dbal;
     }
 
-    public function loadByName($name)
+    public function setSlug($slug)
     {
-        $this->loadBySlug($this->slugger->slugify($name));
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     public function getSlug()
