@@ -20,4 +20,6 @@ interface Model
     public function getDetailFields();
 
     public function getEditFields();
+
+    public function getEditRelations();
 }

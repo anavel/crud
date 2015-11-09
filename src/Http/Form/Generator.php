@@ -27,6 +27,11 @@ class Generator implements GeneratorContract
     /**
      *
      */
+    protected $relations;
+
+    /**
+     *
+     */
     protected $databaseTypeToFormType = array(
         DbalType::INTEGER  => 'number',
         DbalType::STRING   => 'text',
@@ -40,6 +45,8 @@ class Generator implements GeneratorContract
         'email',
         'password'
     );
+
+    protected $relationsTypeToFormType = array();
 
     public function __construct(FactoryInterface $factory)
     {
@@ -55,6 +62,11 @@ class Generator implements GeneratorContract
     public function setModelFields(array $fields)
     {
         $this->fields = $fields;
+    }
+
+    public function setModelRelations(array $relations)
+    {
+        $this->relations = $relations;
     }
 
     public function getForm($action)

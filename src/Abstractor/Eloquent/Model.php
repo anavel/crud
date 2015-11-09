@@ -183,6 +183,11 @@ class Model implements ModelAbstractorContract
         return $fields;
     }
 
+    public function getEditRelations()
+    {
+
+    }
+
     protected function getReadOnlyColumns()
     {
         $columns = [LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT];
