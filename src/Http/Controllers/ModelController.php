@@ -85,7 +85,7 @@ class ModelController extends Controller
      */
     public function store(Request $request, $model)
     {
-        $modelAbstractor = $this->modelFactory->loadBySlug($model);
+        $modelAbstractor = $this->modelFactory->getBySlug($model);
 
         $this->formGenerator->setModelFields($modelAbstractor->getEditFields());
 
