@@ -3,9 +3,18 @@ namespace ANavallaSuiza\Crudoado\Contracts\Abstractor;
 
 interface Relation
 {
-    public function name();
+    /**
+     * @return string
+     */
+    public function getName();
 
-    public function presentation();
+    /**
+     * @return string
+     */
+    public function getPresentation();
 
-    public function type();
+    /**
+     * @return string
+     */
+    public function getType();
 }

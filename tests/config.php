@@ -11,7 +11,13 @@ return [
                 'active' => 'Is Active?',
                 'role_id' => 'Role'
             ],
-            'relations' => [],
+            'relations' => [
+                'translations' => [
+                    'type' => 'translation',
+                    'presentation' => 'Translation',
+                    'name' => 'translations'
+                ]
+            ],
             'list' => [
                 'display' => ['id', 'username', 'fullname', 'active'],
                 'hide'    => []

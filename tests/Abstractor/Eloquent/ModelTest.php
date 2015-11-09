@@ -7,6 +7,7 @@ use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Model;
 
 class ModelTest extends TestBase
 {
+    /** @var  Model */
     protected $model;
 
     public function setUp()
@@ -45,7 +46,6 @@ class ModelTest extends TestBase
 
     public function test_returns_list_fields_as_array()
     {
-
     }
 
     public function test_returns_detail_fields_as_array()
@@ -54,6 +54,11 @@ class ModelTest extends TestBase
     }
 
     public function test_returns_edit_fields_as_array()
+    {
+
+    }
+
+    public function test_returns_relations_fields_as_array()
     {
 
     }
