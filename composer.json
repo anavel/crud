@@ -5,6 +5,10 @@
         {
             "name": "Adrian P. Blunier",
             "email": "adrian@blunier.net"
+        },
+        {
+            "name": "Carlos Morales",
+            "email": "carlos@anavallasuiza.com"
         }
     ],
     "require": {
