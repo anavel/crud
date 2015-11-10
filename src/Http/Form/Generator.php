@@ -64,6 +64,11 @@ class Generator implements GeneratorContract
         $this->fields = $fields;
     }
 
+    public function addModelFields(array $fields)
+    {
+        $this->fields = array_merge($this->fields, $fields);
+    }
+
     public function setModelRelations(array $relations)
     {
         $this->relations = $relations;

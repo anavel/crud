@@ -16,7 +16,7 @@ class ModelTest extends TestBase
 
         $config = require __DIR__.'/../../config.php';
 
-        $this->model = new Model($config, $this->getModelManagerMock());
+        $this->model = new Model($config['Users'], $this->getDbalMock());
     }
 
     public function tearDown()
@@ -24,9 +24,9 @@ class ModelTest extends TestBase
         Mockery::close();
     }
 
-    private function getModelManagerMock()
+    private function getDbalMock()
     {
-        return Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
+        return Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer');
     }
 
     public function test_implements_model_interface()
@@ -58,8 +58,20 @@ class ModelTest extends TestBase
 
     }
 
-    public function test_returns_relations_fields_as_array()
+    public function test_returns_relations_as_array()
     {
+        $relations = $this->model->getEditRelations();
+
+        $this->assertInternalType('array', $relations, 'Relations is not an array');
+    }
+
+    public function test_elements_of_relations_array_are_instances_of_relation()
+    {
+        $relations = $this->model->getEditRelations();
+
+        foreach ($relations as $relation) {
+            $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation', $relation);
+        }
 
     }
 }

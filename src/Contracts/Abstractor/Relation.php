@@ -17,4 +17,9 @@ interface Relation
      * @return string
      */
     public function getType();
+
+    /**
+     * @return array
+     */
+    public function getEditFields();
 }

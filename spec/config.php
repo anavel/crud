@@ -4,7 +4,7 @@ return [
     'Blog Posts' => 'App\Post',
 
     'Users' => [
-            'model' => 'App\User',
+            'model' => 'Crudoado\Tests\Models\User',
             'icon' => 'fa-database',
             'soft_deletes' => true,
             'fields_presentation' => [

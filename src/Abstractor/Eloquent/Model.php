@@ -5,6 +5,7 @@ use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractorContract
 use ANavallaSuiza\Crudoado\Abstractor\ConfigurationReader;
 use ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
+use App;
 
 class Model implements ModelAbstractorContract
 {
@@ -172,7 +173,22 @@ class Model implements ModelAbstractorContract
 
     public function getEditRelations()
     {
+        $configRelations =  $this->getConfigValue('relations');
 
+        $relations = [];
+
+        if (! empty($configRelations)) {
+            foreach ($configRelations as $configRelation) {
+                if (empty($configRelation['type'])) {
+                    continue;
+                }
+                $className = 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\\' . ucfirst($configRelation['type']);
+
+                $relations [] = new $className(App::make('ANavallaSuiza\Laravel\Database\Manager\Eloquent'), App::make($this->getModel()), $configRelation['name'], $configRelation['presentation']);
+            }
+        }
+
+        return $relations;
     }
 
     protected function getReadOnlyColumns()
