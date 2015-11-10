@@ -76,7 +76,8 @@ return [
             ],
             'relations' => [
                 // Types: select, select-multiple, check, mini-crud
-                'posts' => 'select-multiple'
+                'posts' => 'select-multiple',
+                'translations'
             ],
             'list' => [
                 'display' => ['id', 'username', 'fullname', 'active'],

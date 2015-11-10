@@ -19,7 +19,7 @@ class ModelFactory implements ModelAbstractorFactoryContract
         $this->slugger = new Slugger();
     }
 
-    public function getBySlug($slug)
+    public function getBySlug($slug, $id = null)
     {
         $model = null;
 
@@ -38,6 +38,13 @@ class ModelFactory implements ModelAbstractorFactoryContract
                 $model->setSlug($modelSlug)
                     ->setName($modelName);
 
+                if (is_null($id)) {
+                    $model->setInstance($this->modelManager->getModelInstance($modelNamespace));
+                } else {
+                    $repository = $this->modelManager->getRepository($modelNamespace);
+                    $model->setInstance($repository->findByOrFail($repository->getModel()->getKeyName(), $id));
+                }
+
                 break;
             }
         }
@@ -49,7 +56,7 @@ class ModelFactory implements ModelAbstractorFactoryContract
         return $model;
     }
 
-    public function getByName($name)
+    public function getByName($name, $id = null)
     {
         return $this->getBySlug($this->slugger->slugify($name));
     }

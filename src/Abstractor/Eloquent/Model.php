@@ -3,6 +3,7 @@ namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractorContract;
 use ANavallaSuiza\Crudoado\Abstractor\ConfigurationReader;
+use ANavallaSuiza\Crudoado\Abstractor\RelationFactory;
 use ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
 use App;
@@ -12,12 +13,14 @@ class Model implements ModelAbstractorContract
     use ConfigurationReader;
 
     protected $dbal;
+    protected $relationFactory;
 
     protected $model;
     protected $config;
 
     protected $slug;
     protected $name;
+    protected $instance;
 
     public function __construct($config, AbstractionLayer $dbal)
     {
@@ -30,6 +33,7 @@ class Model implements ModelAbstractorContract
         }
 
         $this->dbal = $dbal;
+        $this->relationFactory = null;
     }
 
     public function setSlug($slug)
@@ -42,6 +46,13 @@ class Model implements ModelAbstractorContract
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function setInstance($instance)
+    {
+        $this->instance = $intance;
 
         return $this;
     }
@@ -59,6 +70,11 @@ class Model implements ModelAbstractorContract
     public function getModel()
     {
         return $this->model;
+    }
+
+    public function getInstance()
+    {
+        return $this->intance;
     }
 
     public function isSoftDeletes()
@@ -178,10 +194,33 @@ class Model implements ModelAbstractorContract
         $relations = [];
 
         if (! empty($configRelations)) {
-            foreach ($configRelations as $configRelation) {
+            foreach ($configRelations as $relationName => $configRelation) {
+                /*if (is_int($relationName)) {
+                    $relationName = $configRelation;
+                }
+
+                if (! method_exists($this->instance, $relationName)) {
+                    throw new \Exception("Relation ".$relationName." does not exist on ".$this->model);
+                }
+
+                if (empty($configRelation['type'])) {
+                    if ($configRelation === $relationName) {
+                        $relationInstance = $this->instance->$relationName();
+
+                        $relationType = Relation::getEloquentRelationEquivalence($relationInstance);
+                    } else {
+                        $relationType = $configRelation;
+                    }
+                } else {
+                    $relationType = $configRelation['type'];
+                }*/
+
+                //$relations[] = Relation::getRelation($relationType);
+
                 if (empty($configRelation['type'])) {
                     continue;
                 }
+
                 $className = 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\\' . ucfirst($configRelation['type']);
 
                 $relations [] = new $className(App::make('ANavallaSuiza\Laravel\Database\Manager\Eloquent'), App::make($this->getModel()), $configRelation['name'], $configRelation['presentation']);

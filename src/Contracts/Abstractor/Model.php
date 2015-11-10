@@ -7,11 +7,15 @@ interface Model
 
     public function setName($name);
 
+    public function setInstance($instance);
+
     public function getSlug();
 
     public function getName();
 
     public function getModel();
+
+    public function getInstance();
 
     public function isSoftDeletes();
 

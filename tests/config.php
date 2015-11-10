@@ -11,12 +11,16 @@ return [
                 'active' => 'Is Active?',
                 'role_id' => 'Role'
             ],
+            'relations_presentation' => [
+                'translations' => 'Translations',
+                'posts' => 'Published posts'
+            ],
             'relations' => [
                 'translations' => [
                     'type' => 'translation',
-                    'presentation' => 'Translation',
                     'name' => 'translations'
-                ]
+                ],
+                'posts'
             ],
             'list' => [
                 'display' => ['id', 'username', 'fullname', 'active'],

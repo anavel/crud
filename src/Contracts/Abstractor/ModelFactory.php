@@ -7,11 +7,11 @@ interface ModelFactory
      *
      * @return Model
      */
-    public function getBySlug($slug);
+    public function getBySlug($slug, $id = null);
 
     /**
      *
      * @return Model
      */
-    public function getByName($name);
+    public function getByName($name, $id = null);
 }
