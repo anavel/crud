@@ -2,20 +2,23 @@
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory as ModelAbstractorFactoryContract;
+use ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory as RelationAbstractorFactoryContract;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use EasySlugger\Slugger;
 
 class ModelFactory implements ModelAbstractorFactoryContract
 {
     protected $modelManager;
+    protected $relationFactory;
     protected $slugger;
 
     protected $allConfiguredModels;
 
-    public function __construct(array $allConfiguredModels, ModelManager $modelManager)
+    public function __construct(array $allConfiguredModels, ModelManager $modelManager, RelationAbstractorFactoryContract $relationFactory)
     {
         $this->allConfiguredModels = $allConfiguredModels;
         $this->modelManager = $modelManager;
+        $this->relationFactory = $relationFactory;
         $this->slugger = new Slugger();
     }
 
@@ -33,7 +36,7 @@ class ModelFactory implements ModelAbstractorFactoryContract
                     $modelNamespace = $config;
                 }
 
-                $model = new Model($config, $this->modelManager->getAbstractionLayer($modelNamespace));
+                $model = new Model($config, $this->modelManager->getAbstractionLayer($modelNamespace), $this->relationFactory);
 
                 $model->setSlug($modelSlug)
                     ->setName($modelName);
