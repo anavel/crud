@@ -77,11 +77,11 @@ class RelationFactory implements RelationAbstractorFactoryContract
             $type = $this->config['type'];
         }
 
-        if (! array_key_exists($type, self::$typesMap)) {
+        if (! array_key_exists($type, $this->typesMap)) {
             throw new \Exception("Unexpected relation type ".$type);
         }
 
-        return new self::$typesMap[$type](
+        return new $this->typesMap[$type](
             $this->modelManager,
             $this->model,
             $relationInstance,
