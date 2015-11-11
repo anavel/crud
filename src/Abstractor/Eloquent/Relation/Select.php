@@ -1,12 +1,10 @@
 <?php
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
-class Translation extends Relation
+class Select extends Relation
 {
-    protected $langs = ['en', 'es', 'gl']; //TODO get from config
-
     protected $compatibleEloquentRelations = array(
-        'Illuminate\Database\Eloquent\Relations\HasMany'
+        'Illuminate\Database\Eloquent\Relations\BelongsTo'
     );
 
     public function checkEloquentRelationCompatibility()
