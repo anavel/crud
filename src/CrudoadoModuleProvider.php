@@ -45,20 +45,21 @@ class CrudoadoModuleProvider extends ModuleProvider
         $this->app->register('ANavallaSuiza\Laravel\Database\Manager\ModelManagerServiceProvider');
 
         $this->app->bind(
-            'ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory',
+            'ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory',
             function () {
-                return new ModelAbstractorFactory(
-                    config('crudoado.models'),
+                return new RelationAbstractorFactory(
                     $this->app['ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager']
                 );
             }
         );
 
         $this->app->bind(
-            'ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory',
+            'ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory',
             function () {
-                return new RelationAbstractorFactory(
-                    $this->app['ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager']
+                return new ModelAbstractorFactory(
+                    config('crudoado.models'),
+                    $this->app['ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'],
+                    $this->app['ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory']
                 );
             }
         );
