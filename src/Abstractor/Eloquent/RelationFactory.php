@@ -44,7 +44,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
         $this->config = array();
     }
 
-    public function setModel(EloquentModel $model)
+    public function setModel($model)
     {
         $this->model = $model;
 
