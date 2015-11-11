@@ -3,7 +3,7 @@ namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractorContract;
 use ANavallaSuiza\Crudoado\Abstractor\ConfigurationReader;
-use ANavallaSuiza\Crudoado\Abstractor\RelationFactory;
+use ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory;
 use ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
 use App;
@@ -52,7 +52,7 @@ class Model implements ModelAbstractorContract
 
     public function setInstance($instance)
     {
-        $this->instance = $intance;
+        $this->instance = $instance;
 
         return $this;
     }
