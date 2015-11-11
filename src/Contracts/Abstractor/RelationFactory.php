@@ -13,11 +13,13 @@ interface RelationFactory
     public function setConfig(array $config);
 
     /**
-     * Generates a relation instance
+     * Factory method to create relation instances.
      *
-     * @param string $name Relation name
+     * @param string $name The name of the relation
      *
-     * @return string
+     * @return \ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation
+     *
+     * @throws \Exception
      */
     public function get($name);
 }

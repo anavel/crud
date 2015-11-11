@@ -22,7 +22,7 @@ class Model implements ModelAbstractorContract
     protected $name;
     protected $instance;
 
-    public function __construct($config, AbstractionLayer $dbal)
+    public function __construct($config, AbstractionLayer $dbal, RelationFactory $relationFactory)
     {
         if (is_array($config)) {
             $this->model = $config['model'];
@@ -33,7 +33,7 @@ class Model implements ModelAbstractorContract
         }
 
         $this->dbal = $dbal;
-        $this->relationFactory = null;
+        $this->relationFactory = $relationFactory;
     }
 
     public function setSlug($slug)
@@ -109,6 +109,36 @@ class Model implements ModelAbstractorContract
         }
 
         return $columns;
+    }
+
+    public function getRelations()
+    {
+        $configRelations =  $this->getConfigValue('relations');
+
+        $relations = [];
+
+        if (! empty($configRelations)) {
+            foreach ($configRelations as $relationName => $configRelation) {
+                if (is_int($relationName)) {
+                    $relationName = $configRelation;
+                }
+
+                $config = [];
+                if ($configRelation !== $relationName) {
+                    if (! is_array($configRelation)) {
+                        $config['type'] = $configRelation;
+                    } else {
+                        $config = $configRelation;
+                    }
+                }
+
+                $relations[] = $this->relationFactory->setModel($this->instance)
+                    ->setConfig($config)
+                    ->get($relationName);
+            }
+        }
+
+        return $relations;
     }
 
     public function getListFields()
@@ -195,28 +225,6 @@ class Model implements ModelAbstractorContract
 
         if (! empty($configRelations)) {
             foreach ($configRelations as $relationName => $configRelation) {
-                /*if (is_int($relationName)) {
-                    $relationName = $configRelation;
-                }
-
-                if (! method_exists($this->instance, $relationName)) {
-                    throw new \Exception("Relation ".$relationName." does not exist on ".$this->model);
-                }
-
-                if (empty($configRelation['type'])) {
-                    if ($configRelation === $relationName) {
-                        $relationInstance = $this->instance->$relationName();
-
-                        $relationType = Relation::getEloquentRelationEquivalence($relationInstance);
-                    } else {
-                        $relationType = $configRelation;
-                    }
-                } else {
-                    $relationType = $configRelation['type'];
-                }*/
-
-                //$relations[] = Relation::getRelation($relationType);
-
                 if (empty($configRelation['type'])) {
                     continue;
                 }
