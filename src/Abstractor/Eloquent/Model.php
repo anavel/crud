@@ -219,23 +219,23 @@ class Model implements ModelAbstractorContract
 
     public function getEditRelations()
     {
-        $configRelations =  $this->getConfigValue('relations');
-
-        $relations = [];
-
-        if (! empty($configRelations)) {
-            foreach ($configRelations as $relationName => $configRelation) {
-                if (empty($configRelation['type'])) {
-                    continue;
-                }
-
-                $className = 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\\' . ucfirst($configRelation['type']);
-
-                $relations [] = new $className(App::make('ANavallaSuiza\Laravel\Database\Manager\Eloquent'), App::make($this->getModel()), $configRelation['name'], $configRelation['presentation']);
-            }
-        }
-
-        return $relations;
+//        $configRelations =  $this->getConfigValue('relations');
+//
+//        $relations = [];
+//
+//        if (! empty($configRelations)) {
+//            foreach ($configRelations as $relationName => $configRelation) {
+//                if (empty($configRelation['type'])) {
+//                    continue;
+//                }
+//
+//                $className = 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\\' . ucfirst($configRelation['type']);
+//
+//                $relations [] = new $className(App::make('ANavallaSuiza\Laravel\Database\Manager\Eloquent'), App::make($this->getModel()), $configRelation['name'], $configRelation['presentation']);
+//            }
+//        }
+//
+//        return $relations;
     }
 
     protected function getReadOnlyColumns()
