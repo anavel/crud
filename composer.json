@@ -23,7 +23,8 @@
     "require-dev": {
         "orchestra/testbench": "~3.0",
         "phpunit/phpunit": "~4.0",
-        "mockery/mockery": "0.9.*"
+        "mockery/mockery": "0.9.*",
+        "illuminate/database": "^5.1"
     },
     "repositories": [
       {

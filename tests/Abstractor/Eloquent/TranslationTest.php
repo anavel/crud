@@ -2,14 +2,17 @@
 namespace Crudoado\Tests\Abstractor\Eloquent;
 
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Translation;
-use ANavallaSuiza\Laravel\Database\Manager\Eloquent\ModelManager;
 use Crudoado\Tests\Models\User;
 use Crudoado\Tests\TestBase;
 use Mockery;
+use Mockery\Mock;
 
 class TranslationTest extends TestBase
 {
-    protected $model;
+    /** @var  Translation */
+    protected $sut;
+    /** @var  Mock */
+    protected $relationMock;
 
     public function setUp()
     {
@@ -17,28 +20,19 @@ class TranslationTest extends TestBase
 
         $config = require __DIR__ . '/../../config.php';
 
-//        $this->model = new Translation(
-//            Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
-//            new User(),
-//            $config['Users']['relations']['translations']['name'],
-//            $config['Users']['relations']['translations']['presentation']
-//        );
-    }
+        $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
 
-    public function tearDown()
-    {
-        Mockery::close();
+        $this->sut = new Translation(
+            Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
+            $user = new User(),
+            $user->translations(),
+            $config['Users']['relations']['translations']['name'],
+            $config['Users']['relations_presentation']['translations']
+        );
     }
 
     public function test_implements_relation_interface()
     {
-//        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation', $this->model);
-    }
-
-    public function test_returns_edit_fields_as_array()
-    {
-//        $fields = $this->model->getEditFields();
-//
-//        $this->assertInternalType('array', $fields);
+        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation', $this->sut);
     }
 }

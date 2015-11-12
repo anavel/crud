@@ -9,7 +9,7 @@ use Mockery\Mock;
 class ModelFactoryTest extends TestBase
 {
     /** @var  ModelFactory */
-    protected $stu;
+    protected $sut;
 
     /** @var Mock */
     protected $modelManagerMock;
@@ -25,19 +25,19 @@ class ModelFactoryTest extends TestBase
         $this->modelManagerMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
         $this->relationMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory');
 
-        $this->stu = new ModelFactory($config, $this->modelManagerMock, $this->relationMock);
+        $this->sut = new ModelFactory($config, $this->modelManagerMock, $this->relationMock);
     }
 
     public function test_implements_model__factory_interface()
     {
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory', $this->stu);
+        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory', $this->sut);
     }
 
     public function test_throws_exception_when_model_not_found()
     {
         $this->setExpectedException('Exception', "Model chompy not found on configuration" );
 
-        $model = $this->stu->getBySlug('chompy');
+        $model = $this->sut->getBySlug('chompy');
     }
 
     public function test_gets_model_by_slug()
@@ -46,7 +46,7 @@ class ModelFactoryTest extends TestBase
 
         $this->modelManagerMock->shouldReceive('getModelInstance')->once();
 
-        $model = $this->stu->getBySlug('users');
+        $model = $this->sut->getBySlug('users');
 
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model', $model);
     }
@@ -59,7 +59,7 @@ class ModelFactoryTest extends TestBase
 
         $repositoryMock->shouldReceive('findByOrFail', 'getModel', 'getKeyName')->once()->andReturn($repositoryMock);
 
-        $model = $this->stu->getBySlug('users', 1);
+        $model = $this->sut->getBySlug('users', 1);
 
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model', $model);
     }

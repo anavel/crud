@@ -10,7 +10,7 @@ use Mockery\Mock;
 class ModelTest extends TestBase
 {
     /** @var  Model */
-    protected $model;
+    protected $sut;
 
     /** @var Mock */
     protected $dbalMock;
@@ -29,12 +29,12 @@ class ModelTest extends TestBase
         $this->relationMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory');
         $this->columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
 
-        $this->model = new Model($config['Users'], $this->dbalMock, $this->relationMock);
+        $this->sut = new Model($config['Users'], $this->dbalMock, $this->relationMock);
     }
 
     public function test_implements_model_interface()
     {
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model', $this->model);
+        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model', $this->sut);
     }
 
     public function test_returns_list_fields_as_array()
@@ -48,7 +48,7 @@ class ModelTest extends TestBase
                 'active'   => $this->columnMock
             ]);
 
-        $fields = $this->model->getListFields();
+        $fields = $this->sut->getListFields();
 
         $this->assertInternalType('array', $fields);
 
@@ -68,7 +68,7 @@ class ModelTest extends TestBase
                 'active'   => $this->columnMock
             ]);
 
-        $fields = $this->model->getDetailFields();
+        $fields = $this->sut->getDetailFields();
 
         $this->assertInternalType('array', $fields);
 
@@ -91,7 +91,7 @@ class ModelTest extends TestBase
         $this->dbalMock->shouldReceive('getKeyName')
             ->andReturn(LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT);
 
-        $fields = $this->model->getEditFields();
+        $fields = $this->sut->getEditFields();
 
         $this->assertInternalType('array', $fields);
 
@@ -104,7 +104,7 @@ class ModelTest extends TestBase
         $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('get')->andReturn($this->mock('\ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation'));
 
-        $relations = $this->model->getRelations();
+        $relations = $this->sut->getRelations();
 
         $this->assertInternalType('array', $relations, 'Relations is not an array');
 

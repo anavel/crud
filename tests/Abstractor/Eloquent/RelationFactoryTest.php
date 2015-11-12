@@ -9,7 +9,7 @@ use Mockery\Mock;
 class RelationFactoryTest extends TestBase
 {
     /** @var  RelationFactory */
-    protected $stu;
+    protected $sut;
 
     /** @var Mock */
     protected $modelManagerMock;
@@ -25,14 +25,14 @@ class RelationFactoryTest extends TestBase
         $this->modelManagerMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
         $this->userMock = $this->mock('\Crudoado\Tests\Models\User');
 
-        $this->stu = new RelationFactory($this->modelManagerMock);
+        $this->sut = new RelationFactory($this->modelManagerMock);
 
-        $this->stu->setModel($this->userMock);
+        $this->sut->setModel($this->userMock);
     }
 
     public function test_implements_relation_factory_interface()
     {
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory', $this->stu);
+        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory', $this->sut);
     }
 
     public function test_get_relation()
@@ -47,6 +47,6 @@ class RelationFactoryTest extends TestBase
     {
         $this->setExpectedException('Exception', 'Relation chompy does not exist on');
 
-        $model = $this->stu->get('chompy');
+        $model = $this->sut->get('chompy');
     }
 }

@@ -9,7 +9,7 @@ use Mockery\Mock;
 class FieldTest extends TestBase
 {
     /** @var  Field */
-    protected $field;
+    protected $sut;
     /** @var Mock */
     protected $columnMock;
 
@@ -19,17 +19,17 @@ class FieldTest extends TestBase
 
         $this->columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
 
-        $this->field = new Field($this->columnMock, 'user_name');
+        $this->sut = new Field($this->columnMock, 'user_name');
     }
 
     public function test_implements_field_interface()
     {
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $this->field);
+        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $this->sut);
     }
 
     public function test_generates_presentation_if_empty()
     {
-        $presentation = $this->field->presentation();
+        $presentation = $this->sut->presentation();
 
         $this->assertEquals('User name', $presentation, 'Presentation returned incorrectly');
     }
@@ -38,7 +38,7 @@ class FieldTest extends TestBase
     {
         $this->columnMock->shouldReceive('getType')->andReturn($this->mock('Doctrine\DBAL\Types\Type'));
 
-        $type = $this->field->type();
+        $type = $this->sut->type();
 
 
         $this->assertInstanceOf('Doctrine\DBAL\Types\Type', $type);
@@ -48,7 +48,7 @@ class FieldTest extends TestBase
     {
         $this->columnMock->shouldReceive('getNotnull')->andReturn(true);
 
-        $rules = $this->field->getValidationRules();
+        $rules = $this->sut->getValidationRules();
 
         $this->assertEquals('required', $rules, 'Required rule was not set');
     }
