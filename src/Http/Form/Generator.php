@@ -102,7 +102,7 @@ class Generator implements GeneratorContract
 
         $formFields = array();
         foreach ($this->fields as $field) {
-            $formFields[$field->name()] = $this->getFormField($field);
+            $formFields[$field->getName()] = $this->getFormField($field);
         }
         $form->add($formFields);
 
@@ -136,11 +136,11 @@ class Generator implements GeneratorContract
         }
 
         if ($this->model) {
-            $formField->val($this->model->getAttribute($modelField->name()));
+            $formField->val($this->model->getAttribute($modelField->getName()));
         }
 
-        if (Request::old($modelField->name())) {
-            $formField->val(Request::old($modelField->name()));
+        if (Request::old($modelField->getName())) {
+            $formField->val(Request::old($modelField->getName()));
         }
 
         return $formField;
@@ -151,7 +151,7 @@ class Generator implements GeneratorContract
         $rules = array();
 
         foreach ($this->fields as $field) {
-            $rules[$field->name()] = $field->getValidationRules();
+            $rules[$field->getName()] = $field->getValidationRules();
         }
 
         return $rules;
