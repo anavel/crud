@@ -17,4 +17,14 @@ interface Relation
      * @return string
      */
     public function getType();
+
+    /**
+     * @return boolean
+     */
+    public function checkEloquentRelationCompatibility();
+
+    /**
+     * @return array
+     */
+    public function getEditFields();
 }

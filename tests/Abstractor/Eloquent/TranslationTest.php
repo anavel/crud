@@ -13,6 +13,8 @@ class TranslationTest extends TestBase
     protected $sut;
     /** @var  Mock */
     protected $relationMock;
+    /** @var  Mock */
+    protected $modelManagerMock;
 
     public function setUp()
     {
@@ -23,7 +25,7 @@ class TranslationTest extends TestBase
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
 
         $this->sut = new Translation(
-            Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
+            $this->modelManagerMock = Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
             $user = new User(),
             $user->translations(),
             $config['Users']['relations']['translations']['name'],
@@ -34,5 +36,19 @@ class TranslationTest extends TestBase
     public function test_implements_relation_interface()
     {
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation', $this->sut);
+    }
+
+    public function test_get_edit_fields_returns_array_of_fields()
+    {
+        $this->modelManagerMock->shouldReceive('getAbstractionLayer')
+            ->andReturn($modelAbstractorMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model'));
+
+        $modelAbstractorMock->shouldReceive('getEditFields')
+            ->andReturn([$this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field')]);
+        $fields = $this->sut->getEditFields();
+
+        $this->assertInternalType('array', $fields, 'getEditFields should return an array');
+
+        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
     }
 }

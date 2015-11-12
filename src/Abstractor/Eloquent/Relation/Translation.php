@@ -17,4 +17,16 @@ class Translation extends Relation
 
         return true;
     }
+
+    /**
+     * @return array
+     */
+    public function getEditFields()
+    {
+        $modelAbstractor = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
+
+        $fields = $modelAbstractor->getEditFields();
+
+        return $fields;
+    }
 }

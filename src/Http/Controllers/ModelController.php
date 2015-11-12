@@ -149,6 +149,8 @@ class ModelController extends Controller
 
         $this->formGenerator->setModel($item);
         $this->formGenerator->setModelFields($modelAbstractor->getEditFields());
+        $this->formGenerator->setModelRelations($modelAbstractor->getRelations());
+
         $form = $this->formGenerator->getForm(route('crudoado.model.update', [$modelAbstractor->getSlug(), $id]));
 
         return view('crudoado::pages.edit', [
