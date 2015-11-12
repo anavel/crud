@@ -38,13 +38,16 @@ class TranslationTest extends TestBase
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation', $this->sut);
     }
 
-    public function test_get_edit_fields_returns_array_of_fields()
+    public function test_get_edit_fields_returns_array_of_fields_with_proper_key()
     {
         $this->modelManagerMock->shouldReceive('getAbstractionLayer')
             ->andReturn($modelAbstractorMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model'));
 
         $modelAbstractorMock->shouldReceive('getEditFields')
-            ->andReturn([$this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field')]);
+            ->andReturn([$fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field')]);
+        $fieldMock->shouldReceive('getName')->atLeast()->once()->andReturn($fieldName = 'chompy');
+        $fieldMock->shouldReceive('setName')->atLeast()->once()->with("translations[][{$fieldName}]");
+
         $fields = $this->sut->getEditFields();
 
         $this->assertInternalType('array', $fields, 'getEditFields should return an array');

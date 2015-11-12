@@ -39,7 +39,7 @@ class ModelController extends Controller
             $searchByColumns = array();
 
             foreach ($modelAbstractor->getListFields() as $field) {
-                $searchByColumns[] = $field->name();
+                $searchByColumns[] = $field->getName();
             }
 
             $repository->pushCriteria(new SearchCriteria($searchByColumns, $request->get('search')));
@@ -96,8 +96,8 @@ class ModelController extends Controller
 
         foreach ($modelAbstractor->getEditFields() as $field) {
             $item->setAttribute(
-                $field->name(),
-                $field->applyFunctions($request->input($field->name()))
+                $field->getName(),
+                $field->applyFunctions($request->input($field->getName()))
             );
         }
 
@@ -149,7 +149,7 @@ class ModelController extends Controller
 
         $this->formGenerator->setModel($item);
         $this->formGenerator->setModelFields($modelAbstractor->getEditFields());
-        $this->formGenerator->setModelRelations($modelAbstractor->getRelations());
+        $this->formGenerator->setRelatedModelFields($modelAbstractor->getRelations());
 
         $form = $this->formGenerator->getForm(route('crudoado.model.update', [$modelAbstractor->getSlug(), $id]));
 
@@ -180,8 +180,8 @@ class ModelController extends Controller
 
         foreach ($modelAbstractor->getEditFields() as $field) {
             $item->setAttribute(
-                $field->name(),
-                $field->applyFunctions($request->input($field->name()))
+                $field->getName(),
+                $field->applyFunctions($request->input($field->getName()))
             );
         }
 

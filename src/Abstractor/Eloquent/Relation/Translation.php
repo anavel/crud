@@ -27,6 +27,12 @@ class Translation extends Relation
 
         $fields = $modelAbstractor->getEditFields();
 
+        if (! empty($fields)) {
+            foreach ($fields as $field) {
+                $field->setName("{$this->name}[][{$field->getName()}]");
+            }
+        }
+
         return $fields;
     }
 }

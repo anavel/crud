@@ -3,7 +3,12 @@ namespace ANavallaSuiza\Crudoado\Contracts\Abstractor;
 
 interface Field
 {
-    public function name();
+    public function getName();
+
+    /**
+     * @param string $name
+     */
+    public function setName($name);
 
     public function presentation();
 
