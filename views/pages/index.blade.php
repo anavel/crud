@@ -49,7 +49,7 @@
                         <?php
                         $isSorting = false;
                         $sortDirection = 'asc';
-                        if (Input::get('sort') === $field->name()) {
+                        if (Input::get('sort') === $field->getName()) {
                             $isSorting = true;
 
                             if (Input::get('direction') === 'asc') {
@@ -58,7 +58,7 @@
                         }
                         ?>
                     <th>
-                        <a href="{{ route('crudoado.model.index', [$abstractor->getSlug(), 'sort' => $field->name(), 'direction' => $sortDirection]) }}">
+                        <a href="{{ route('crudoado.model.index', [$abstractor->getSlug(), 'sort' => $field->getName(), 'direction' => $sortDirection]) }}">
                             {{ $field->presentation() }}
                         </a>
                     </th>
@@ -70,7 +70,7 @@
                 @forelse ($items as $item)
                 <tr>
                     @foreach ($abstractor->getListFields() as $field)
-                    <td>{!! $item->getAttribute($field->name()) !!}</td>
+                    <td>{!! $item->getAttribute($field->getName()) !!}</td>
                     @endforeach
                     <td>
                         <a href="{{ route('crudoado.model.show', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('crudoado::messages.show_button') }}</a>
