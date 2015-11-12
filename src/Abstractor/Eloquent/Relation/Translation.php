@@ -23,7 +23,11 @@ class Translation extends Relation
      */
     public function getEditFields()
     {
-        $modelAbstractor = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
+        $modelAbstractor = new Model(
+            get_class($this->eloquentRelation->getRelated()),
+            $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated())),
+            \App::make('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory', array($this->modelManager))
+        );
 
         $fields = $modelAbstractor->getEditFields();
 

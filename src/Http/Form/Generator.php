@@ -82,10 +82,8 @@ class Generator implements GeneratorContract
             $fields = [];
 
             foreach ($this->relations as $relation) {
-                $fields[] = $relation->getEditFields();
+                $this->addModelFields($relation->getEditFields());
             }
-
-            $this->addModelFields($fields);
         }
     }
 

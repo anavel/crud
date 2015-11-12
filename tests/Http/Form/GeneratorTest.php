@@ -42,7 +42,7 @@ class GeneratorTest extends TestBase
         $relationMock->shouldReceive('getEditFields')
             ->atLeast()
             ->once()
-            ->andReturn();
+            ->andReturn([]);
 
         $this->sut->setRelatedModelFields([$relationMock]);
     }
