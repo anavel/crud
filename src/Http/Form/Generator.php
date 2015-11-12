@@ -43,7 +43,8 @@ class Generator implements GeneratorContract
         DbalType::DECIMAL  => 'number',
         DbalType::FLOAT    => 'number',
         'email',
-        'password'
+        'password',
+        'hidden'
     );
 
     protected $relationsTypeToFormType = array();
@@ -124,6 +125,12 @@ class Generator implements GeneratorContract
         }
 
         $formField = $this->factory->get($formFieldType, []);
+
+        if ($formFieldType != 'hidden') {
+            $formField->class('form-control')
+                ->label($modelField->presentation())
+                ->placeholder($modelField->presentation());
+        }
 
         $formField->class('form-control')
             ->label($modelField->presentation())

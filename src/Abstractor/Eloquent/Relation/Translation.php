@@ -33,19 +33,21 @@ class Translation extends Relation
 
         $fields = $modelAbstractor->getEditFields();
 
+        $translationFields = [];
         if (! empty($fields)) {
-            foreach ($this->langs as $lang) {
-                foreach ($fields as $key => $field) {
-                    if (strpos($this->eloquentRelation->getForeignKey(), $field->getName()) !== false) {
-                        unset($fields[$key]);
+            foreach ($this->langs as $key => $lang) {
+                foreach ($fields as $field) {
+                    if (strpos($this->eloquentRelation->getForeignKey(), $field->getName()) === false) {
+                        $langField = clone $field;
+                        if ($langField->getName() == 'locale') {
+                            $langField->setCustomFormType('hidden');
+                        }
+                        $langField->setName("{$this->name}[$key][{$langField->getName()}]");
+                        $translationFields[] = $langField;
                     }
-                    if ($field->getName() == 'locale') {
-                        $field->setCustomFormType('hidden');
-                    }
-                    $field->setName("{$this->name}[][{$field->getName()}]");
                 }
             }
         }
-        return $fields;
+        return $translationFields;
     }
 }

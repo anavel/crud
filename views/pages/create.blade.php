@@ -31,7 +31,9 @@
         <div class="box-body">
             @foreach ($form as $field)
             <div class="form-group">
-                <label for="{{ $field->attr('id') }}" class="col-sm-2 control-label">{{ $field->label->html() }}</label>
+                @if($field->attr('type') != 'hidden')
+                    <label for="{{ $field->attr('id') }}" class="col-sm-2 control-label">{{ $field->label->html() }}</label>
+                @endif
                 <div class="col-sm-10">
                     {!! $field->input !!}
                 </div>
