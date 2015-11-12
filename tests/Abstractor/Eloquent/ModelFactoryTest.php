@@ -28,7 +28,7 @@ class ModelFactoryTest extends TestBase
         $this->stu = new ModelFactory($config, $this->modelManagerMock, $this->relationMock);
     }
 
-    public function test_implements_model_interface()
+    public function test_implements_model__factory_interface()
     {
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory', $this->stu);
     }
