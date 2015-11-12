@@ -17,11 +17,28 @@ interface Model
 
     public function getInstance();
 
+    /**
+     * @return boolean
+     */
     public function isSoftDeletes();
 
+    /**
+     * @return array
+     */
     public function getListFields();
 
+    /**
+     * @return array
+     */
     public function getDetailFields();
 
+    /**
+     * @return array
+     */
     public function getEditFields();
+
+    /**
+     * @return array
+     */
+    public function getRelations();
 }

@@ -20,12 +20,12 @@ class Generator implements GeneratorContract
     protected $model;
 
     /**
-     *
+     * @var array
      */
     protected $fields;
 
     /**
-     *
+     * @var array
      */
     protected $relations;
 
@@ -72,6 +72,21 @@ class Generator implements GeneratorContract
     public function setModelRelations(array $relations)
     {
         $this->relations = $relations;
+    }
+
+    public function setRelatedModelFields(array $relations)
+    {
+        $this->setModelRelations($relations);
+
+        if (count($this->relations > 0)) {
+            $fields = [];
+
+            foreach ($this->relations as $relation) {
+                $fields[] = $relation->getEditFields();
+            }
+
+            $this->addModelFields($fields);
+        }
     }
 
     public function getForm($action)

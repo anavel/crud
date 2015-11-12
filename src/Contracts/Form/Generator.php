@@ -12,4 +12,16 @@ interface Generator
     public function getForm($action);
 
     public function getValidationRules();
+
+    /**
+     * @param array $relations array of  ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation
+     * @return void
+     */
+    public function setModelRelations(array $relations);
+
+    /**
+     * @param array $relations array of  ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation
+     * @return void
+     */
+    public function setRelatedModelFields(array $relations);
 }
