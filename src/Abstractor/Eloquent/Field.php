@@ -61,7 +61,7 @@ class Field implements FieldAbstractorContract
     public function getValidationRules()
     {
         if (count($this->validationRules) === 0) {
-            if ($this->dbal->getNotNull()) {
+            if ($this->dbal->getNotnull()) {
                 $this->validationRules[] = 'required';
             }
         }
