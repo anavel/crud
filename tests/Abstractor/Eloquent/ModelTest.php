@@ -4,6 +4,7 @@ namespace Crudoado\Tests\Abstractor\Eloquent;
 use Crudoado\Tests\TestBase;
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Model;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
+use Mockery\Mock;
 
 
 class ModelTest extends TestBase
@@ -11,8 +12,11 @@ class ModelTest extends TestBase
     /** @var  Model */
     protected $model;
 
+    /** @var Mock */
     protected $dbalMock;
+    /** @var Mock */
     protected $columnMock;
+    /** @var Mock */
     protected $relationMock;
 
     public function setUp()
@@ -22,7 +26,7 @@ class ModelTest extends TestBase
         $config = require __DIR__ . '/../../config.php';
 
         $this->dbalMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer');
-        $this->relationMock = $this->getMock('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory');
+        $this->relationMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory');
         $this->columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
 
         $this->model = new Model($config['Users'], $this->dbalMock, $this->relationMock);
@@ -48,7 +52,7 @@ class ModelTest extends TestBase
 
         $this->assertInternalType('array', $fields);
 
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field', $fields[0]);
+        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
     }
 
     public function test_returns_detail_fields_as_array()
@@ -68,7 +72,7 @@ class ModelTest extends TestBase
 
         $this->assertInternalType('array', $fields);
 
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field', $fields[0]);
+        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
     }
 
     public function test_returns_edit_fields_as_array()
@@ -91,23 +95,19 @@ class ModelTest extends TestBase
 
         $this->assertInternalType('array', $fields);
 
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field', $fields[0]);
+        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
     }
 
-//    public function test_returns_relations_as_array()
-//    {
-//        $relations = $this->model->getEditRelations();
-//
-//        $this->assertInternalType('array', $relations, 'Relations is not an array');
-//    }
+    public function test_returns_relations_as_array()
+    {
+        $this->relationMock->shouldReceive('setModel')->andReturn($this->relationMock);
+        $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
+        $this->relationMock->shouldReceive('get')->andReturn($this->mock('\ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation'));
 
-//    public function test_elements_of_relations_array_are_instances_of_relation()
-//    {
-//        $relations = $this->model->getEditRelations();
-//
-//        foreach ($relations as $relation) {
-//            $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation', $relation);
-//        }
-//
-//    }
+        $relations = $this->model->getRelations();
+
+        $this->assertInternalType('array', $relations, 'Relations is not an array');
+
+        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation', $relations[0]);
+    }
 }
