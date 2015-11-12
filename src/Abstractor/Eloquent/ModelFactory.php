@@ -22,6 +22,12 @@ class ModelFactory implements ModelAbstractorFactoryContract
         $this->slugger = new Slugger();
     }
 
+    /**
+     * @param $slug
+     * @param null $id
+     * @return Model|null
+     * @throws \Exception
+     */
     public function getBySlug($slug, $id = null)
     {
         $model = null;
