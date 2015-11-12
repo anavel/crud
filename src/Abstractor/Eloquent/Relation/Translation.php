@@ -34,11 +34,18 @@ class Translation extends Relation
         $fields = $modelAbstractor->getEditFields();
 
         if (! empty($fields)) {
-            foreach ($fields as $field) {
-                $field->setName("{$this->name}[][{$field->getName()}]");
+            foreach ($this->langs as $lang) {
+                foreach ($fields as $key => $field) {
+                    if (strpos($this->eloquentRelation->getForeignKey(), $field->getName()) !== false) {
+                        unset($fields[$key]);
+                    }
+                    if ($field->getName() == 'locale') {
+                        $field->setCustomFormType('hidden');
+                    }
+                    $field->setName("{$this->name}[][{$field->getName()}]");
+                }
             }
         }
-
         return $fields;
     }
 }
