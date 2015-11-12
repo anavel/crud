@@ -68,6 +68,7 @@ class ModelController extends Controller
         $modelAbstractor = $this->modelFactory->getBySlug($model);
 
         $this->formGenerator->setModelFields($modelAbstractor->getEditFields());
+        $this->formGenerator->setRelatedModelFields($modelAbstractor->getRelations());
 
         $form = $this->formGenerator->getForm(route('crudoado.model.store', $modelAbstractor->getSlug()));
 

@@ -6,6 +6,8 @@ use Crudoado\Tests\Models\User;
 use Crudoado\Tests\TestBase;
 use Mockery;
 use Mockery\Mock;
+use Illuminate\Database\Eloquent\Model as LaravelModel;
+
 
 class TranslationTest extends TestBase
 {
@@ -40,10 +42,29 @@ class TranslationTest extends TestBase
 
     public function test_get_edit_fields_returns_array_of_fields_with_proper_key()
     {
-        $this->modelManagerMock->shouldReceive('getAbstractionLayer')
-            ->andReturn($modelAbstractorMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model'));
+        $relationFactoryMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory');
 
-        $modelAbstractorMock->shouldReceive('getEditFields')
+        $columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
+
+        \App::instance('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory', $relationFactoryMock);
+
+        $this->modelManagerMock->shouldReceive('getAbstractionLayer')
+            ->andReturn($dbalMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
+
+        $dbalMock->shouldReceive('getTableColumns')
+        ->once()
+        ->andReturn([
+            'id'       => $columnMock,
+            'username' => $columnMock,
+            'password' => $columnMock,
+        ]);
+        $dbalMock->shouldReceive('getModel')
+            ->andReturn($dbalMock);
+
+        $dbalMock->shouldReceive('getKeyName')
+            ->andReturn(LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT);
+
+        $dbalMock->shouldReceive('getEditFields')->atLeast()->once()
             ->andReturn([$fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field')]);
         $fieldMock->shouldReceive('getName')->atLeast()->once()->andReturn($fieldName = 'chompy');
         $fieldMock->shouldReceive('setName')->atLeast()->once()->with("translations[][{$fieldName}]");

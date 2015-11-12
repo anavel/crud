@@ -1,6 +1,8 @@
 <?php
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
+use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Model;
+
 class Translation extends Relation
 {
     protected $langs = ['en', 'es', 'gl']; //TODO get from config
