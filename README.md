@@ -1,4 +1,4 @@
-# Crudoado [![Build Status](https://travis-ci.org/ablunier/crudoado.svg)](https://travis-ci.org/ablunier/crudoado)
+# Crudoado [![Build Status](https://travis-ci.org/anavallasuiza/crudoado.svg)](https://travis-ci.org/anavallasuiza/crudoado)
 Crudoado automates the Create, Read, Update and Delete tasks over your Laravel application Eloquent models on a very fast and simple way.
 
 > **Note:** This package is in active development and NOT ready for production.
