@@ -5,6 +5,7 @@ use ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory as ModelAbstractorF
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory as RelationAbstractorFactoryContract;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use EasySlugger\Slugger;
+use ANavallaSuiza\Crudoado\Contracts\Form\Generator as FormGenerator;
 
 class ModelFactory implements ModelAbstractorFactoryContract
 {
@@ -13,13 +14,18 @@ class ModelFactory implements ModelAbstractorFactoryContract
     protected $slugger;
 
     protected $allConfiguredModels;
+    /**
+     * @var FormGenerator
+     */
+    private $generator;
 
-    public function __construct(array $allConfiguredModels, ModelManager $modelManager, RelationAbstractorFactoryContract $relationFactory)
+    public function __construct(array $allConfiguredModels, ModelManager $modelManager, RelationAbstractorFactoryContract $relationFactory, FormGenerator $generator)
     {
         $this->allConfiguredModels = $allConfiguredModels;
         $this->modelManager = $modelManager;
         $this->relationFactory = $relationFactory;
         $this->slugger = new Slugger();
+        $this->generator = $generator;
     }
 
     /**
@@ -42,7 +48,7 @@ class ModelFactory implements ModelAbstractorFactoryContract
                     $modelNamespace = $config;
                 }
 
-                $model = new Model($config, $this->modelManager->getAbstractionLayer($modelNamespace), $this->relationFactory);
+                $model = new Model($config, $this->modelManager->getAbstractionLayer($modelNamespace), $this->relationFactory, $this->generator);
 
                 $model->setSlug($modelSlug)
                     ->setName($modelName);
@@ -68,5 +74,12 @@ class ModelFactory implements ModelAbstractorFactoryContract
     public function getByName($name, $id = null)
     {
         return $this->getBySlug($this->slugger->slugify($name));
+    }
+
+    public function getByClassName($classname, $id = null)
+    {
+        $model = new Model(['model' => $classname], $this->modelManager->getAbstractionLayer($classname), $this->relationFactory, $this->generator);
+
+        return $model;
     }
 }

@@ -15,6 +15,8 @@ class ModelFactoryTest extends TestBase
     protected $modelManagerMock;
     /** @var Mock */
     protected $relationMock;
+    /** @var Mock */
+    protected $generatorMock;
 
     public function setUp()
     {
@@ -24,8 +26,9 @@ class ModelFactoryTest extends TestBase
 
         $this->modelManagerMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
         $this->relationMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory');
+        $this->generatorMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Form\Generator');
 
-        $this->sut = new ModelFactory($config, $this->modelManagerMock, $this->relationMock);
+        $this->sut = new ModelFactory($config, $this->modelManagerMock, $this->relationMock, $this->generatorMock);
     }
 
     public function test_implements_model__factory_interface()
@@ -60,6 +63,15 @@ class ModelFactoryTest extends TestBase
         $repositoryMock->shouldReceive('findByOrFail', 'getModel', 'getKeyName')->once()->andReturn($repositoryMock);
 
         $model = $this->sut->getBySlug('users', 1);
+
+        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model', $model);
+    }
+
+    public function test_gets_model_by_classname()
+    {
+        $this->modelManagerMock->shouldReceive('getAbstractionLayer')->once()->andReturn($this->mock('ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
+
+        $model = $this->sut->getByClassName('Crudoado\Tests\Models\User');
 
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model', $model);
     }

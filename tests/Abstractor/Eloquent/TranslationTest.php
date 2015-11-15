@@ -43,31 +43,21 @@ class TranslationTest extends TestBase
     public function test_get_edit_fields_returns_array_of_fields_with_proper_key()
     {
         $relationFactoryMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory');
+        $modelFactoryMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory');
 
         $columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
 
         \App::instance('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory', $relationFactoryMock);
+        \App::instance('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory', $modelFactoryMock);
 
-        $this->modelManagerMock->shouldReceive('getAbstractionLayer')
-            ->andReturn($dbalMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
+        $modelFactoryMock->shouldReceive('getByClassName')
+            ->andReturn($this->modelManagerMock);
 
-        $dbalMock->shouldReceive('getTableColumns')
-        ->once()
-        ->andReturn([
-            'id'       => $columnMock,
-            'username' => $columnMock,
-            'password' => $columnMock,
-        ]);
-        $dbalMock->shouldReceive('getModel')
-            ->andReturn($dbalMock);
-
-        $dbalMock->shouldReceive('getKeyName')
-            ->andReturn(LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT);
-
-        $dbalMock->shouldReceive('getEditFields')->atLeast()->once()
+        $this->modelManagerMock->shouldReceive('getEditFields')->atLeast()->once()
             ->andReturn([$fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field')]);
+
         $fieldMock->shouldReceive('getName')->atLeast()->once()->andReturn($fieldName = 'chompy');
-        $fieldMock->shouldReceive('setName')->atLeast()->once()->with("translations[][{$fieldName}]");
+        $fieldMock->shouldReceive('setName')->atLeast()->once()->with(matchesPattern("/^translations\[[\d]\]\[chompy\]/"));
 
         $fields = $this->sut->getEditFields();
 

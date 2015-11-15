@@ -7,6 +7,7 @@ use ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory;
 use ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
 use App;
+use ANavallaSuiza\Crudoado\Contracts\Form\Generator as FormGenerator;
 
 class Model implements ModelAbstractorContract
 {
@@ -14,6 +15,7 @@ class Model implements ModelAbstractorContract
 
     protected $dbal;
     protected $relationFactory;
+    protected $generator;
 
     protected $model;
     protected $config;
@@ -22,7 +24,7 @@ class Model implements ModelAbstractorContract
     protected $name;
     protected $instance;
 
-    public function __construct($config, AbstractionLayer $dbal, RelationFactory $relationFactory)
+    public function __construct($config, AbstractionLayer $dbal, RelationFactory $relationFactory, FormGenerator $generator)
     {
         if (is_array($config)) {
             $this->model = $config['model'];
@@ -34,6 +36,7 @@ class Model implements ModelAbstractorContract
 
         $this->dbal = $dbal;
         $this->relationFactory = $relationFactory;
+        $this->generator = $generator;
     }
 
     public function setSlug($slug)

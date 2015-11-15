@@ -2,6 +2,7 @@
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Model;
+use App;
 
 class Translation extends Relation
 {
@@ -25,11 +26,10 @@ class Translation extends Relation
      */
     public function getEditFields()
     {
-        $modelAbstractor = new Model(
-            get_class($this->eloquentRelation->getRelated()),
-            $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated())),
-            \App::make('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory', array($this->modelManager))
-        );
+        /** @var \ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory $modelFactory */
+        $modelFactory = App::make('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory');
+
+        $modelAbstractor = $modelFactory->getByClassName(get_class($this->eloquentRelation->getRelated()));
 
         $fields = $modelAbstractor->getEditFields();
 
