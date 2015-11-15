@@ -113,4 +113,38 @@ class ModelTest extends TestBase
 
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation', $relations[0]);
     }
+
+    public function test_get_form()
+    {
+        $this->generatorMock->shouldReceive('setModelFields', 'setRelatedModelFields')
+            ->atLeast()->once();
+        $this->generatorMock->shouldReceive('getForm')
+            ->atLeast()
+            ->once()
+            ->andReturn($this->mock('FormManager\ElementInterface'));
+
+        $this->dbalMock->shouldReceive('getTableColumns')
+            ->once()
+            ->andReturn([
+                'id'       => $this->columnMock,
+                'username' => $this->columnMock,
+                'password' => $this->columnMock,
+            ]);
+
+        $this->dbalMock->shouldReceive('getModel')
+            ->andReturn($this->dbalMock);
+
+        $this->dbalMock->shouldReceive('getKeyName')
+            ->andReturn(LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT);
+
+        $this->relationMock->shouldReceive('setModel')->andReturn($this->relationMock);
+        $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
+        $this->relationMock->shouldReceive('get')->andReturn($this->mock('\ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation'));
+
+
+
+        $form = $this->sut->getForm('crudoado.model.store', 'users');
+
+        $this->assertInstanceOf('FormManager\ElementInterface', $form);
+    }
 }

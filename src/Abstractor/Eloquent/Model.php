@@ -5,6 +5,7 @@ use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractorContract
 use ANavallaSuiza\Crudoado\Abstractor\ConfigurationReader;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory;
 use ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer;
+use FormManager\ElementInterface;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
 use App;
 use ANavallaSuiza\Crudoado\Contracts\Form\Generator as FormGenerator;
@@ -227,5 +228,17 @@ class Model implements ModelAbstractorContract
         $columns[] = $this->dbal->getModel()->getKeyName();
 
         return $columns;
+    }
+
+    /**
+     * @param string $action
+     * @return ElementInterface
+     */
+    public function getForm($action)
+    {
+        $this->generator->setModelFields($this->getEditFields());
+        $this->generator->setRelatedModelFields($this->getRelations());
+
+        return $this->generator->getForm($action);
     }
 }

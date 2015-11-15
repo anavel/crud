@@ -1,6 +1,8 @@
 <?php
 namespace ANavallaSuiza\Crudoado\Contracts\Abstractor;
 
+use FormManager\ElementInterface;
+
 interface Model
 {
     public function setSlug($slug);
@@ -41,4 +43,10 @@ interface Model
      * @return array
      */
     public function getRelations();
+
+    /**
+     * @param string $action
+     * @return ElementInterface
+     */
+    public function getForm($action);
 }
