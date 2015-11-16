@@ -140,16 +140,9 @@ class ModelController extends Controller
      */
     public function edit($model, $id)
     {
-        $modelAbstractor = $this->modelFactory->getBySlug($model);
+        $modelAbstractor = $this->modelFactory->getBySlug($model, $id);
 
-        $repository = $this->modelManager->getRepository($modelAbstractor->getModel());
-        $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
-
-        $this->formGenerator->setModel($item);
-        $this->formGenerator->setModelFields($modelAbstractor->getEditFields());
-        $this->formGenerator->setRelatedModelFields($modelAbstractor->getRelations());
-
-        $form = $this->formGenerator->getForm(route('crudoado.model.update', [$modelAbstractor->getSlug(), $id]));
+        $form = $modelAbstractor->getForm(route('crudoado.model.store', [$modelAbstractor->getSlug(), $id]));
 
         return view('crudoado::pages.edit', [
             'abstractor' => $modelAbstractor,

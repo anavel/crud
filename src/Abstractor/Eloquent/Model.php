@@ -236,6 +236,9 @@ class Model implements ModelAbstractorContract
      */
     public function getForm($action)
     {
+        if(! empty($this->instance)) {
+            $this->generator->setModel($this->instance);
+        }
         $this->generator->setModelFields($this->getEditFields());
         $this->generator->setRelatedModelFields($this->getRelations());
 
