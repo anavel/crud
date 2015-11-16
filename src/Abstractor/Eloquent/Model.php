@@ -256,7 +256,11 @@ class Model implements ModelAbstractorContract
 
         /** @var \ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager $modelManager */
         $modelManager = \App::make('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
-        $item = $modelManager->getModelInstance($this->instance ? $this->instance : $this->getModel());
+        if (! empty($this->instance)) {
+            $item = $this->instance;
+        } else {
+            $item = $modelManager->getModelInstance($this->getModel());
+        }
 
         foreach ($this->getEditFields() as $field) {
             $item->setAttribute(
