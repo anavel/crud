@@ -1,6 +1,8 @@
 <?php
 namespace ANavallaSuiza\Crudoado\Contracts\Abstractor;
 
+use Illuminate\Http\Request;
+
 interface Relation
 {
     /**
@@ -27,4 +29,10 @@ interface Relation
      * @return array
      */
     public function getEditFields();
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function persist(Request $request);
 }

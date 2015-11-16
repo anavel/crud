@@ -3,6 +3,7 @@ namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Model;
 use App;
+use Illuminate\Http\Request;
 
 class Translation extends Relation
 {
@@ -49,5 +50,20 @@ class Translation extends Relation
             }
         }
         return $translationFields;
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function persist(Request $request)
+    {
+        if (! empty($translationsArray = $request->input($this->name))) {
+            foreach ($translationsArray as $translation) {
+                $translationModel = $this->eloquentRelation->getRelated();
+                $translationModel->setAttribute($this->eloquentRelation->getForeignKey(), $this->relatedModel->id);
+                $translationModel->save();
+            }
+        }
     }
 }

@@ -266,6 +266,14 @@ class Model implements ModelAbstractorContract
 
         $item->save();
 
+        $this->setInstance($item);
+
+        if (! empty($relations = $this->getRelations())) {
+            foreach ($relations as $relation) {
+                $relation->persist($request);
+            }
+        }
+
         return $item;
     }
 

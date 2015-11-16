@@ -65,4 +65,13 @@ class TranslationTest extends TestBase
 
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
     }
+
+    public function test_persist()
+    {
+        $requestMock = $this->mock('Illuminate\Http\Request');
+
+        $requestMock->shouldReceive('input')->with('translations')->atLeast()->once();
+
+        $this->sut->persist($requestMock);
+    }
 }
