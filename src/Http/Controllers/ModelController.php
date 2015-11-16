@@ -149,23 +149,11 @@ class ModelController extends Controller
      */
     public function update(Request $request, $model, $id)
     {
-        $modelAbstractor = $this->modelFactory->getBySlug($model);
+        $modelAbstractor = $this->modelFactory->getBySlug($model, $id);
 
-        $this->formGenerator->setModelFields($modelAbstractor->getEditFields());
+        $this->validate($request, $modelAbstractor->getValidationRules());
 
-        $this->validate($request, $this->formGenerator->getValidationRules());
-
-        $repository = $this->modelManager->getRepository($modelAbstractor->getModel());
-        $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
-
-        foreach ($modelAbstractor->getEditFields() as $field) {
-            $item->setAttribute(
-                $field->getName(),
-                $field->applyFunctions($request->input($field->getName()))
-            );
-        }
-
-        $item->save();
+        $modelAbstractor->persist($request);
 
         session()->flash('adoadomin-alert', [
             'type'  => 'success',

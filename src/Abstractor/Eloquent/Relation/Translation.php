@@ -2,6 +2,7 @@
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Model;
+use ANavallaSuiza\Crudoado\Contracts\Abstractor\Field;
 use App;
 use Illuminate\Http\Request;
 
@@ -39,6 +40,7 @@ class Translation extends Relation
             foreach ($this->langs as $key => $lang) {
                 foreach ($fields as $field) {
                     if (strpos($this->eloquentRelation->getForeignKey(), $field->getName()) === false) {
+                        /** @var Field $langField */
                         $langField = clone $field;
                         if ($langField->getName() == 'locale') {
                             $langField->setCustomFormType('hidden');
