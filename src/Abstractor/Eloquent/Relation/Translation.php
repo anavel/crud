@@ -60,7 +60,7 @@ class Translation extends Relation
     {
         if (! empty($translationsArray = $request->input($this->name))) {
             foreach ($translationsArray as $translation) {
-                $translationModel = $this->eloquentRelation->getRelated();
+                $translationModel = clone $this->eloquentRelation->getRelated();
                 $translationModel->setAttribute($this->eloquentRelation->getForeignKey(), $this->relatedModel->id);
 
                 foreach ($translation as $fieldKey => $fieldValue) {
