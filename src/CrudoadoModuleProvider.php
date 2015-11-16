@@ -59,7 +59,8 @@ class CrudoadoModuleProvider extends ModuleProvider
                 return new ModelAbstractorFactory(
                     config('crudoado.models'),
                     $this->app['ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'],
-                    $this->app['ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory']
+                    $this->app['ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory'],
+                    $this->app['ANavallaSuiza\Crudoado\Contracts\Form\Generator']
                 );
             }
         );
