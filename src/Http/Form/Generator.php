@@ -15,11 +15,6 @@ class Generator implements GeneratorContract
     protected $factory;
 
     /**
-     *
-     */
-    protected $model;
-
-    /**
      * @var array
      */
     protected $fields;
@@ -30,7 +25,7 @@ class Generator implements GeneratorContract
     protected $relations;
 
     /**
-     *
+     * @var array
      */
     protected $databaseTypeToFormType = array(
         DbalType::INTEGER  => 'number',
@@ -53,11 +48,6 @@ class Generator implements GeneratorContract
     {
         $this->factory = $factory;
         $this->fields = array();
-    }
-
-    public function setModel($model)
-    {
-        $this->model = $model;
     }
 
     public function setModelFields(array $fields)
@@ -134,9 +124,7 @@ class Generator implements GeneratorContract
             $formField->class('form-control '.config('crudoado.text_editor'));
         }
 
-        if ($this->model) {
-            $formField->val($this->model->getAttribute($modelField->getName()));
-        }
+        $formField->val($modelField->getValue());
 
         if (Request::old($modelField->getName())) {
             $formField->val(Request::old($modelField->getName()));

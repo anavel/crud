@@ -215,6 +215,10 @@ class Model implements ModelAbstractorContract
                     $field->setFunctions($functions[$name]);
                 }
 
+                if (! empty($this->instance) && ! empty($this->instance->getAttribute($name))) {
+                    $field->setValue($this->instance->getAttribute($name));
+                }
+
                 $fields[] = $field;
             }
         }

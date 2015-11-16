@@ -27,4 +27,12 @@ interface Field
     public function setFunctions($functions);
 
     public function applyFunctions($value);
+
+    /**
+     * @param string $value
+     * @return void
+     */
+    public function setValue($value);
+
+    public function getValue();
 }

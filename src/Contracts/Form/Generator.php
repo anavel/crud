@@ -3,8 +3,6 @@ namespace ANavallaSuiza\Crudoado\Contracts\Form;
 
 interface Generator
 {
-    public function setModel($model);
-
     public function setModelFields(array $fields);
 
     public function addModelFields(array $fields);

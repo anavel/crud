@@ -42,6 +42,7 @@ class Translation extends Relation
                         $langField = clone $field;
                         if ($langField->getName() == 'locale') {
                             $langField->setCustomFormType('hidden');
+                            $langField->setValue($lang);
                         }
                         $langField->setName("{$this->name}[$key][{$langField->getName()}]");
                         $translationFields[] = $langField;

@@ -8,6 +8,7 @@ class Field implements FieldAbstractorContract
 {
     protected $dbal;
     protected $name;
+    protected $value;
     protected $presentation;
     protected $customFormType;
     protected $validationRules;
@@ -97,5 +98,22 @@ class Field implements FieldAbstractorContract
         }
 
         return $value;
+    }
+
+    /**
+     * @param string $value
+     * @return void
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValue()
+    {
+        return $this->value;
     }
 }
