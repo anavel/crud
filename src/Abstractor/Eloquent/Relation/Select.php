@@ -3,6 +3,7 @@ namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field;
 use App;
+use Illuminate\Http\Request;
 
 class Select extends Relation
 {
@@ -24,5 +25,14 @@ class Select extends Relation
      */
     public function getEditFields()
     {
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function persist(Request $request)
+    {
+        // TODO: Implement persist() method.
     }
 }
