@@ -80,8 +80,6 @@ class Generator implements GeneratorContract
         $this->setModelRelations($relations);
 
         if (count($this->relations > 0)) {
-            $fields = [];
-
             foreach ($this->relations as $relation) {
                 $this->addModelFields($relation->getEditFields());
             }

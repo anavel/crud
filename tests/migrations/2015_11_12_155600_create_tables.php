@@ -11,13 +11,17 @@ class CreateTables extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('user_group_id');
             $table->string('username');
             $table->string('fullname');
             $table->string('info');
             $table->string('password');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('user_group_id')->references('id')->on('user_groups')->onDelete('cascade');
         });
+
         Schema::create('user_translations', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
@@ -25,6 +29,11 @@ class CreateTables extends Migration
             $table->string('bio');
             $table->unique(['user_id', 'locale']);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
+
+        Schema::create('user_groups', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
         });
     }
 

@@ -15,4 +15,12 @@ class User extends Model
     {
         return $this->hasMany(UserTranslations::class, 'user_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function group()
+    {
+        return $this->belongsTo(UserGroup::class, 'user_group_id');
+    }
 }
