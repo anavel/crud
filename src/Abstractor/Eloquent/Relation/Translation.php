@@ -62,6 +62,12 @@ class Translation extends Relation
             foreach ($translationsArray as $translation) {
                 $translationModel = $this->eloquentRelation->getRelated();
                 $translationModel->setAttribute($this->eloquentRelation->getForeignKey(), $this->relatedModel->id);
+
+                foreach ($translation as $fieldKey => $fieldValue) {
+                    $translationModel->setAttribute($fieldKey, $fieldValue);
+                }
+
+
                 $translationModel->save();
             }
         }
