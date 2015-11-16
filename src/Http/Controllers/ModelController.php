@@ -131,7 +131,7 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model, $id);
 
-        $form = $modelAbstractor->getForm(route('crudoado.model.store', [$modelAbstractor->getSlug(), $id]));
+        $form = $modelAbstractor->getForm(route('crudoado.model.update', [$modelAbstractor->getSlug(), $id]));
 
         return view('crudoado::pages.edit', [
             'abstractor' => $modelAbstractor,
