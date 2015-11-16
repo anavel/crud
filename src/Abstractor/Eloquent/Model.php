@@ -9,6 +9,7 @@ use FormManager\ElementInterface;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
 use App;
 use ANavallaSuiza\Crudoado\Contracts\Form\Generator as FormGenerator;
+use Illuminate\Http\Request;
 
 class Model implements ModelAbstractorContract
 {
@@ -243,5 +244,36 @@ class Model implements ModelAbstractorContract
         $this->generator->setRelatedModelFields($this->getRelations());
 
         return $this->generator->getForm($action);
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function persist(Request $request)
+    {
+
+        /** @var \ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager $modelManager */
+        $modelManager = \App::make('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
+        $item = $modelManager->getModelInstance($this->getModel());
+
+        foreach ($this->getEditFields() as $field) {
+            $item->setAttribute(
+                $field->getName(),
+                $field->applyFunctions($request->input($field->getName()))
+            );
+        }
+
+        $item->save();
+
+        return $item;
+    }
+
+    /**
+     * @return array
+     */
+    public function getValidationRules()
+    {
+        return $this->generator->getValidationRules();
     }
 }

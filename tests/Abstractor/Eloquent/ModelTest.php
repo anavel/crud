@@ -187,4 +187,46 @@ class ModelTest extends TestBase
 
         $this->assertInstanceOf('FormManager\ElementInterface', $form);
     }
+
+    public function test_get_validation_rules()
+    {
+        $this->generatorMock->shouldReceive('getValidationRules')
+            ->atLeast()->once()
+            ->andReturn([]);
+
+        $rules = $this->sut->getValidationRules();
+
+        $this->assertInternalType('array', $rules);
+    }
+
+    public function test_persist()
+    {
+        \App::instance('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager', $modelManagerMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'));
+        $requestMock = $this->mock('Illuminate\Http\Request');
+
+        $requestMock->shouldReceive('input');
+
+        $modelManagerMock->shouldReceive('getModelInstance')->andReturn($userMock = $this->mock('Crudoado\Tests\Models\User'));
+
+        $userMock->shouldReceive('setAttribute', 'save');
+
+        $this->dbalMock->shouldReceive('getTableColumns')
+            ->once()
+            ->andReturn([
+                'id'       => $this->columnMock,
+                'username' => $this->columnMock,
+                'password' => $this->columnMock,
+            ]);
+
+        $this->dbalMock->shouldReceive('getModel')
+            ->andReturn($this->dbalMock);
+
+        $this->dbalMock->shouldReceive('getKeyName')
+            ->andReturn(LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT);
+
+
+        $result = $this->sut->persist($requestMock);
+
+        $this->assertInstanceOf('Crudoado\Tests\Models\User', $result);
+    }
 }

@@ -86,20 +86,9 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model);
 
-        $this->formGenerator->setModelFields($modelAbstractor->getEditFields());
+        $this->validate($request, $modelAbstractor->getValidationRules());
 
-        $this->validate($request, $this->formGenerator->getValidationRules());
-
-        $item = $this->modelManager->getModelInstance($modelAbstractor->getModel());
-
-        foreach ($modelAbstractor->getEditFields() as $field) {
-            $item->setAttribute(
-                $field->getName(),
-                $field->applyFunctions($request->input($field->getName()))
-            );
-        }
-
-        $item->save();
+        $modelAbstractor->persist($request);
 
         session()->flash('adoadomin-alert', [
             'type'  => 'success',

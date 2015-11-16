@@ -2,6 +2,7 @@
 namespace ANavallaSuiza\Crudoado\Contracts\Abstractor;
 
 use FormManager\ElementInterface;
+use Illuminate\Http\Request;
 
 interface Model
 {
@@ -49,4 +50,15 @@ interface Model
      * @return ElementInterface
      */
     public function getForm($action);
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function persist(Request $request);
+
+    /**
+     * @return array
+     */
+    public function getValidationRules();
 }
