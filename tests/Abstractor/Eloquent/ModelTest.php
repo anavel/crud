@@ -158,9 +158,6 @@ class ModelTest extends TestBase
             ->atLeast()
             ->once()
             ->andReturn($this->mock('FormManager\ElementInterface'));
-        $this->generatorMock->shouldReceive('setModel')
-            ->atLeast()
-            ->once();
 
         $this->dbalMock->shouldReceive('getTableColumns')
             ->once()
