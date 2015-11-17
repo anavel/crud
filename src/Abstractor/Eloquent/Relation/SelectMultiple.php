@@ -78,11 +78,13 @@ class SelectMultiple extends Relation
 
             $relationName = $this->name;
             $relatedKeyName = $this->eloquentRelation->getRelated()->getKeyName();
-            $alreadyAssociated = $this->relatedModel->$relationName->lists($relatedKeyName);
+            $alreadyAssociated = $this->relatedModel->$relationName;
 
-            $results = $repo->pushCriteria(new InArrayCriteria($relatedKeyName, $selectArray[$this->eloquentRelation->getPlainForeignKey()]))->all();
+            $results = $repo->pushCriteria(new InArrayCriteria($relatedKeyName,
+                $selectArray[$this->eloquentRelation->getPlainForeignKey()]))->all();
 
-            $missing = array_diff($alreadyAssociated, $results->lists($relatedKeyName));
+            $missing = $alreadyAssociated->diff($results);
+
 
             $keyName = $this->eloquentRelation->getPlainForeignKey();
             foreach ($results as $result) {
@@ -90,13 +92,11 @@ class SelectMultiple extends Relation
                 $result->save();
             }
 
-            /** @var \ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository $repo */
-            $repo = $this->modelManager->getRepository(get_class($this->eloquentRelation->getRelated()));
-            $missingResults = $results = $repo->pushCriteria(new InArrayCriteria($relatedKeyName, $missing))->all();
-
-            foreach ($missingResults as $result) {
-                $result->$keyName = null;
-                $result->save();
+            if (! $missing->isEmpty()) {
+                foreach ($missing as $result) {
+                    $result->$keyName = null;
+                    $result->save();
+                }
             }
         }
     }
