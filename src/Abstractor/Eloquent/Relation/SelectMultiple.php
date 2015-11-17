@@ -76,7 +76,7 @@ class SelectMultiple extends Relation
             /** @var \ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository $repo */
             $repo = $this->modelManager->getRepository(get_class($this->eloquentRelation->getRelated()));
 
-            $results = $repo->pushCriteria(new InArrayCriteria($selectArray[$this->eloquentRelation->getPlainForeignKey()]))->all();
+            $results = $repo->pushCriteria(new InArrayCriteria($this->eloquentRelation->getRelated()->getKey(), $selectArray[$this->eloquentRelation->getPlainForeignKey()]))->all();
 
             $keyName = $this->eloquentRelation->getPlainForeignKey();
             foreach ($results as $result) {

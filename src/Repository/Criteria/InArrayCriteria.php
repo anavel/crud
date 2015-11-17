@@ -6,15 +6,24 @@ use ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository;
 
 class InArrayCriteria implements Criteria
 {
-    protected $ids;
 
-    public function __construct(array $ids)
+    /**
+     * @var string
+     */
+    protected $fieldName;
+    /**
+     * @var array
+     */
+    protected $fieldValues;
+
+    public function __construct($fieldName, array $fieldValues)
     {
-        $this->ids = $ids;
+        $this->fieldName = $fieldName;
+        $this->fieldValues = $fieldValues;
     }
 
     public function apply($model, Repository $repository)
     {
-        return $model->whereIn($this->ids);
+        return $model->whereIn($this->fieldName, $this->fieldValues);
     }
 }
