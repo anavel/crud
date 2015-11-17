@@ -35,6 +35,13 @@ class CreateTables extends Migration
             $table->increments('id');
             $table->string('name');
         });
+
+        Schema::create('posts', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('title');
+        });
     }
 
     /**
@@ -42,6 +49,8 @@ class CreateTables extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('posts');
+        Schema::dropIfExists('user_groups');
         Schema::dropIfExists('user_translations');
         Schema::dropIfExists('users');
     }
