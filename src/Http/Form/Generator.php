@@ -126,7 +126,7 @@ class Generator implements GeneratorContract
         }
 
         if ($formFieldType === 'select') {
-            $formField->setOptions($modelField->getOptions());
+            $formField->options($modelField->getOptions());
         }
 
         $formField->val($modelField->getValue());
