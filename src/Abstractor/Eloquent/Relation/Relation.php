@@ -20,11 +20,14 @@ abstract class Relation implements RelationAbstractorContract
      */
     protected $eloquentRelation;
     protected $modelManager;
+    /**
+     * @var array
+     */
+    protected $config;
 
-    public function __construct(ModelManager $modelManager, Model $model, EloquentRelation $eloquentRelation, $name, $presentation = null)
+    public function __construct(array $config, ModelManager $modelManager, Model $model, EloquentRelation $eloquentRelation)
     {
-        $this->name = $name;
-        $this->presentation = $presentation;
+        $this->name = $config['name'];
         $this->relatedModel = $model;
         $this->eloquentRelation = $eloquentRelation;
 
@@ -33,6 +36,7 @@ abstract class Relation implements RelationAbstractorContract
         if ($this->checkEloquentRelationCompatibility() === false) {
             throw new \Exception(get_class($this->eloquentRelation)." eloquent relation is not compatible with ".$this->getType()." type");
         }
+        $this->config = $config;
     }
 
     public function getName()

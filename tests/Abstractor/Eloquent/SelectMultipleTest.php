@@ -1,17 +1,18 @@
 <?php
 namespace Crudoado\Tests\Abstractor\Eloquent;
 
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Translation;
+use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\SelectMultiple;
 use Crudoado\Tests\Models\User;
 use Crudoado\Tests\TestBase;
+use Illuminate\Database\Eloquent\Collection;
 use Mockery;
 use Mockery\Mock;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
 
 
-class TranslationTest extends TestBase
+class SelectMultipleTest extends TestBase
 {
-    /** @var  Translation */
+    /** @var  SelectMultiple */
     protected $sut;
     /** @var  Mock */
     protected $relationMock;
@@ -26,11 +27,11 @@ class TranslationTest extends TestBase
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
 
-        $this->sut = new Translation(
-            $config['Users']['relations']['translations'],
+        $this->sut = new SelectMultiple(
+            $config['Users']['relations']['posts'],
             $this->modelManagerMock = Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
             $user = new User(),
-            $user->translations()
+            $user->posts()
         );
     }
 
@@ -45,6 +46,7 @@ class TranslationTest extends TestBase
         $modelFactoryMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory');
 
         $columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
+        $fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field');
 
         \App::instance('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory', $relationFactoryMock);
         \App::instance('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory', $modelFactoryMock);
@@ -53,24 +55,36 @@ class TranslationTest extends TestBase
             ->andReturn($this->modelManagerMock);
 
         $this->modelManagerMock->shouldReceive('getEditFields')->atLeast()->once()
-            ->andReturn([$fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field')]);
+            ->andReturn([$fieldMock, $fieldMock, $fieldMock]);
 
-        $fieldMock->shouldReceive('getName')->atLeast()->once()->andReturn($fieldName = 'chompy');
-        $fieldMock->shouldReceive('setName')->atLeast()->once()->with(matchesPattern("/^translations\[[\d]\]\[chompy\]/"));
+        $this->modelManagerMock->shouldReceive('getRepository')->atLeast()->once()
+            ->andReturn($repoMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository'));
+
+        $modelMock = $this->mock('Crudoado\Tests\Models\Post');
+        $repoMock->shouldReceive('all')->atLeast()->once()
+            ->andReturn(new Collection([$modelMock, $modelMock, $modelMock]));
+
+        $modelMock->shouldReceive('getKey');
+        $modelMock->shouldReceive('getAttribute')->with('title');
+
+        $fieldMock->shouldReceive('getName')->atLeast()->once()->andReturn('user_id', 'user_id', 'chompy');
+        $fieldMock->shouldReceive('setName')->atLeast()->once()->with(matchesPattern("/^posts\[user_id\]\[\]/"));
+        $fieldMock->shouldReceive('setOptions');
 
         $fields = $this->sut->getEditFields();
 
         $this->assertInternalType('array', $fields, 'getEditFields should return an array');
+        $this->assertCount(1, $fields);
 
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
     }
 
     public function test_persist()
     {
-        $requestMock = $this->mock('Illuminate\Http\Request');
-
-        $requestMock->shouldReceive('input')->with('translations')->atLeast()->once();
-
-        $this->sut->persist($requestMock);
+//        $requestMock = $this->mock('Illuminate\Http\Request');
+//
+//        $requestMock->shouldReceive('input')->with('translations')->atLeast()->once();
+//
+//        $this->sut->persist($requestMock);
     }
 }

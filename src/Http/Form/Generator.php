@@ -39,7 +39,8 @@ class Generator implements GeneratorContract
         DbalType::FLOAT    => 'number',
         'email',
         'password',
-        'hidden'
+        'hidden',
+        'select'
     );
 
     protected $relationsTypeToFormType = array();
@@ -122,6 +123,10 @@ class Generator implements GeneratorContract
 
         if ($formFieldType === 'textarea') {
             $formField->class('form-control '.config('crudoado.text_editor'));
+        }
+
+        if ($formFieldType === 'select') {
+            $formField->setOptions($modelField->getOptions());
         }
 
         $formField->val($modelField->getValue());

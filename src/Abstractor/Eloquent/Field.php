@@ -13,6 +13,7 @@ class Field implements FieldAbstractorContract
     protected $customFormType;
     protected $validationRules;
     protected $functions;
+    protected $options;
 
     public function __construct(Column $column, $name, $presentation = null)
     {
@@ -22,6 +23,7 @@ class Field implements FieldAbstractorContract
         $this->customFormType = null;
         $this->validationRules = array();
         $this->functions = array();
+        $this->options = [];
     }
 
     public function getName()
@@ -115,5 +117,22 @@ class Field implements FieldAbstractorContract
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * @param array $options
+     * @return void
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 }

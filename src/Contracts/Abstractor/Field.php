@@ -35,4 +35,15 @@ interface Field
     public function setValue($value);
 
     public function getValue();
+
+    /**
+     * @param array $options
+     * @return void
+     */
+    public function setOptions(array $options);
+
+    /**
+     * @return array
+     */
+    public function getOptions();
 }

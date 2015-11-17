@@ -21,7 +21,11 @@ return [
                     'name' => 'translations'
                 ],
                 'group' => 'select',
-                'posts'
+                'posts' => [
+                    'type' => 'select-multiple',
+                    'name' => 'posts',
+                    'display' => 'title'
+                ],
             ],
             'list' => [
                 'display' => ['id', 'username', 'fullname', 'active'],

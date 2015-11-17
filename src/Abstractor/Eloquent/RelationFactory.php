@@ -81,11 +81,13 @@ class RelationFactory implements RelationAbstractorFactoryContract
             throw new \Exception("Unexpected relation type ".$type);
         }
 
+        $this->config['name'] = $name;
+
         return new $this->typesMap[$type](
+            $this->config,
             $this->modelManager,
             $this->model,
-            $relationInstance,
-            $name
+            $relationInstance
         );
     }
 }
