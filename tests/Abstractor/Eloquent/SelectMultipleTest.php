@@ -2,6 +2,7 @@
 namespace Crudoado\Tests\Abstractor\Eloquent;
 
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\SelectMultiple;
+use ANavallaSuiza\Crudoado\Repository\Criteria\InArrayCriteria;
 use Crudoado\Tests\Models\User;
 use Crudoado\Tests\TestBase;
 use Illuminate\Database\Eloquent\Collection;
@@ -69,7 +70,7 @@ class SelectMultipleTest extends TestBase
 
         $fieldMock->shouldReceive('getName')->atLeast()->once()->andReturn('user_id', 'user_id', 'chompy');
         $fieldMock->shouldReceive('setName')->atLeast()->once()->with(matchesPattern("/^posts\[user_id\]\[\]/"));
-        $fieldMock->shouldReceive('setOptions');
+        $fieldMock->shouldReceive('setOptions', 'setCustomFormType');
 
         $fields = $this->sut->getEditFields();
 
@@ -81,10 +82,22 @@ class SelectMultipleTest extends TestBase
 
     public function test_persist()
     {
-//        $requestMock = $this->mock('Illuminate\Http\Request');
-//
-//        $requestMock->shouldReceive('input')->with('translations')->atLeast()->once();
-//
-//        $this->sut->persist($requestMock);
+        $inputArray = ['user_id' => [1, 3, 4]];
+        $requestMock = $this->mock('Illuminate\Http\Request');
+
+        $requestMock->shouldReceive('input')->with('posts')->atLeast()->once()->andReturn($inputArray);
+
+        $this->modelManagerMock->shouldReceive('getRepository')->atLeast()->once()
+            ->andReturn($repoMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository'));
+
+        $modelMock = $this->mock('Crudoado\Tests\Models\Post');
+        $modelMock->shouldReceive('setAttribute', 'save')->times(3);
+
+        $repoMock->shouldReceive('pushCriteria')->atLeast()->once()
+            ->andReturn($repoMock);
+        $repoMock->shouldReceive('all')->atLeast()->once()
+            ->andReturn(new Collection([$modelMock, $modelMock, $modelMock]));
+
+        $this->sut->persist($requestMock);
     }
 }

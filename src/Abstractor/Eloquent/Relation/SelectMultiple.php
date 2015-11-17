@@ -3,6 +3,7 @@ namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Model;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Field;
+use ANavallaSuiza\Crudoado\Repository\Criteria\InArrayCriteria;
 use App;
 use Illuminate\Http\Request;
 
@@ -52,13 +53,13 @@ class SelectMultiple extends Relation
 
         if (! empty($fields)) {
             foreach ($fields as $field) {
-                if (strpos($this->eloquentRelation->getForeignKey(), $field->getName()) !== false) {
-                    /** @var Field $primaryKeyField */
-                    $primaryKeyField = clone $field;
-                    $primaryKeyField->setName("{$this->name}[{$primaryKeyField->getName()}][]");
-                    $primaryKeyField->setOptions($options);
-                    $primaryKeyField->setCustomFormType('select');
-                    $select[] = $primaryKeyField;
+                if ($this->eloquentRelation->getPlainForeignKey() === $field->getName() ) {
+                    /** @var Field $foreignKeyField */
+                    $foreignKeyField = clone $field;
+                    $foreignKeyField->setName("{$this->name}[{$foreignKeyField->getName()}][]");
+                    $foreignKeyField->setOptions($options);
+                    $foreignKeyField->setCustomFormType('select');
+                    $select[] = $foreignKeyField;
                 }
             }
         }
@@ -71,18 +72,17 @@ class SelectMultiple extends Relation
      */
     public function persist(Request $request)
     {
-//        if (! empty($translationsArray = $request->input($this->name))) {
-//            foreach ($translationsArray as $translation) {
-//                $translationModel = clone $this->eloquentRelation->getRelated();
-//                $translationModel->setAttribute($this->eloquentRelation->getForeignKey(), $this->relatedModel->id);
-//
-//                foreach ($translation as $fieldKey => $fieldValue) {
-//                    $translationModel->setAttribute($fieldKey, $fieldValue);
-//                }
-//
-//
-//                $translationModel->save();
-//            }
-//        }
+        if (! empty($selectArray = $request->input($this->name))) {
+            /** @var \ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository $repo */
+            $repo = $this->modelManager->getRepository(get_class($this->eloquentRelation->getRelated()));
+
+            $results = $repo->pushCriteria(new InArrayCriteria($selectArray[$this->eloquentRelation->getPlainForeignKey()]))->all();
+
+            $keyName = $this->eloquentRelation->getPlainForeignKey();
+            foreach ($results as $result) {
+                $result->$keyName = $this->relatedModel->getKey();
+                $result->save();
+            }
+        }
     }
 }
