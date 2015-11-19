@@ -7,6 +7,7 @@ use Doctrine\DBAL\Schema\Column;
 class Field implements FieldAbstractorContract
 {
     protected $dbal;
+    protected $formElement;
     protected $name;
     protected $value;
     protected $presentation;
@@ -14,6 +15,25 @@ class Field implements FieldAbstractorContract
     protected $validationRules;
     protected $functions;
     protected $options;
+
+    /**
+     * @var array
+     */
+    protected $databaseTypeToFormType = array(
+        DbalType::INTEGER  => 'number',
+        DbalType::STRING   => 'text',
+        DbalType::TEXT     => 'textarea',
+        DbalType::BOOLEAN  => 'checkbox',
+        DbalType::DATE     => 'date',
+        DbalType::TIME     => 'time',
+        DbalType::DATETIME => 'datetime',
+        DbalType::DECIMAL  => 'number',
+        DbalType::FLOAT    => 'number',
+        'email',
+        'password',
+        'hidden',
+        'select'
+    );
 
     public function __construct(Column $column, $name, $presentation = null)
     {
