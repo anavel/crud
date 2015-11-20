@@ -42,7 +42,7 @@ class RelationFactoryTest extends TestBase
 //        $this->userMock->shouldReceive('translations')->andReturn(\App::make('\Illuminate\Database\Eloquent\Relations\HasMany'));
 //        $relation = $this->stu->get('translations');
     }
-//
+
     public function test_throws_exception_when_relation_does_not_exist()
     {
         $this->setExpectedException('Exception', 'Relation chompy does not exist on');

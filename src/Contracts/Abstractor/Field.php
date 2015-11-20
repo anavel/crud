@@ -46,4 +46,9 @@ interface Field
      * @return array
      */
     public function getOptions();
+
+    /**
+     * @return array
+     */
+    public function getFormElement();
 }
