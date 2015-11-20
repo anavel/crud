@@ -54,6 +54,11 @@ class ModelTest extends TestBase
                 'active'   => $this->columnMock
             ]);
 
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
+
         $fields = $this->sut->getListFields();
 
         $this->assertInternalType('array', $fields);
@@ -73,6 +78,11 @@ class ModelTest extends TestBase
                 'info'     => $this->columnMock,
                 'active'   => $this->columnMock
             ]);
+
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
 
         $fields = $this->sut->getDetailFields();
 
@@ -96,6 +106,11 @@ class ModelTest extends TestBase
 
         $this->dbalMock->shouldReceive('getKeyName')
             ->andReturn(LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT);
+
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
 
         $fields = $this->sut->getEditFields();
 
@@ -144,7 +159,10 @@ class ModelTest extends TestBase
         $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('get')->andReturn($this->mock('\ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation'));
 
-
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
 
         $form = $this->sut->getForm('crudoado.model.store', 'users');
 
@@ -179,6 +197,11 @@ class ModelTest extends TestBase
         $this->relationMock->shouldReceive('setModel')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('get')->andReturn($this->mock('\ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation'));
+
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
 
         $modelMock = $this->mock('Illuminate\Database\Eloquent\Model');
         $modelMock->shouldReceive('getAttribute');

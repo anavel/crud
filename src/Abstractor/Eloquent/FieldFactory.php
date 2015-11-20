@@ -4,6 +4,7 @@ namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory as FieldAbstractorFactoryContract;
 use ANavallaSuiza\Crudoado\Abstractor\Exceptions\FactoryException;
 use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Types\Type as DbalType;
 use FormManager\FactoryInterface as FormManagerFactory;
 
 class FieldFactory implements FieldAbstractorFactoryContract

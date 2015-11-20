@@ -12,7 +12,7 @@ interface FieldFactory
     public function setColumn(Column $column);
 
     /**
-     * Relation config
+     * Field config
      *
      * @param array $config
      */
@@ -21,11 +21,9 @@ interface FieldFactory
     /**
      * Factory method to create field instances.
      *
-     * @param string $name The name of the field
-     *
-     * @return \ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation
+     * @return \ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field
      *
      * @throws \Exception
      */
-    public function get($name);
+    public function get();
 }
