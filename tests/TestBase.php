@@ -7,6 +7,8 @@ use Mockery;
 
 abstract class TestBase extends TestCase
 {
+    const MIGRATIONS_PATH = 'tests/migrations';
+
     /**
      * Setup the test environment.
      */
@@ -44,13 +46,13 @@ abstract class TestBase extends TestCase
         $artisan = $this->app->make('Illuminate\Contracts\Console\Kernel');
         // Makes sure the migrations table is created
         $artisan->call('migrate', [
-            '--path'     => 'migrations',
+            '--path'     => self::MIGRATIONS_PATH,
         ]);
         // We empty all tables
         $artisan->call('migrate:reset');
         // Migrate
         $artisan->call('migrate', [
-            '--path'     => 'migrations',
+            '--path'     => self::MIGRATIONS_PATH,
         ]);
     }
 
@@ -65,6 +67,19 @@ abstract class TestBase extends TestCase
         return Mockery::mock($className);
     }
 
+    /**
+     * Test running migration.
+     *
+     * @test
+     */
+    public function test_running_migration()
+    {
+        $migrations = \DB::select('SELECT * FROM migrations');
+
+        $fi = new \FilesystemIterator(self::MIGRATIONS_PATH, \FilesystemIterator::SKIP_DOTS);
+
+        $this->assertCount(iterator_count($fi), $migrations);
+    }
 
     public function tearDown()
     {

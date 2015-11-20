@@ -57,7 +57,7 @@ class ModelFactory implements ModelAbstractorFactoryContract
                     $modelNamespace = $config;
                 }
 
-                $model = new Model($config, $this->modelManager->getAbstractionLayer($modelNamespace), $this->relationFactory, $this->generator);
+                $model = new Model($config, $this->modelManager->getAbstractionLayer($modelNamespace), $this->relationFactory, $this->fieldFactory, $this->generator);
 
                 $model->setSlug($modelSlug)
                     ->setName($modelName);
@@ -87,7 +87,7 @@ class ModelFactory implements ModelAbstractorFactoryContract
 
     public function getByClassName($classname, $id = null)
     {
-        $model = new Model(['model' => $classname], $this->modelManager->getAbstractionLayer($classname), $this->relationFactory, $this->generator);
+        $model = new Model(['model' => $classname], $this->modelManager->getAbstractionLayer($classname), $this->relationFactory, $this->fieldFactory, $this->generator);
 
         return $model;
     }

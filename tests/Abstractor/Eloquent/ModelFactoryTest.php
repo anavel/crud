@@ -16,6 +16,8 @@ class ModelFactoryTest extends TestBase
     /** @var Mock */
     protected $relationMock;
     /** @var Mock */
+    protected $fieldMock;
+    /** @var Mock */
     protected $generatorMock;
 
     public function setUp()
@@ -26,9 +28,10 @@ class ModelFactoryTest extends TestBase
 
         $this->modelManagerMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
         $this->relationMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory');
+        $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
         $this->generatorMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Form\Generator');
 
-        $this->sut = new ModelFactory($config, $this->modelManagerMock, $this->relationMock, $this->generatorMock);
+        $this->sut = new ModelFactory($config, $this->modelManagerMock, $this->relationMock, $this->fieldMock, $this->generatorMock);
     }
 
     public function test_implements_model__factory_interface()

@@ -147,6 +147,6 @@ class Field implements FieldAbstractorContract
 
     public function getFormElement()
     {
-
+        return $this->formElement;
     }
 }

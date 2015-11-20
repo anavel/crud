@@ -19,6 +19,8 @@ class ModelTest extends TestBase
     /** @var Mock */
     protected $relationMock;
     /** @var Mock */
+    protected $fieldMock;
+    /** @var Mock */
     protected $generatorMock;
 
     public function setUp()
@@ -29,10 +31,11 @@ class ModelTest extends TestBase
 
         $this->dbalMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer');
         $this->relationMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory');
+        $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
         $this->columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
         $this->generatorMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Form\Generator');
 
-        $this->sut = new Model($config['Users'], $this->dbalMock, $this->relationMock, $this->generatorMock);
+        $this->sut = new Model($config['Users'], $this->dbalMock, $this->relationMock, $this->fieldMock, $this->generatorMock);
     }
 
     public function test_implements_model_interface()
