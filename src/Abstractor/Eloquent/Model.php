@@ -95,6 +95,15 @@ class Model implements ModelAbstractorContract
     {
         $tableColumns = $this->dbal->getTableColumns();
 
+        $foreignKeys = $this->dbal->getTableForeignKeys();
+
+        $foreignKeysName = [];
+        foreach ($foreignKeys as $foreignKey) {
+            foreach ($foreignKey->getColumns() as $columnName) {
+                $foreignKeysName[] = $columnName;
+            }
+        }
+
         $customDisplayedColumns = $this->getConfigValue($action, 'display');
         $customHiddenColumns = $this->getConfigValue($action, 'hide') ? : [];
 
@@ -110,6 +119,10 @@ class Model implements ModelAbstractorContract
         } else {
             foreach ($tableColumns as $name => $column) {
                 if (in_array($name, $customHiddenColumns)) {
+                    continue;
+                }
+
+                if (in_array($name, $foreignKeysName)) {
                     continue;
                 }
 
