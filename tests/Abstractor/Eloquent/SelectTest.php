@@ -16,27 +16,30 @@ class SelectTest extends TestBase
     protected $relationMock;
     /** @var  Mock */
     protected $modelManagerMock;
+    /** @var  Mock */
+    protected $fieldMock;
 
     public function setUp()
     {
         parent::setUp();
-//
-//        $config = require __DIR__ . '/../../config.php';
-//
-//        $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
-//
-//        $this->sut = new Select(
-//            $this->modelManagerMock = Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
-//            $user = new User(),
-//            $user->group(),
-//            'group',
-//            'Group'
-//        );
+
+        $config = require __DIR__ . '/../../config.php';
+
+        $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
+        $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
+
+        $this->sut = new Select(
+            $config['Users']['relations']['group'],
+            $this->modelManagerMock = Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
+            $user = new User(),
+            $user->group(),
+            $this->fieldMock
+        );
     }
 
     public function test_implements_relation_interface()
     {
-//        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation', $this->sut);
+        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation', $this->sut);
     }
 
     public function test_get_edit_fields_return_array_with_one_field()
@@ -50,12 +53,12 @@ class SelectTest extends TestBase
 //        $modelFactoryMock->shouldReceive('getByClassName')
 //            ->andReturn($this->modelManagerMock);
 //
-//        $fields = $this->sut->getEditFields();
+        $fields = $this->sut->getEditFields();
+
+        $this->assertInternalType('array', $fields, 'getEditFields should return an array');
 //
-//        $this->assertInternalType('array', $fields, 'getEditFields should return an array');
+        $this->assertCount(1, $fields);
 //
-//        $this->assertCount(1, $fields);
-//
-//        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
     }
 }

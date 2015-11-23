@@ -76,7 +76,7 @@ abstract class TestBase extends TestCase
     {
         $migrations = \DB::select('SELECT * FROM migrations');
 
-        $fi = new \FilesystemIterator(self::MIGRATIONS_PATH, \FilesystemIterator::SKIP_DOTS);
+        $fi = new \FilesystemIterator(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .self::MIGRATIONS_PATH, \FilesystemIterator::SKIP_DOTS);
 
         $this->assertCount(iterator_count($fi), $migrations);
     }
