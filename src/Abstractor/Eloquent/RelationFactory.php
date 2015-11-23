@@ -15,8 +15,8 @@ class RelationFactory implements RelationAbstractorFactoryContract
     const TRANSLATION = 'translation';
 
     protected $eloquentTypeToRelationType = array(
-        'Illuminate\Database\Eloquent\Relations\BelongTo'      => self::SELECT,
-        'Illuminate\Database\Eloquent\Relations\BelongToMany'  => self::SELECT_MULTIPLE,
+        'Illuminate\Database\Eloquent\Relations\BelongsTo'     => self::SELECT,
+        'Illuminate\Database\Eloquent\Relations\BelongsToMany' => self::SELECT_MULTIPLE,
         'Illuminate\Database\Eloquent\Relations\HasMany'       => self::SELECT_MULTIPLE,
         'Illuminate\Database\Eloquent\Relations\HasManyTrough' => self::SELECT_MULTIPLE,
         'Illuminate\Database\Eloquent\Relations\HasOne'        => self::SELECT,
