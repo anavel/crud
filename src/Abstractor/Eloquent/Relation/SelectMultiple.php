@@ -40,10 +40,6 @@ class SelectMultiple extends Relation
 
         $results = $repo->all();
 
-        if ($results->isEmpty()) {
-            return $select;
-        }
-
         $options = [];
 
         foreach ($results as $result) {
@@ -53,7 +49,7 @@ class SelectMultiple extends Relation
 
         if (! empty($fields)) {
             foreach ($fields as $field) {
-                if ($this->eloquentRelation->getPlainForeignKey() === $field->getName() ) {
+                if ($this->eloquentRelation->getPlainForeignKey() === $field->getName()) {
                     /** @var Field $foreignKeyField */
                     $foreignKeyField = clone $field;
                     $foreignKeyField->setName("{$this->name}[{$foreignKeyField->getName()}][]");
