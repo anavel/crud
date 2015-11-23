@@ -135,6 +135,8 @@ class Field implements FieldAbstractorContract
     public function setOptions(array $options)
     {
         $this->options = $options;
+
+        $this->formField->options($this->options);
     }
 
     /**
