@@ -305,7 +305,7 @@ class Model implements ModelAbstractorContract
     {
 
         /** @var \ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager $modelManager */
-        $modelManager = \App::make('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
+        $modelManager = App::make('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
         if (! empty($this->instance)) {
             $item = $this->instance;
         } else {
