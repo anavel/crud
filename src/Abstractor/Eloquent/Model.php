@@ -29,7 +29,7 @@ class Model implements ModelAbstractorContract
     protected $name;
     protected $instance;
 
-    public function __construct($config, AbstractionLayer $dbal, RelationFactory $relationFactory, FieldFactory $fieldFactory, FormGenerator $generator)
+    public function __construct($config, AbstractionLayer $dbal, RelationFactoryContract $relationFactory, FieldFactory $fieldFactory, FormGenerator $generator)
     {
         if (is_array($config)) {
             $this->model = $config['model'];
