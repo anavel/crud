@@ -88,7 +88,7 @@ class Generator implements GeneratorContract
 
         $formFields = array();
         foreach ($this->fields as $field) {
-            $formFields[$field->getName()] = $this->getFormField($field);
+            $formFields[$field->getName()] = $field->getFormField();
         }
         $form->add($formFields);
 

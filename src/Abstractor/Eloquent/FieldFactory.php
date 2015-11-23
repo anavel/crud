@@ -116,18 +116,6 @@ class FieldFactory implements FieldAbstractorFactoryContract
             $formElement->class('form-control '.config('crudoado.text_editor'));
         }
 
-        /*if ($formElementType === 'select') {
-            $formElement->options($modelField->getOptions());
-        }
-
-        if ($formElementType !== 'password') {
-            $formElement->val($modelField->getValue());
-
-            if (Request::old($modelField->getName())) {
-                $formElement->val(Request::old($modelField->getName()));
-            }
-        }*/
-
         return $formElement;
     }
 
