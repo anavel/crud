@@ -19,6 +19,8 @@ class ModelTest extends TestBase
     /** @var Mock */
     protected $relationMock;
     /** @var Mock */
+    protected $fieldMock;
+    /** @var Mock */
     protected $generatorMock;
 
     public function setUp()
@@ -29,10 +31,11 @@ class ModelTest extends TestBase
 
         $this->dbalMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer');
         $this->relationMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory');
+        $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
         $this->columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
         $this->generatorMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Form\Generator');
 
-        $this->sut = new Model($config['Users'], $this->dbalMock, $this->relationMock, $this->generatorMock);
+        $this->sut = new Model($config['Users'], $this->dbalMock, $this->relationMock, $this->fieldMock, $this->generatorMock);
     }
 
     public function test_implements_model_interface()
@@ -50,6 +53,13 @@ class ModelTest extends TestBase
                 'fullname' => $this->columnMock,
                 'active'   => $this->columnMock
             ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
+
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
 
         $fields = $this->sut->getListFields();
 
@@ -70,6 +80,13 @@ class ModelTest extends TestBase
                 'info'     => $this->columnMock,
                 'active'   => $this->columnMock
             ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
+
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
 
         $fields = $this->sut->getDetailFields();
 
@@ -87,12 +104,19 @@ class ModelTest extends TestBase
                 'username' => $this->columnMock,
                 'password' => $this->columnMock,
             ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
 
         $this->dbalMock->shouldReceive('getModel')
             ->andReturn($this->dbalMock);
 
         $this->dbalMock->shouldReceive('getKeyName')
             ->andReturn(LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT);
+
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
 
         $fields = $this->sut->getEditFields();
 
@@ -130,6 +154,8 @@ class ModelTest extends TestBase
                 'username' => $this->columnMock,
                 'password' => $this->columnMock,
             ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
 
         $this->dbalMock->shouldReceive('getModel')
             ->andReturn($this->dbalMock);
@@ -141,7 +167,10 @@ class ModelTest extends TestBase
         $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('get')->andReturn($this->mock('\ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation'));
 
-
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
 
         $form = $this->sut->getForm('crudoado.model.store', 'users');
 
@@ -166,6 +195,8 @@ class ModelTest extends TestBase
                 'username' => $this->columnMock,
                 'password' => $this->columnMock,
             ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
 
         $this->dbalMock->shouldReceive('getModel')
             ->andReturn($this->dbalMock);
@@ -176,6 +207,11 @@ class ModelTest extends TestBase
         $this->relationMock->shouldReceive('setModel')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('get')->andReturn($this->mock('\ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation'));
+
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
 
         $modelMock = $this->mock('Illuminate\Database\Eloquent\Model');
         $modelMock->shouldReceive('getAttribute');
@@ -217,6 +253,8 @@ class ModelTest extends TestBase
                 'username' => $this->columnMock,
                 'password' => $this->columnMock,
             ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
 
         $this->dbalMock->shouldReceive('getModel')
             ->andReturn($this->dbalMock);
@@ -228,6 +266,14 @@ class ModelTest extends TestBase
         $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('get')->andReturn($relationMock = $this->mock('\ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation'));
         $relationMock->shouldReceive('persist');
+
+        $fieldMock = $this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field');
+        $fieldMock->shouldReceive('getName', 'applyFunctions');
+
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($fieldMock);
 
         $result = $this->sut->persist($requestMock);
 

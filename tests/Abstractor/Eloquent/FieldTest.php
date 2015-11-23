@@ -12,14 +12,17 @@ class FieldTest extends TestBase
     protected $sut;
     /** @var Mock */
     protected $columnMock;
+    /** @var Mock */
+    protected $formFieldMock;
 
     public function setUp()
     {
         parent::setUp();
 
         $this->columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
+        $this->formFieldMock = $this->mock('FormManager\Fields\Field');
 
-        $this->sut = new Field($this->columnMock, 'user_name');
+        $this->sut = new Field($this->columnMock, $this->formFieldMock, 'user_name', 'User name');
     }
 
     public function test_implements_field_interface()

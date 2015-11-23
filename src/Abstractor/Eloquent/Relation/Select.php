@@ -25,6 +25,7 @@ class Select extends Relation
      */
     public function getEditFields()
     {
+        return [];
     }
 
     /**

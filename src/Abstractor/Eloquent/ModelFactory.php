@@ -3,14 +3,17 @@ namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory as ModelAbstractorFactoryContract;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory as RelationAbstractorFactoryContract;
+use ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory as FieldAbstractorFactoryContract;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use EasySlugger\Slugger;
 use ANavallaSuiza\Crudoado\Contracts\Form\Generator as FormGenerator;
+use ANavallaSuiza\Crudoado\Abstractor\Exceptions\FactoryException;
 
 class ModelFactory implements ModelAbstractorFactoryContract
 {
     protected $modelManager;
     protected $relationFactory;
+    protected $fieldFactory;
     protected $slugger;
 
     protected $allConfiguredModels;
@@ -19,11 +22,17 @@ class ModelFactory implements ModelAbstractorFactoryContract
      */
     private $generator;
 
-    public function __construct(array $allConfiguredModels, ModelManager $modelManager, RelationAbstractorFactoryContract $relationFactory, FormGenerator $generator)
-    {
+    public function __construct(
+        array $allConfiguredModels,
+        ModelManager $modelManager,
+        RelationAbstractorFactoryContract $relationFactory,
+        FieldAbstractorFactoryContract $fieldFactory,
+        FormGenerator $generator
+    ) {
         $this->allConfiguredModels = $allConfiguredModels;
         $this->modelManager = $modelManager;
         $this->relationFactory = $relationFactory;
+        $this->fieldFactory = $fieldFactory;
         $this->slugger = new Slugger();
         $this->generator = $generator;
     }
@@ -48,7 +57,7 @@ class ModelFactory implements ModelAbstractorFactoryContract
                     $modelNamespace = $config;
                 }
 
-                $model = new Model($config, $this->modelManager->getAbstractionLayer($modelNamespace), $this->relationFactory, $this->generator);
+                $model = new Model($config, $this->modelManager->getAbstractionLayer($modelNamespace), $this->relationFactory, $this->fieldFactory, $this->generator);
 
                 $model->setSlug($modelSlug)
                     ->setName($modelName);
@@ -65,7 +74,7 @@ class ModelFactory implements ModelAbstractorFactoryContract
         }
 
         if (is_null($model)) {
-            throw new \Exception("Model ".$slug." not found on configuration");
+            throw new FactoryException("Model ".$slug." not found on configuration");
         }
 
         return $model;
@@ -78,7 +87,7 @@ class ModelFactory implements ModelAbstractorFactoryContract
 
     public function getByClassName($classname, $id = null)
     {
-        $model = new Model(['model' => $classname], $this->modelManager->getAbstractionLayer($classname), $this->relationFactory, $this->generator);
+        $model = new Model(['model' => $classname], $this->modelManager->getAbstractionLayer($classname), $this->relationFactory, $this->fieldFactory, $this->generator);
 
         return $model;
     }

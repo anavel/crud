@@ -5,6 +5,7 @@ use ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation as RelationAbstractorCo
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
+use ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory;
 
 abstract class Relation implements RelationAbstractorContract
 {
@@ -19,17 +20,22 @@ abstract class Relation implements RelationAbstractorContract
      * @var EloquentRelation
      */
     protected $eloquentRelation;
+    /**
+     * @var FieldFactory
+     */
+    protected $fieldFactory;
     protected $modelManager;
     /**
      * @var array
      */
     protected $config;
 
-    public function __construct(array $config, ModelManager $modelManager, Model $model, EloquentRelation $eloquentRelation)
+    public function __construct(array $config, ModelManager $modelManager, Model $model, EloquentRelation $eloquentRelation, FieldFactory $fieldFactory)
     {
         $this->name = $config['name'];
         $this->relatedModel = $model;
         $this->eloquentRelation = $eloquentRelation;
+        $this->fieldFactory = $fieldFactory;
 
         $this->modelManager = $modelManager;
 

@@ -4,11 +4,13 @@ namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractorContract;
 use ANavallaSuiza\Crudoado\Abstractor\ConfigurationReader;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory as RelationFactoryContract;
+use ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory;
 use ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer;
 use FormManager\ElementInterface;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
 use App;
 use ANavallaSuiza\Crudoado\Contracts\Form\Generator as FormGenerator;
+use ANavallaSuiza\Crudoado\Abstractor\Exceptions\AbstractorException;
 use Illuminate\Http\Request;
 
 class Model implements ModelAbstractorContract
@@ -17,6 +19,7 @@ class Model implements ModelAbstractorContract
 
     protected $dbal;
     protected $relationFactory;
+    protected $fieldFactory;
     protected $generator;
 
     protected $model;
@@ -26,7 +29,7 @@ class Model implements ModelAbstractorContract
     protected $name;
     protected $instance;
 
-    public function __construct($config, AbstractionLayer $dbal, RelationFactoryContract $relationFactory, FormGenerator $generator)
+    public function __construct($config, AbstractionLayer $dbal, RelationFactory $relationFactory, FieldFactory $fieldFactory, FormGenerator $generator)
     {
         if (is_array($config)) {
             $this->model = $config['model'];
@@ -38,6 +41,7 @@ class Model implements ModelAbstractorContract
 
         $this->dbal = $dbal;
         $this->relationFactory = $relationFactory;
+        $this->fieldFactory = $fieldFactory;
         $this->generator = $generator;
     }
 
@@ -91,6 +95,15 @@ class Model implements ModelAbstractorContract
     {
         $tableColumns = $this->dbal->getTableColumns();
 
+        $foreignKeys = $this->dbal->getTableForeignKeys();
+
+        $foreignKeysName = [];
+        foreach ($foreignKeys as $foreignKey) {
+            foreach ($foreignKey->getColumns() as $columnName) {
+                $foreignKeysName[] = $columnName;
+            }
+        }
+
         $customDisplayedColumns = $this->getConfigValue($action, 'display');
         $customHiddenColumns = $this->getConfigValue($action, 'hide') ? : [];
 
@@ -98,7 +111,7 @@ class Model implements ModelAbstractorContract
         if (! empty($customDisplayedColumns) && is_array($customDisplayedColumns)) {
             foreach ($customDisplayedColumns as $customColumn) {
                 if (! array_key_exists($customColumn, $tableColumns)) {
-                    throw new \Exception("Column ".$customColumn." does not exist on ".$this->getModel());
+                    throw new AbstractorException("Column ".$customColumn." does not exist on ".$this->getModel());
                 }
 
                 $columns[$customColumn] = $tableColumns[$customColumn];
@@ -106,6 +119,10 @@ class Model implements ModelAbstractorContract
         } else {
             foreach ($tableColumns as $name => $column) {
                 if (in_array($name, $customHiddenColumns)) {
+                    continue;
+                }
+
+                if (in_array($name, $foreignKeysName)) {
                     continue;
                 }
 
@@ -159,7 +176,18 @@ class Model implements ModelAbstractorContract
                 $presentation = $fieldsPresentation[$name];
             }
 
-            $fields[] = new Field($column, $name, $presentation);
+            $config = [
+                'name' => $name,
+                'presentation' => $presentation,
+                'form_type' => null,
+                'validation' => null,
+                'functions' => null
+            ];
+
+            $fields[] = $this->fieldFactory
+                ->setColumn($column)
+                ->setConfig($config)
+                ->get();
         }
 
         return $fields;
@@ -178,7 +206,18 @@ class Model implements ModelAbstractorContract
                 $presentation = $fieldsPresentation[$name];
             }
 
-            $fields[] = new Field($column, $name, $presentation);
+            $config = [
+                'name' => $name,
+                'presentation' => $presentation,
+                'form_type' => null,
+                'validation' => null,
+                'functions' => null
+            ];
+
+            $fields[] = $this->fieldFactory
+                ->setColumn($column)
+                ->setConfig($config)
+                ->get();
         }
 
         return $fields;
@@ -201,19 +240,30 @@ class Model implements ModelAbstractorContract
                     $presentation = $fieldsPresentation[$name];
                 }
 
-                $field = new Field($column, $name, $presentation);
+                $config = [
+                    'name' => $name,
+                    'presentation' => $presentation,
+                    'form_type' => null,
+                    'validation' => null,
+                    'functions' => null
+                ];
 
                 if (array_key_exists($name, $formTypes)) {
-                    $field->setCustomFormType($formTypes[$name]);
+                    $config['form_type'] = $formTypes[$name];
                 }
 
                 if (array_key_exists($name, $validationRules)) {
-                    $field->setValidationRules($validationRules[$name]);
+                    $config['validation'] = $validationRules[$name];
                 }
 
                 if (array_key_exists($name, $functions)) {
-                    $field->setFunctions($functions[$name]);
+                    $config['functions'] = $functions[$name];
                 }
+
+                $field = $this->fieldFactory
+                    ->setColumn($column)
+                    ->setConfig($config)
+                    ->get();
 
                 if (! empty($this->instance) && ! empty($this->instance->getAttribute($name))) {
                     $field->setValue($this->instance->getAttribute($name));
@@ -255,7 +305,7 @@ class Model implements ModelAbstractorContract
     {
 
         /** @var \ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager $modelManager */
-        $modelManager = \App::make('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
+        $modelManager = App::make('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
         if (! empty($this->instance)) {
             $item = $this->instance;
         } else {

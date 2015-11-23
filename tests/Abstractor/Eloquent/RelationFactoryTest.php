@@ -15,6 +15,8 @@ class RelationFactoryTest extends TestBase
     protected $modelManagerMock;
     /** @var Mock */
     protected $userMock;
+    /** @var Mock */
+    protected $fieldMock;
 
     public function setUp()
     {
@@ -24,8 +26,9 @@ class RelationFactoryTest extends TestBase
 
         $this->modelManagerMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
         $this->userMock = $this->mock('\Crudoado\Tests\Models\User');
+        $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
 
-        $this->sut = new RelationFactory($this->modelManagerMock);
+        $this->sut = new RelationFactory($this->modelManagerMock, $this->fieldMock);
 
         $this->sut->setModel($this->userMock);
     }
@@ -42,7 +45,7 @@ class RelationFactoryTest extends TestBase
 //        $this->userMock->shouldReceive('translations')->andReturn(\App::make('\Illuminate\Database\Eloquent\Relations\HasMany'));
 //        $relation = $this->stu->get('translations');
     }
-//
+
     public function test_throws_exception_when_relation_does_not_exist()
     {
         $this->setExpectedException('Exception', 'Relation chompy does not exist on');

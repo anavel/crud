@@ -17,6 +17,8 @@ class TranslationTest extends TestBase
     protected $relationMock;
     /** @var  Mock */
     protected $modelManagerMock;
+    /** @var  Mock */
+    protected $fieldMock;
 
     public function setUp()
     {
@@ -25,12 +27,14 @@ class TranslationTest extends TestBase
         $config = require __DIR__ . '/../../config.php';
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
+        $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
 
         $this->sut = new Translation(
             $config['Users']['relations']['translations'],
             $this->modelManagerMock = Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
             $user = new User(),
-            $user->translations()
+            $user->translations(),
+            $this->fieldMock
         );
     }
 

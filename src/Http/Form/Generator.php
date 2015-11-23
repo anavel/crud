@@ -43,8 +43,6 @@ class Generator implements GeneratorContract
         'select'
     );
 
-    protected $relationsTypeToFormType = array();
-
     public function __construct(FactoryInterface $factory)
     {
         $this->factory = $factory;
@@ -129,10 +127,12 @@ class Generator implements GeneratorContract
             $formField->options($modelField->getOptions());
         }
 
-        $formField->val($modelField->getValue());
+        if ($formFieldType !== 'password') {
+            $formField->val($modelField->getValue());
 
-        if (Request::old($modelField->getName())) {
-            $formField->val(Request::old($modelField->getName()));
+            if (Request::old($modelField->getName())) {
+                $formField->val(Request::old($modelField->getName()));
+            }
         }
 
         return $formField;

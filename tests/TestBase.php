@@ -75,7 +75,9 @@ abstract class TestBase extends TestCase
     public function test_running_migration()
     {
         $migrations = \DB::select('SELECT * FROM migrations');
+
         $fi = new \FilesystemIterator(self::MIGRATIONS_PATH, \FilesystemIterator::SKIP_DOTS);
+
         $this->assertCount(iterator_count($fi), $migrations);
     }
 

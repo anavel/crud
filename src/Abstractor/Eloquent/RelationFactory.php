@@ -2,8 +2,10 @@
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory as RelationAbstractorFactoryContract;
+use ANavallaSuiza\Crudoado\Abstractor\Exceptions\FactoryException;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
+use ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory;
 
 class RelationFactory implements RelationAbstractorFactoryContract
 {
@@ -14,8 +16,8 @@ class RelationFactory implements RelationAbstractorFactoryContract
     const TRANSLATION = 'translation';
 
     protected $eloquentTypeToRelationType = array(
-        'Illuminate\Database\Eloquent\Relations\BelongTo'      => self::SELECT,
-        'Illuminate\Database\Eloquent\Relations\BelongToMany'  => self::SELECT_MULTIPLE,
+        'Illuminate\Database\Eloquent\Relations\BelongsTo'     => self::SELECT,
+        'Illuminate\Database\Eloquent\Relations\BelongsToMany' => self::SELECT_MULTIPLE,
         'Illuminate\Database\Eloquent\Relations\HasMany'       => self::SELECT_MULTIPLE,
         'Illuminate\Database\Eloquent\Relations\HasManyTrough' => self::SELECT_MULTIPLE,
         'Illuminate\Database\Eloquent\Relations\HasOne'        => self::SELECT,
@@ -31,6 +33,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
     );
 
     protected $modelManager;
+    protected $fieldFactory;
 
     /**
      * @var EloquentModel
@@ -38,9 +41,10 @@ class RelationFactory implements RelationAbstractorFactoryContract
     protected $model;
     protected $config;
 
-    public function __construct(ModelManager $modelManager)
+    public function __construct(ModelManager $modelManager, FieldFactory $fieldFactory)
     {
         $this->modelManager = $modelManager;
+        $this->fieldFactory = $fieldFactory;
         $this->config = array();
     }
 
@@ -61,7 +65,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
     public function get($name)
     {
         if (! method_exists($this->model, $name)) {
-            throw new \Exception("Relation ".$name." does not exist on ".$this->model);
+            throw new FactoryException("Relation ".$name." does not exist on ".get_class($this->model));
         }
 
         $relationInstance = $this->model->$name();
@@ -69,7 +73,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
 
         if (empty($this->config['type'])) {
             if (! array_key_exists($relationEloquentType, $this->eloquentTypeToRelationType)) {
-                throw new \Exception($relationEloquentType." relation not supported");
+                throw new FactoryException($relationEloquentType." relation not supported");
             }
 
             $type = $this->eloquentTypeToRelationType[$relationEloquentType];
@@ -78,7 +82,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
         }
 
         if (! array_key_exists($type, $this->typesMap)) {
-            throw new \Exception("Unexpected relation type ".$type);
+            throw new FactoryException("Unexpected relation type ".$type);
         }
 
         $this->config['name'] = $name;
@@ -87,7 +91,8 @@ class RelationFactory implements RelationAbstractorFactoryContract
             $this->config,
             $this->modelManager,
             $this->model,
-            $relationInstance
+            $relationInstance,
+            $this->fieldFactory
         );
     }
 }
