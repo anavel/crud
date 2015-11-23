@@ -5,6 +5,7 @@ use ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory as RelationAbstr
 use ANavallaSuiza\Crudoado\Abstractor\Exceptions\FactoryException;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
+use ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory;
 
 class RelationFactory implements RelationAbstractorFactoryContract
 {
@@ -32,6 +33,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
     );
 
     protected $modelManager;
+    protected $fieldFactory;
 
     /**
      * @var EloquentModel
@@ -39,9 +41,10 @@ class RelationFactory implements RelationAbstractorFactoryContract
     protected $model;
     protected $config;
 
-    public function __construct(ModelManager $modelManager)
+    public function __construct(ModelManager $modelManager, FieldFactory $fieldFactory)
     {
         $this->modelManager = $modelManager;
+        $this->fieldFactory = $fieldFactory;
         $this->config = array();
     }
 
@@ -88,7 +91,8 @@ class RelationFactory implements RelationAbstractorFactoryContract
             $this->config,
             $this->modelManager,
             $this->model,
-            $relationInstance
+            $relationInstance,
+            $this->fieldFactory
         );
     }
 }

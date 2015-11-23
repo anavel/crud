@@ -19,6 +19,8 @@ class SelectMultipleTest extends TestBase
     protected $relationMock;
     /** @var  Mock */
     protected $modelManagerMock;
+    /** @var  Mock */
+    protected $fieldMock;
 
     public function setUp()
     {
@@ -27,12 +29,14 @@ class SelectMultipleTest extends TestBase
         $config = require __DIR__ . '/../../config.php';
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
+        $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
 
         $this->sut = new SelectMultiple(
             $config['Users']['relations']['posts'],
             $this->modelManagerMock = Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
             $user = new User(),
-            $user->posts()
+            $user->posts(),
+            $this->fieldMock
         );
     }
 

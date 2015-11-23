@@ -15,6 +15,8 @@ class RelationFactoryTest extends TestBase
     protected $modelManagerMock;
     /** @var Mock */
     protected $userMock;
+    /** @var Mock */
+    protected $fieldMock;
 
     public function setUp()
     {
@@ -24,8 +26,9 @@ class RelationFactoryTest extends TestBase
 
         $this->modelManagerMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
         $this->userMock = $this->mock('\Crudoado\Tests\Models\User');
+        $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
 
-        $this->sut = new RelationFactory($this->modelManagerMock);
+        $this->sut = new RelationFactory($this->modelManagerMock, $this->fieldMock);
 
         $this->sut->setModel($this->userMock);
     }

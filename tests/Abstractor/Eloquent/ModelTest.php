@@ -53,6 +53,8 @@ class ModelTest extends TestBase
                 'fullname' => $this->columnMock,
                 'active'   => $this->columnMock
             ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
 
         $this->fieldMock->shouldReceive('setColumn', 'setConfig')
             ->andReturn($this->fieldMock);
@@ -78,6 +80,8 @@ class ModelTest extends TestBase
                 'info'     => $this->columnMock,
                 'active'   => $this->columnMock
             ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
 
         $this->fieldMock->shouldReceive('setColumn', 'setConfig')
             ->andReturn($this->fieldMock);
@@ -100,6 +104,8 @@ class ModelTest extends TestBase
                 'username' => $this->columnMock,
                 'password' => $this->columnMock,
             ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
 
         $this->dbalMock->shouldReceive('getModel')
             ->andReturn($this->dbalMock);
@@ -148,6 +154,8 @@ class ModelTest extends TestBase
                 'username' => $this->columnMock,
                 'password' => $this->columnMock,
             ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
 
         $this->dbalMock->shouldReceive('getModel')
             ->andReturn($this->dbalMock);
@@ -187,6 +195,8 @@ class ModelTest extends TestBase
                 'username' => $this->columnMock,
                 'password' => $this->columnMock,
             ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
 
         $this->dbalMock->shouldReceive('getModel')
             ->andReturn($this->dbalMock);
@@ -243,6 +253,8 @@ class ModelTest extends TestBase
                 'username' => $this->columnMock,
                 'password' => $this->columnMock,
             ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
 
         $this->dbalMock->shouldReceive('getModel')
             ->andReturn($this->dbalMock);
