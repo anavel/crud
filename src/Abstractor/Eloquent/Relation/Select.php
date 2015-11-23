@@ -36,7 +36,7 @@ class Select extends Relation
 
         $results = $repo->all();
 
-        $options = [];
+        $options = ['' => ''];
 
         foreach ($results as $result) {
             $fieldName = $this->config['display'];
