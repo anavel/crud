@@ -25,12 +25,10 @@ class Select extends Relation
      */
     public function getEditFields()
     {
-        /** @var \ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory $modelFactory */
-        $modelFactory = App::make('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory');
+        /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
+        $dbal = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
 
-        $modelAbstractor = $modelFactory->getByClassName(get_class($this->eloquentRelation->getRelated()));
-
-        $fields = $modelAbstractor->getEditFields();
+        $column = $dbal->getTableColumn($this->eloquentRelation->getOtherKey());
 
         $repo = $this->modelManager->getRepository(get_class($this->eloquentRelation->getRelated()));
 
@@ -45,18 +43,20 @@ class Select extends Relation
             $options[$result->getKey()] = $result->getAttribute($fieldName);
         }
 
-        if (! empty($fields)) {
-            foreach ($fields as $field) {
-                if ($this->eloquentRelation->getOtherKey() === $field->getName()) {
-                    /** @var Field $foreignKeyField */
-                    $foreignKeyField = clone $field;
-                    $foreignKeyField->setName("{$this->name}[{$foreignKeyField->getName()}][]");
-                    $foreignKeyField->setOptions($options);
-                    $foreignKeyField->setCustomFormType('select');
-                    $select[] = $foreignKeyField;
-                }
-            }
-        }
+        $config = [
+            'name' => $this->eloquentRelation->getForeignKey(),
+            'presentation' => $this->presentation,
+            'form_type' => 'select',
+            'validation' => null,
+            'functions' => null
+        ];
+
+        $field = $this->fieldFactory
+            ->setColumn($column)
+            ->setConfig($config)
+            ->get();
+
+        $select[] = $field;
 
         return $select;
     }
