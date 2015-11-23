@@ -56,6 +56,8 @@ class Select extends Relation
             ->setConfig($config)
             ->get();
 
+        $field->setOptions($options);
+
         $select[] = $field;
 
         return $select;
