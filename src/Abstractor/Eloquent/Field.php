@@ -3,7 +3,7 @@ namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Field as FieldAbstractorContract;
 use Doctrine\DBAL\Schema\Column;
-use FormManager\Elements\Element;
+use FormManager\Fields\Field as FormManagerField;
 
 class Field implements FieldAbstractorContract
 {
@@ -12,9 +12,9 @@ class Field implements FieldAbstractorContract
      */
     protected $dbal;
     /**
-     * @var Element
+     * @var FormManagerField
      */
-    protected $formElement;
+    protected $formField;
     protected $name;
     protected $value;
     protected $presentation;
@@ -23,10 +23,10 @@ class Field implements FieldAbstractorContract
     protected $functions;
     protected $options;
 
-    public function __construct(Column $column, Element $formElement, $name, $presentation = null)
+    public function __construct(Column $column, FormManagerField $formField, $name, $presentation = null)
     {
         $this->dbal = $column;
-        $this->formElement = $formElement;
+        $this->formField = $formField;
         $this->name = $name;
         $this->presentation = $presentation;
         $this->customFormType = null;
@@ -145,8 +145,8 @@ class Field implements FieldAbstractorContract
         return $this->options;
     }
 
-    public function getFormElement()
+    public function getFormField()
     {
-        return $this->formElement;
+        return $this->formField;
     }
 }

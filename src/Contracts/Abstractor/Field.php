@@ -50,5 +50,5 @@ interface Field
     /**
      * @return array
      */
-    public function getFormElement();
+    public function getFormField();
 }
