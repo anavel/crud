@@ -47,7 +47,7 @@ class Select extends Relation
 
         if (! empty($fields)) {
             foreach ($fields as $field) {
-                if ($this->eloquentRelation->getPlainForeignKey() === $field->getName()) {
+                if ($this->eloquentRelation->getOtherKey() === $field->getName()) {
                     /** @var Field $foreignKeyField */
                     $foreignKeyField = clone $field;
                     $foreignKeyField->setName("{$this->name}[{$foreignKeyField->getName()}][]");
