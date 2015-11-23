@@ -45,7 +45,7 @@ class Select extends Relation
 
         $config = [
             'name' => $this->eloquentRelation->getForeignKey(),
-            'presentation' => $this->presentation,
+            'presentation' => $this->getPresentation(),
             'form_type' => 'select',
             'validation' => null,
             'functions' => null
