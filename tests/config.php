@@ -20,7 +20,11 @@ return [
                     'type' => 'translation',
                     'name' => 'translations'
                 ],
-                'group' => 'select',
+                'group' => [
+                    'type' => 'select',
+                    'name' => 'group',
+                    'display' => 'title'
+                ],
                 'posts' => [
                     'type' => 'select-multiple',
                     'name' => 'posts',
