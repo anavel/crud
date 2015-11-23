@@ -91,6 +91,7 @@ class SelectMultipleTest extends TestBase
             ->andReturn($repoMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository'));
 
         $modelMock = $this->mock('Crudoado\Tests\Models\Post');
+        $modelMock->shouldReceive('getKey')->andReturn(1);
         $modelMock->shouldReceive('setAttribute', 'save')->times(3);
 
         $repoMock->shouldReceive('pushCriteria')->atLeast()->once()

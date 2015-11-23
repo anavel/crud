@@ -255,6 +255,14 @@ class ModelTest extends TestBase
         $this->relationMock->shouldReceive('get')->andReturn($relationMock = $this->mock('\ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation'));
         $relationMock->shouldReceive('persist');
 
+        $fieldMock = $this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field');
+        $fieldMock->shouldReceive('getName', 'applyFunctions');
+
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($fieldMock);
+
         $result = $this->sut->persist($requestMock);
 
         $this->assertInstanceOf('Crudoado\Tests\Models\User', $result);
