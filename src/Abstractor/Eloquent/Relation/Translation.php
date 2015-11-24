@@ -58,7 +58,7 @@ class Translation extends Relation
 
                     $config = [
                         'name' => $this->name.'['.$key.']['.$columnName.']',
-                        'presentation' => $columnName.' '.$lang,
+                        'presentation' => ucfirst($columnName).' ['.$lang .']',
                         'form_type' => $formType,
                         'no_validate' => true,
                         'validation' => null,
