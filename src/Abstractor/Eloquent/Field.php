@@ -4,6 +4,7 @@ namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Field as FieldAbstractorContract;
 use Doctrine\DBAL\Schema\Column;
 use FormManager\Fields\Field as FormManagerField;
+use Request;
 
 class Field implements FieldAbstractorContract
 {
@@ -151,6 +152,10 @@ class Field implements FieldAbstractorContract
 
     public function getFormField()
     {
+        if (Request::old($this->name)) {
+            $this->formField->val(Request::old($this->name));
+        }
+
         return $this->formField;
     }
 }

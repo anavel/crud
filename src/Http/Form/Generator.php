@@ -95,49 +95,6 @@ class Generator implements GeneratorContract
         return $form;
     }
 
-    protected function getFormField(Field $modelField)
-    {
-        if ($modelField->hasCustomFormType()) {
-            if (! in_array($modelField->getCustomFormType(), $this->databaseTypeToFormType)) {
-                throw new \Exception("Unknown form type ".$modelField->getCustomFormType());
-            }
-
-            $formFieldType = $modelField->getCustomFormType();
-        } else {
-            if (! array_key_exists($modelField->type()->getName(), $this->databaseTypeToFormType)) {
-                throw new \Exception("No form type found for database type ".$modelField->type()->getName());
-            }
-
-            $formFieldType = $this->databaseTypeToFormType[$modelField->type()->getName()];
-        }
-
-        $formField = $this->factory->get($formFieldType, []);
-
-        if ($formFieldType != 'hidden') {
-            $formField->class('form-control')
-                ->label($modelField->presentation())
-                ->placeholder($modelField->presentation());
-        }
-
-        if ($formFieldType === 'textarea') {
-            $formField->class('form-control '.config('crudoado.text_editor'));
-        }
-
-        if ($formFieldType === 'select') {
-            $formField->options($modelField->getOptions());
-        }
-
-        if ($formFieldType !== 'password') {
-            $formField->val($modelField->getValue());
-
-            if (Request::old($modelField->getName())) {
-                $formField->val(Request::old($modelField->getName()));
-            }
-        }
-
-        return $formField;
-    }
-
     public function getValidationRules()
     {
         $rules = array();

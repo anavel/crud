@@ -86,6 +86,9 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model);
 
+        // Sets the validation rules
+        $modelAbstractor->getForm(route('crudoado.model.store', $modelAbstractor->getSlug()));
+
         $this->validate($request, $modelAbstractor->getValidationRules());
 
         $modelAbstractor->persist($request);
@@ -150,6 +153,9 @@ class ModelController extends Controller
     public function update(Request $request, $model, $id)
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model, $id);
+
+        // Sets the validation rules
+        $modelAbstractor->getForm(route('crudoado.model.update', [$modelAbstractor->getSlug(), $id]));
 
         $this->validate($request, $modelAbstractor->getValidationRules());
 
