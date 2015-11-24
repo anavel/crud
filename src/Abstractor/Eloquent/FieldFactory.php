@@ -85,6 +85,11 @@ class FieldFactory implements FieldAbstractorFactoryContract
             $field->setFunctions($this->config['functions']);
         }
 
+        if (get_class($formElement) === \FormManager\Fields\Password::class) {
+            $field->hideValue(true);
+            $field->saveIfEmpty(false);
+        }
+
         return $field;
     }
 
@@ -114,11 +119,6 @@ class FieldFactory implements FieldAbstractorFactoryContract
 
         if ($formElementType === 'textarea') {
             $formElement->class('form-control '.config('crudoado.text_editor'));
-        }
-
-        if ($formElementType === 'password') {
-            $formElement->hideValue(true);
-            $formElement->saveIfEmpty(false);
         }
 
         return $formElement;
