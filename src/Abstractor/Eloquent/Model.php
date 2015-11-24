@@ -305,7 +305,6 @@ class Model implements ModelAbstractorContract
      */
     public function persist(Request $request)
     {
-
         /** @var \ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager $modelManager */
         $modelManager = App::make('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
         if (! empty($this->instance)) {
@@ -319,10 +318,28 @@ class Model implements ModelAbstractorContract
                 continue;
             }
 
-            $item->setAttribute(
-                $field->getName(),
-                $field->applyFunctions($request->input($field->getName()))
-            );
+            $requestValue = $request->input($field->getName());
+
+            if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
+                if ($request->hasFile($field->getName())) {
+                    $fileName = uniqid().'.'.$request->file($field->getName())->getClientOriginalExtension();
+                    $modelFolder = $this->slug.DIRECTORY_SEPARATOR;
+
+                    $request->file($field->getName())->move(
+                        base_path(config('crudoado.uploads_path').$modelFolder),
+                        $fileName
+                    );
+
+                    $requestValue = $modelFolder.$fileName;
+                }
+            }
+
+            if (! empty($requestValue)) {
+                $item->setAttribute(
+                    $field->getName(),
+                    $field->applyFunctions($requestValue)
+                );
+            }
         }
 
         $item->save();

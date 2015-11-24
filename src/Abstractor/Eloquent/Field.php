@@ -19,7 +19,6 @@ class Field implements FieldAbstractorContract
     protected $name;
     protected $value;
     protected $presentation;
-    protected $customFormType;
     protected $validationRules;
     protected $functions;
     protected $options;
@@ -33,7 +32,6 @@ class Field implements FieldAbstractorContract
         $this->formField = $formField;
         $this->name = $name;
         $this->presentation = $presentation;
-        $this->customFormType = null;
         $this->validationRules = array();
         $this->functions = array();
         $this->options = [];
@@ -63,21 +61,6 @@ class Field implements FieldAbstractorContract
     public function type()
     {
         return $this->dbal->getType();
-    }
-
-    public function setCustomFormType($formType)
-    {
-        $this->customFormType = $formType;
-    }
-
-    public function hasCustomFormType()
-    {
-        return isset($this->customFormType);
-    }
-
-    public function getCustomFormType()
-    {
-        return $this->customFormType;
     }
 
     public function setValidationRules($rules)
