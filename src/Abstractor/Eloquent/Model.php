@@ -305,7 +305,13 @@ class Model implements ModelAbstractorContract
      */
     public function persist(Request $request)
     {
-        $item = $this->instance;
+        /** @var \ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager $modelManager */
+        $modelManager = App::make('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
+        if (! empty($this->instance)) {
+            $item = $this->instance;
+        } else {
+            $item = $modelManager->getModelInstance($this->getModel());
+        }
 
         foreach ($this->getEditFields(true) as $field) {
             if (! $field->saveIfEmpty() && empty($request->input($field->getName()))) {
