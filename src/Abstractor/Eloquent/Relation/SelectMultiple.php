@@ -64,9 +64,15 @@ class SelectMultiple extends Relation
 
         $results = $this->eloquentRelation->getResults();
 
-        /*if (! empty($results)) {
-            $field->setValue($results->getKey());
-        }*/
+        if (! $results->isEmpty()) {
+            $values = [];
+
+            foreach ($results as $result) {
+                $values[] = $result->getKey();
+            }
+
+            $field->setValue($values);
+        }
 
         $select[] = $field;
 
