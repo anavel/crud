@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class SelectMultiple extends Relation
 {
-    use CheckRelationCompatibility, CheckRelationConfig;
+    use CheckRelationCompatibility;
 
     protected $compatibleEloquentRelations = array(
         'Illuminate\Database\Eloquent\Relations\HasMany'

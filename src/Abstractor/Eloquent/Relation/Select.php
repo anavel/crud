@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class Select extends Relation
 {
-    use CheckRelationCompatibility, CheckRelationConfig;
+    use CheckRelationCompatibility;
 
     protected $compatibleEloquentRelations = array(
         'Illuminate\Database\Eloquent\Relations\BelongsTo'

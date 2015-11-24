@@ -14,4 +14,11 @@ trait CheckRelationConfig
             throw new RelationException('Display should be set in config');
         }
     }
+
+    public function checkNameConfig($config)
+    {
+        if (empty($config) || empty($config['name'])) {
+            throw new RelationException('Relation name should be set');
+        }
+    }
 }
