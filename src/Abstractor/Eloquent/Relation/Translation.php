@@ -10,7 +10,7 @@ class Translation extends Relation
 {
     use CheckRelationCompatibility;
 
-    protected $langs = ['en', 'es', 'gl']; //TODO get from config
+    protected $langs = [];
 
     protected $compatibleEloquentRelations = array(
         'Illuminate\Database\Eloquent\Relations\HasMany'
@@ -18,6 +18,10 @@ class Translation extends Relation
 
     public function setup()
     {
+        if (empty($this->langs)) {
+            $this->langs = config('adoadomin.translation_languages');
+        }
+
         $this->checkRelationCompatibility();
     }
 
@@ -26,27 +30,59 @@ class Translation extends Relation
      */
     public function getEditFields()
     {
-        /** @var \ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory $modelFactory */
-        $modelFactory = App::make('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory');
+        /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
+        $dbal = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
 
-        $modelAbstractor = $modelFactory->getByClassName(get_class($this->eloquentRelation->getRelated()));
+        $columns = $dbal->getTableColumns();
 
-        $fields = $modelAbstractor->getEditFields();
+        //dd($fields);
+        $results = $this->eloquentRelation->getResults();
+        $results = $results->keyBy('locale');
 
         $translationFields = [];
-        if (! empty($fields)) {
+        if (! empty($columns)) {
             foreach ($this->langs as $key => $lang) {
-                foreach ($fields as $field) {
-                    if (strpos($this->eloquentRelation->getForeignKey(), $field->getName()) === false) {
-                        /** @var Field $langField */
-                        $langField = clone $field;
-                        if ($langField->getName() == 'locale') {
-                            $langField->setCustomFormType('hidden');
-                            $langField->setValue($lang);
-                        }
-                        $langField->setName("{$this->name}[$key][{$langField->getName()}]");
-                        $translationFields[] = $langField;
+                foreach ($columns as $columnName => $column) {
+                    if ($columnName === $this->eloquentRelation->getPlainForeignKey()) {
+                        continue;
                     }
+
+                    if ($columnName === $this->eloquentRelation->getParent()->getKeyName()) {
+                        continue;
+                    }
+
+                    $formType = null;
+
+                    if ($columnName === 'locale') {
+                        $formType = 'hidden';
+                    }
+
+                    $config = [
+                        'name' => $this->name.'['.$key.']['.$columnName.']',
+                        'presentation' => $columnName.' '.$lang,
+                        'form_type' => $formType,
+                        'no_validate' => true,
+                        'validation' => null,
+                        'functions' => null
+                    ];
+
+                    /** @var Field $field */
+                    $field = $this->fieldFactory
+                        ->setColumn($column)
+                        ->setConfig($config)
+                        ->get();
+
+                    if ($columnName === 'locale') {
+                        $field->setValue($lang);
+                    }
+
+                    if ($results->has($lang)) {
+                        $item = $results->get($lang);
+
+                        $field->setValue($item->getAttribute($columnName));
+                    }
+
+                    $translationFields[] = $field;
                 }
             }
         }
@@ -60,14 +96,21 @@ class Translation extends Relation
     public function persist(Request $request)
     {
         if (! empty($translationsArray = $request->input($this->name))) {
+            $currentTranslations = $this->eloquentRelation->get();
+            $currentTranslations = $currentTranslations->keyBy('locale');
+
             foreach ($translationsArray as $translation) {
-                $translationModel = clone $this->eloquentRelation->getRelated();
+                if ($currentTranslations->has($translation['locale'])) {
+                    $translationModel = $currentTranslations->get($translation['locale']);
+                } else {
+                    $translationModel = $this->eloquentRelation->getRelated()->newInstance();
+                }
+
                 $translationModel->setAttribute($this->eloquentRelation->getForeignKey(), $this->relatedModel->id);
 
                 foreach ($translation as $fieldKey => $fieldValue) {
                     $translationModel->setAttribute($fieldKey, $fieldValue);
                 }
-
 
                 $translationModel->save();
             }
