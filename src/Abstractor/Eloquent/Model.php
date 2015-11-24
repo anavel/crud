@@ -91,16 +91,20 @@ class Model implements ModelAbstractorContract
         return $this->getConfigValue('soft_deletes') ? true : false;
     }
 
-    protected function getColumns($action)
+    protected function getColumns($action, $withForeignKeys = false)
     {
         $tableColumns = $this->dbal->getTableColumns();
 
         $foreignKeys = $this->dbal->getTableForeignKeys();
 
         $foreignKeysName = [];
-        foreach ($foreignKeys as $foreignKey) {
-            foreach ($foreignKey->getColumns() as $columnName) {
-                $foreignKeysName[] = $columnName;
+        if ($withForeignKeys === false) {
+            $foreignKeys = $this->dbal->getTableForeignKeys();
+
+            foreach ($foreignKeys as $foreignKey) {
+                foreach ($foreignKey->getColumns() as $columnName) {
+                    $foreignKeysName[] = $columnName;
+                }
             }
         }
 
@@ -223,9 +227,9 @@ class Model implements ModelAbstractorContract
         return $fields;
     }
 
-    public function getEditFields()
+    public function getEditFields($withForeignKeys = false)
     {
-        $columns = $this->getColumns('edit');
+        $columns = $this->getColumns('edit', $withForeignKeys);
 
         $fieldsPresentation = $this->getConfigValue('fields_presentation') ? : [];
         $formTypes = $this->getConfigValue('edit', 'form_types') ? : [];
@@ -312,7 +316,7 @@ class Model implements ModelAbstractorContract
             $item = $modelManager->getModelInstance($this->getModel());
         }
 
-        foreach ($this->getEditFields() as $field) {
+        foreach ($this->getEditFields(true) as $field) {
             $item->setAttribute(
                 $field->getName(),
                 $field->applyFunctions($request->input($field->getName()))

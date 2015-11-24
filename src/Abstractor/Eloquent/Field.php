@@ -118,6 +118,8 @@ class Field implements FieldAbstractorContract
     public function setValue($value)
     {
         $this->value = $value;
+
+        $this->formField->val($this->value);
     }
 
     /**

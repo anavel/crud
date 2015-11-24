@@ -58,6 +58,12 @@ class Select extends Relation
 
         $field->setOptions($options);
 
+        $results = $this->eloquentRelation->getResults();
+
+        if (! empty($results)) {
+            $field->setValue($results->getKey());
+        }
+
         $select[] = $field;
 
         return $select;
@@ -69,6 +75,6 @@ class Select extends Relation
      */
     public function persist(Request $request)
     {
-        // TODO: Implement persist() method.
+        //
     }
 }
