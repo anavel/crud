@@ -17,11 +17,11 @@ return [
             ],
             'relations' => [
                 'translations' => [
-                    'type' => 'translation',
-                    'name' => 'translations'
+                    'type' => 'fake',
+                    'name' => 'translations',
                 ],
                 'group' => [
-                    'type' => 'select',
+                    'type' => 'select-multiple',
                     'name' => 'group',
                 ],
                 'posts' => [
