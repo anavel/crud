@@ -1,7 +1,7 @@
 <?php
 
 
-namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
+namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits;
 
 
 use ANavallaSuiza\Crudoado\Abstractor\Exceptions\RelationException;

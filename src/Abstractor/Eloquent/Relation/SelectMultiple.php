@@ -1,6 +1,8 @@
 <?php
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
+use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
+use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationConfig;
 use ANavallaSuiza\Crudoado\Repository\Criteria\InArrayCriteria;
 use App;
 use Illuminate\Http\Request;

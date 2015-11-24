@@ -1,6 +1,7 @@
 <?php
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
+use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Field;
 use App;
 use Illuminate\Http\Request;
