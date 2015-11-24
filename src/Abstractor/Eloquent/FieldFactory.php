@@ -111,6 +111,10 @@ class FieldFactory implements FieldAbstractorFactoryContract
 
         $formElement = $this->factory->get($formElementType, []);
 
+        if (! empty($this->config['attr']) && is_array($this->config['attr'])) {
+            $formElement->attr($this->config['attr']);
+        }
+
         if ($formElementType !== 'hidden') {
             $formElement->class('form-control')
                 ->label($this->getPresentation())
