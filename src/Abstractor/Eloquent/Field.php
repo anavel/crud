@@ -25,6 +25,7 @@ class Field implements FieldAbstractorContract
     protected $options;
     protected $hideValue;
     protected $saveIfEmpty;
+    protected $noValidate;
 
     public function __construct(Column $column, FormManagerField $formField, $name, $presentation = null)
     {
@@ -38,6 +39,7 @@ class Field implements FieldAbstractorContract
         $this->options = [];
         $this->hideValue = false;
         $this->saveIfEmpty = true;
+        $this->noValidate = false;
     }
 
     public function getName()
@@ -85,7 +87,7 @@ class Field implements FieldAbstractorContract
 
     public function getValidationRules()
     {
-        if (count($this->validationRules) === 0) {
+        if (count($this->validationRules) === 0 && $this->noValidate() === false) {
             if ($this->dbal->getNotnull()) {
                 $this->validationRules[] = 'required';
             }
@@ -189,5 +191,17 @@ class Field implements FieldAbstractorContract
         }
 
         return $this->saveIfEmpty;
+    }
+
+    /**
+     *
+     */
+    public function noValidate($value = null)
+    {
+        if (! is_null($value)) {
+            $this->noValidate = $value;
+        }
+
+        return $this->noValidate;
     }
 }

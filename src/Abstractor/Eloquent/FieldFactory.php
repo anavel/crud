@@ -85,9 +85,14 @@ class FieldFactory implements FieldAbstractorFactoryContract
             $field->setFunctions($this->config['functions']);
         }
 
+        if (! empty($this->config['no_validate']) && $this->config['no_validate'] === true) {
+            $field->noValidate(true);
+        }
+
         if (get_class($formElement) === \FormManager\Fields\Password::class) {
             $field->hideValue(true);
             $field->saveIfEmpty(false);
+            $field->noValidate(true);
         }
 
         return $field;

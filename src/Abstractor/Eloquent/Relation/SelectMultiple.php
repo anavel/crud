@@ -51,6 +51,7 @@ class SelectMultiple extends Relation
             'attr' => [
                 'multiple' => true
             ],
+            'no_validate' => true,
             'validation' => null,
             'functions' => null
         ];

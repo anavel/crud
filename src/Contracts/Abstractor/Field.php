@@ -61,4 +61,9 @@ interface Field
      * @return boolean
      */
     public function saveIfEmpty($value = null);
+
+    /**
+     * @return boolean
+     */
+    public function noValidate($value = null);
 }
