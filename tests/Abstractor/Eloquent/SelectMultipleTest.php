@@ -111,4 +111,19 @@ class SelectMultipleTest extends TestBase
             $this->fieldMock
         );
     }
+
+
+
+    public function test_throws_exception_if_name_is_not_set_in_config()
+    {
+        $this->setExpectedException('ANavallaSuiza\Crudoado\Abstractor\Exceptions\RelationException', 'Relation name should be set');
+
+        $this->sut = new SelectMultiple(
+            $this->wrongConfig['Users']['relations']['relation-without-name'],
+            $this->modelManagerMock = Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
+            $user = new User(),
+            $user->posts(),
+            $this->fieldMock
+        );
+    }
 }

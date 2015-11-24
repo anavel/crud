@@ -28,6 +28,9 @@ return [
                     'type' => 'select-multiple',
                     'name' => 'posts',
                 ],
+                'relation-without-name' => [
+                    'type' => 'select-multiple',
+                ],
             ],
             'list' => [
                 'display' => ['id', 'username', 'fullname', 'active'],

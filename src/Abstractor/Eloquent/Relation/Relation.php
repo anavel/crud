@@ -1,6 +1,7 @@
 <?php
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
+use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationConfig;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation as RelationAbstractorContract;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use Illuminate\Database\Eloquent\Model;
@@ -9,6 +10,8 @@ use ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory;
 
 abstract class Relation implements RelationAbstractorContract
 {
+    use CheckRelationConfig;
+
     protected $name;
     protected $presentation;
     protected $type;
@@ -32,6 +35,7 @@ abstract class Relation implements RelationAbstractorContract
 
     public function __construct(array $config, ModelManager $modelManager, Model $model, EloquentRelation $eloquentRelation, FieldFactory $fieldFactory)
     {
+        $this->checkNameConfig($config);
         $this->name = $config['name'];
         $this->relatedModel = $model;
         $this->eloquentRelation = $eloquentRelation;
