@@ -95,7 +95,7 @@ class SelectMultiple extends Relation
             $alreadyAssociated = $this->relatedModel->$relationName;
 
             $results = $repo->pushCriteria(
-                new InArrayCriteria($relatedKeyName, $selectArray[$this->eloquentRelation->getPlainForeignKey()])
+                new InArrayCriteria($relatedKeyName, $selectArray)
             )->all();
 
             $missing = $alreadyAssociated->diff($results);
