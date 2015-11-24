@@ -47,20 +47,8 @@ class SelectMultipleTest extends TestBase
 
     public function test_get_edit_fields_returns_array_of_fields_with_proper_key()
     {
-        $relationFactoryMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory');
-        $modelFactoryMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory');
-
-        $columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
-        $fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field');
-
-        \App::instance('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory', $relationFactoryMock);
-        \App::instance('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory', $modelFactoryMock);
-
-        $modelFactoryMock->shouldReceive('getByClassName')
-            ->andReturn($this->modelManagerMock);
-
-        $this->modelManagerMock->shouldReceive('getEditFields')->atLeast()->once()
-            ->andReturn([$fieldMock, $fieldMock, $fieldMock]);
+        $this->modelManagerMock->shouldReceive('getAbstractionLayer')->andReturn($dbalMock = $this->mock('\ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
+        $dbalMock->shouldReceive('getTableColumn')->andReturn($columnMock = $this->mock('Doctrine\DBAL\Schema\Column'));
 
         $this->modelManagerMock->shouldReceive('getRepository')->atLeast()->once()
             ->andReturn($repoMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository'));
@@ -72,9 +60,10 @@ class SelectMultipleTest extends TestBase
         $modelMock->shouldReceive('getKey');
         $modelMock->shouldReceive('getAttribute')->with('title');
 
-        $fieldMock->shouldReceive('getName')->atLeast()->once()->andReturn('user_id', 'user_id', 'chompy');
-        $fieldMock->shouldReceive('setName')->atLeast()->once()->with(matchesPattern("/^posts\[user_id\]\[\]/"));
-        $fieldMock->shouldReceive('setOptions', 'setCustomFormType');
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')->andReturn($field = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field'));
+
+        $field->shouldReceive('setOptions');
 
         $fields = $this->sut->getEditFields();
 
