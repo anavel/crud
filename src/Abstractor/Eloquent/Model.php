@@ -317,6 +317,10 @@ class Model implements ModelAbstractorContract
         }
 
         foreach ($this->getEditFields(true) as $field) {
+            if (! $field->saveIfEmpty() && empty($request->input($field->getName()))) {
+                continue;
+            }
+
             $item->setAttribute(
                 $field->getName(),
                 $field->applyFunctions($request->input($field->getName()))

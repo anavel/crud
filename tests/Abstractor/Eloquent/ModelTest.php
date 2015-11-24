@@ -268,7 +268,7 @@ class ModelTest extends TestBase
         $relationMock->shouldReceive('persist');
 
         $fieldMock = $this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field');
-        $fieldMock->shouldReceive('getName', 'applyFunctions');
+        $fieldMock->shouldReceive('saveIfEmpty', 'getName', 'applyFunctions');
 
         $this->fieldMock->shouldReceive('setColumn', 'setConfig')
             ->andReturn($this->fieldMock);

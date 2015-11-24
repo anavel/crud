@@ -23,6 +23,8 @@ class Field implements FieldAbstractorContract
     protected $validationRules;
     protected $functions;
     protected $options;
+    protected $hideValue;
+    protected $saveIfEmpty;
 
     public function __construct(Column $column, FormManagerField $formField, $name, $presentation = null)
     {
@@ -34,6 +36,8 @@ class Field implements FieldAbstractorContract
         $this->validationRules = array();
         $this->functions = array();
         $this->options = [];
+        $this->hideValue = false;
+        $this->saveIfEmpty = true;
     }
 
     public function getName()
@@ -120,7 +124,9 @@ class Field implements FieldAbstractorContract
     {
         $this->value = $value;
 
-        $this->formField->val($this->value);
+        if (! $this->hideValue()) {
+            $this->formField->val($this->value);
+        }
     }
 
     /**
@@ -152,10 +158,36 @@ class Field implements FieldAbstractorContract
 
     public function getFormField()
     {
-        if (Request::old($this->name)) {
-            $this->formField->val(Request::old($this->name));
+        if (! $this->hideValue()) {
+            if (Request::old($this->name)) {
+                $this->formField->val(Request::old($this->name));
+            }
         }
 
         return $this->formField;
+    }
+
+    /**
+     *
+     */
+    public function hideValue($value = null)
+    {
+        if (! is_null($value)) {
+            $this->hideValue = $value;
+        }
+
+        return $this->hideValue;
+    }
+
+    /**
+     *
+     */
+    public function saveIfEmpty($value = null)
+    {
+        if (! is_null($value)) {
+            $this->saveIfEmpty = $value;
+        }
+
+        return $this->saveIfEmpty;
     }
 }

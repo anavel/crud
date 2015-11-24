@@ -51,4 +51,14 @@ interface Field
      * @return array
      */
     public function getFormField();
+
+    /**
+     * @return boolean
+     */
+    public function hideValue($value = null);
+
+    /**
+     * @return boolean
+     */
+    public function saveIfEmpty($value = null);
 }
