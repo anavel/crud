@@ -39,8 +39,7 @@ class Select extends Relation
         $options = ['' => ''];
 
         foreach ($results as $result) {
-            $fieldName = $this->config['display'];
-            $options[$result->getKey()] = $result->getAttribute($fieldName);
+            $options[$result->getKey()] = $result->getAttribute($this->config['display']);
         }
 
         $config = [
