@@ -1,23 +1,21 @@
 <?php
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field;
 use App;
 use Illuminate\Http\Request;
 
 class Select extends Relation
 {
+    use CheckRelationCompatibility, CheckRelationConfig;
+
     protected $compatibleEloquentRelations = array(
         'Illuminate\Database\Eloquent\Relations\BelongsTo'
     );
 
-    public function checkEloquentRelationCompatibility()
+    public function setup()
     {
-        if (! in_array(get_class($this->eloquentRelation), $this->compatibleEloquentRelations)) {
-            return false;
-        }
-
-        return true;
+        $this->checkRelationCompatibility();
+        $this->checkDisplayConfig();
     }
 
     /**

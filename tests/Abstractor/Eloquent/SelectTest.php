@@ -19,11 +19,15 @@ class SelectTest extends TestBase
     /** @var  Mock */
     protected $fieldMock;
 
+    protected $wrongConfig;
+
     public function setUp()
     {
         parent::setUp();
 
         $config = require __DIR__ . '/../../config.php';
+
+        $this->wrongConfig = require __DIR__ . '/../../wrong-config.php';
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
         $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
@@ -59,5 +63,18 @@ class SelectTest extends TestBase
         $this->assertInternalType('array', $fields, 'getEditFields should return an array');
         $this->assertCount(1, $fields);
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
+    }
+
+    public function test_throws_exception_if_display_is_not_set_in_config()
+    {
+        $this->setExpectedException('ANavallaSuiza\Crudoado\Abstractor\Exceptions\RelationException', 'Display should be set in config');
+
+        $this->sut = new Select(
+            $this->wrongConfig['Users']['relations']['group'],
+            $this->modelManagerMock = Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
+            $user = new User(),
+            $user->group(),
+            $this->fieldMock
+        );
     }
 }

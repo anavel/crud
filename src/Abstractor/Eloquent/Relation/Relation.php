@@ -39,10 +39,8 @@ abstract class Relation implements RelationAbstractorContract
 
         $this->modelManager = $modelManager;
 
-        if ($this->checkEloquentRelationCompatibility() === false) {
-            throw new \Exception(get_class($this->eloquentRelation)." eloquent relation is not compatible with ".$this->getType()." type");
-        }
         $this->config = $config;
+        $this->setup();
     }
 
     public function getName()
@@ -59,9 +57,4 @@ abstract class Relation implements RelationAbstractorContract
     {
         return get_class($this);
     }
-
-    /**
-     * @return boolean
-     */
-    abstract public function checkEloquentRelationCompatibility();
 }

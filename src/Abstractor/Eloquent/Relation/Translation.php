@@ -1,26 +1,23 @@
 <?php
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Model;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Field;
 use App;
 use Illuminate\Http\Request;
 
 class Translation extends Relation
 {
+    use CheckRelationCompatibility;
+
     protected $langs = ['en', 'es', 'gl']; //TODO get from config
 
     protected $compatibleEloquentRelations = array(
         'Illuminate\Database\Eloquent\Relations\HasMany'
     );
 
-    public function checkEloquentRelationCompatibility()
+    public function setup()
     {
-        if (! in_array(get_class($this->eloquentRelation), $this->compatibleEloquentRelations)) {
-            return false;
-        }
-
-        return true;
+        $this->checkRelationCompatibility();
     }
 
     /**

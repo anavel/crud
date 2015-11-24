@@ -1,6 +1,7 @@
 <?php
 namespace ANavallaSuiza\Crudoado\Contracts\Abstractor;
 
+use ANavallaSuiza\Crudoado\Abstractor\Exceptions\RelationException;
 use Illuminate\Http\Request;
 
 interface Relation
@@ -21,9 +22,9 @@ interface Relation
     public function getType();
 
     /**
-     * @return boolean
+     * @throws RelationException
      */
-    public function checkEloquentRelationCompatibility();
+    public function setup();
 
     /**
      * @return array
