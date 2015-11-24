@@ -22,11 +22,15 @@ class SelectMultipleTest extends TestBase
     /** @var  Mock */
     protected $fieldMock;
 
+    protected $wrongConfig;
+
     public function setUp()
     {
         parent::setUp();
 
         $config = require __DIR__ . '/../../config.php';
+        $this->wrongConfig = require __DIR__ . '/../../wrong-config.php';
+
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
         $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
@@ -93,5 +97,18 @@ class SelectMultipleTest extends TestBase
             ->andReturn(new Collection([$modelMock, $modelMock, $modelMock]));
 
         $this->sut->persist($requestMock);
+    }
+
+    public function test_throws_exception_if_display_is_not_set_in_config()
+    {
+        $this->setExpectedException('ANavallaSuiza\Crudoado\Abstractor\Exceptions\RelationException', 'Display should be set in config');
+
+        $this->sut = new SelectMultiple(
+            $this->wrongConfig['Users']['relations']['posts'],
+            $this->modelManagerMock = Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
+            $user = new User(),
+            $user->posts(),
+            $this->fieldMock
+        );
     }
 }

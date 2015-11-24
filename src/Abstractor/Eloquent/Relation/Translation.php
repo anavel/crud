@@ -1,30 +1,28 @@
 <?php
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Model;
+use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Field;
 use App;
 use Illuminate\Http\Request;
 
 class Translation extends Relation
 {
+    use CheckRelationCompatibility;
+
     protected $langs = [];
 
     protected $compatibleEloquentRelations = array(
         'Illuminate\Database\Eloquent\Relations\HasMany'
     );
 
-    public function checkEloquentRelationCompatibility()
+    public function setup()
     {
-        if (! in_array(get_class($this->eloquentRelation), $this->compatibleEloquentRelations)) {
-            return false;
-        }
-
         if (empty($this->langs)) {
             $this->langs = config('adoadomin.translation_languages');
         }
 
-        return true;
+        $this->checkRelationCompatibility();
     }
 
     /**

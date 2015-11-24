@@ -1,25 +1,24 @@
 <?php
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Model;
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\Field;
+use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
+use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationConfig;
 use ANavallaSuiza\Crudoado\Repository\Criteria\InArrayCriteria;
 use App;
 use Illuminate\Http\Request;
 
 class SelectMultiple extends Relation
 {
+    use CheckRelationCompatibility, CheckRelationConfig;
+
     protected $compatibleEloquentRelations = array(
         'Illuminate\Database\Eloquent\Relations\HasMany'
     );
 
-    public function checkEloquentRelationCompatibility()
+    public function setup()
     {
-        if (! in_array(get_class($this->eloquentRelation), $this->compatibleEloquentRelations)) {
-            return false;
-        }
-
-        return true;
+        $this->checkRelationCompatibility();
+        $this->checkDisplayConfig();
     }
 
     /**
