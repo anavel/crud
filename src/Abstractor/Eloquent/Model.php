@@ -95,8 +95,6 @@ class Model implements ModelAbstractorContract
     {
         $tableColumns = $this->dbal->getTableColumns();
 
-        $foreignKeys = $this->dbal->getTableForeignKeys();
-
         $foreignKeysName = [];
         if ($withForeignKeys === false) {
             $foreignKeys = $this->dbal->getTableForeignKeys();
