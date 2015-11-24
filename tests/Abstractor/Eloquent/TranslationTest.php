@@ -18,7 +18,7 @@ class TranslationTest extends TestBase
     /** @var  Mock */
     protected $modelManagerMock;
     /** @var  Mock */
-    protected $fieldMock;
+    protected $fieldFactoryMock;
 
     public function setUp()
     {
@@ -27,14 +27,14 @@ class TranslationTest extends TestBase
         $config = require __DIR__ . '/../../config.php';
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
-        $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
+        $this->fieldFactoryMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
 
         $this->sut = new Translation(
             $config['Users']['relations']['translations'],
             $this->modelManagerMock = Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
             $user = new User(),
             $user->translations(),
-            $this->fieldMock
+            $this->fieldFactoryMock
         );
     }
 
@@ -45,22 +45,30 @@ class TranslationTest extends TestBase
 
     public function test_get_edit_fields_returns_array_of_fields_with_proper_key()
     {
-        $relationFactoryMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory');
-        $modelFactoryMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory');
+        $dbalMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer');
+
+        $this->fieldFactoryMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldFactoryMock);
+        $this->fieldFactoryMock->shouldReceive('get')
+            ->andReturn($fieldMock = $this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
+
+        $fieldMock->shouldReceive('setValue');
 
         $columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
 
-        \App::instance('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory', $relationFactoryMock);
-        \App::instance('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory', $modelFactoryMock);
+        $this->modelManagerMock->shouldReceive('getAbstractionLayer')
+            ->andReturn($dbalMock);
 
-        $modelFactoryMock->shouldReceive('getByClassName')
-            ->andReturn($this->modelManagerMock);
+        $columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
 
-        $this->modelManagerMock->shouldReceive('getEditFields')->atLeast()->once()
-            ->andReturn([$fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field')]);
-
-        $fieldMock->shouldReceive('getName')->atLeast()->once()->andReturn($fieldName = 'chompy');
-        $fieldMock->shouldReceive('setName')->atLeast()->once()->with(matchesPattern("/^translations\[[\d]\]\[chompy\]/"));
+        $dbalMock->shouldReceive('getTableColumns')
+            ->once()
+            ->andReturn([
+                'id'      => $columnMock,
+                'user_id' => $columnMock,
+                'locale'  => $columnMock,
+                'bio'     => $columnMock
+            ]);
 
         $fields = $this->sut->getEditFields();
 

@@ -36,6 +36,8 @@ abstract class TestBase extends TestCase
             'prefix'    => ''
         ]);
 
+        $app['config']->set('adoadomin.translation_languages', ['gl', 'en', 'es']);
+
         \App::bind('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager', function ($app) {
             return \Mockery::mock('ANavallaSuiza\Laravel\Database\Manager\Eloquent\ModelManager');
         });

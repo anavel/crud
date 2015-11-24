@@ -35,7 +35,6 @@ class Translation extends Relation
 
         $columns = $dbal->getTableColumns();
 
-        //dd($fields);
         $results = $this->eloquentRelation->getResults();
         $results = $results->keyBy('locale');
 
