@@ -2,6 +2,7 @@
 namespace Crudoado\Tests\Abstractor\Eloquent;
 
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\SelectMultiple;
+use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\SelectMultiplePolymorphic;
 use ANavallaSuiza\Crudoado\Repository\Criteria\InArrayCriteria;
 use Crudoado\Tests\Models\User;
 use Crudoado\Tests\TestBase;
@@ -11,9 +12,9 @@ use Mockery\Mock;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
 
 
-class SelectMultipleTest extends TestBase
+class SelectMultiplePolymorphicTest extends TestBase
 {
-    /** @var  SelectMultiple */
+    /** @var  SelectMultiplePolymorphic() */
     protected $sut;
     /** @var  Mock */
     protected $relationMock;
@@ -35,11 +36,11 @@ class SelectMultipleTest extends TestBase
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
         $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
 
-        $this->sut = new SelectMultiple(
-            $config['Users']['relations']['posts'],
+        $this->sut = new SelectMultiplePolymorphic(
+            $config['Users']['relations']['photos'],
             $this->modelManagerMock = Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
             $user = new User(),
-            $user->posts(),
+            $user->photos(),
             $this->fieldMock
         );
     }
@@ -57,7 +58,7 @@ class SelectMultipleTest extends TestBase
         $this->modelManagerMock->shouldReceive('getRepository')->atLeast()->once()
             ->andReturn($repoMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository'));
 
-        $modelMock = $this->mock('Crudoado\Tests\Models\Post');
+        $modelMock = $this->mock('Crudoado\Tests\Models\Photo');
         $repoMock->shouldReceive('all')->atLeast()->once()
             ->andReturn(new Collection([$modelMock, $modelMock, $modelMock]));
 
@@ -82,14 +83,14 @@ class SelectMultipleTest extends TestBase
         $inputArray = ['user_id' => [1, 3, 4]];
         $requestMock = $this->mock('Illuminate\Http\Request');
 
-        $requestMock->shouldReceive('input')->with('posts')->atLeast()->once()->andReturn($inputArray);
+        $requestMock->shouldReceive('input')->with('photos')->atLeast()->once()->andReturn($inputArray);
 
         $this->modelManagerMock->shouldReceive('getRepository')->atLeast()->once()
             ->andReturn($repoMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository'));
 
-        $modelMock = $this->mock('Crudoado\Tests\Models\Post');
+        $modelMock = $this->mock('Crudoado\Tests\Models\Photo');
         $modelMock->shouldReceive('getKey')->andReturn(1);
-        $modelMock->shouldReceive('setAttribute', 'save')->atLeast()->times(3);
+        $modelMock->shouldReceive('setAttribute', 'save')->times(3);
 
         $repoMock->shouldReceive('pushCriteria')->atLeast()->once()
             ->andReturn($repoMock);
@@ -111,8 +112,6 @@ class SelectMultipleTest extends TestBase
             $this->fieldMock
         );
     }
-
-
 
     public function test_throws_exception_if_name_is_not_set_in_config()
     {

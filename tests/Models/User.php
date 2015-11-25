@@ -31,4 +31,9 @@ class User extends Model
     {
         return $this->belongsTo(UserGroup::class, 'user_group_id');
     }
+
+    public function photos()
+    {
+        return $this->morphMany(Photo::class, 'imageable');
+    }
 }

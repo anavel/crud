@@ -42,6 +42,12 @@ class CreateTables extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('title');
         });
+
+        Schema::create('photos', function (Blueprint $table) {
+            $table->increments('id');
+            $table->morphs('imageable');
+            $table->string('title');
+        });
     }
 
     /**
@@ -49,6 +55,7 @@ class CreateTables extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('photos');
         Schema::dropIfExists('posts');
         Schema::dropIfExists('user_groups');
         Schema::dropIfExists('user_translations');

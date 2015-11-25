@@ -30,6 +30,11 @@ return [
                     'name' => 'posts',
                     'display' => 'title'
                 ],
+                'photos' => [
+                    'type' => 'select-multiple',
+                    'name' => 'photos',
+                    'display' => 'title'
+                ],
             ],
             'list' => [
                 'display' => ['id', 'username', 'fullname', 'active'],

@@ -21,7 +21,8 @@ class RelationFactory implements RelationAbstractorFactoryContract
         'Illuminate\Database\Eloquent\Relations\HasMany'       => self::SELECT_MULTIPLE,
         'Illuminate\Database\Eloquent\Relations\HasManyTrough' => self::SELECT_MULTIPLE,
         'Illuminate\Database\Eloquent\Relations\HasOne'        => self::SELECT,
-        'Illuminate\Database\Eloquent\Relations\HasOneOrMany'  => self::SELECT_MULTIPLE
+        'Illuminate\Database\Eloquent\Relations\HasOneOrMany'  => self::SELECT_MULTIPLE,
+        'Illuminate\Database\Eloquent\Relations\MorphMany'     => self::SELECT_MULTIPLE
     );
 
     protected $typesMap = array(
@@ -65,7 +66,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
     public function get($name)
     {
         if (! method_exists($this->model, $name)) {
-            throw new FactoryException("Relation ".$name." does not exist on ".get_class($this->model));
+            throw new FactoryException("Relation " . $name . " does not exist on " . get_class($this->model));
         }
 
         $relationInstance = $this->model->$name();
@@ -74,7 +75,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
 
         if (empty($this->config['type'])) {
             if (! array_key_exists($relationEloquentType, $this->eloquentTypeToRelationType)) {
-                throw new FactoryException($relationEloquentType." relation not supported");
+                throw new FactoryException($relationEloquentType . " relation not supported");
             }
 
             $type = $this->eloquentTypeToRelationType[$relationEloquentType];
@@ -83,7 +84,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
         }
 
         if (! array_key_exists($type, $this->typesMap)) {
-            throw new FactoryException("Unexpected relation type: ".$type);
+            throw new FactoryException("Unexpected relation type: " . $type);
         }
 
         $this->config['name'] = $name;
