@@ -11,6 +11,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
 {
     const SELECT = 'select';
     const SELECT_MULTIPLE = 'select-multiple';
+    const SELECT_MULTIPLE_POLYMORPHIC = 'select-multiple-polymorphic';
     const CHECKLIST = 'checklist';
     const MINI_CRUD = 'mini-crud';
     const TRANSLATION = 'translation';
@@ -22,7 +23,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
         'Illuminate\Database\Eloquent\Relations\HasManyTrough' => self::SELECT_MULTIPLE,
         'Illuminate\Database\Eloquent\Relations\HasOne'        => self::SELECT,
         'Illuminate\Database\Eloquent\Relations\HasOneOrMany'  => self::SELECT_MULTIPLE,
-        'Illuminate\Database\Eloquent\Relations\MorphMany'     => self::SELECT_MULTIPLE
+        'Illuminate\Database\Eloquent\Relations\MorphMany'     => self::SELECT_MULTIPLE_POLYMORPHIC
     );
 
     protected $typesMap = array(
