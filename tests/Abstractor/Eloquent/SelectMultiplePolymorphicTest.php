@@ -90,7 +90,8 @@ class SelectMultiplePolymorphicTest extends TestBase
 
         $modelMock = $this->mock('Crudoado\Tests\Models\Photo');
         $modelMock->shouldReceive('getKey')->andReturn(1);
-        $modelMock->shouldReceive('setAttribute', 'save')->times(3);
+        $modelMock->shouldReceive('setAttribute')->times(6);
+        $modelMock->shouldReceive('save')->times(3);
 
         $repoMock->shouldReceive('pushCriteria')->atLeast()->once()
             ->andReturn($repoMock);
