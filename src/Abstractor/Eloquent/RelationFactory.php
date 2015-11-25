@@ -27,11 +27,12 @@ class RelationFactory implements RelationAbstractorFactoryContract
     );
 
     protected $typesMap = array(
-        self::SELECT          => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Select',
-        self::SELECT_MULTIPLE => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\SelectMultiple',
-        self::CHECKLIST       => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Checklist',
-        self::MINI_CRUD       => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\MiniCrud',
-        self::TRANSLATION     => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Translation'
+        self::SELECT                      => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Select',
+        self::SELECT_MULTIPLE             => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\SelectMultiple',
+        self::SELECT_MULTIPLE_POLYMORPHIC => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\SelectMultiplePolymorphic',
+        self::CHECKLIST                   => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Checklist',
+        self::MINI_CRUD                   => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\MiniCrud',
+        self::TRANSLATION                 => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Translation'
     );
 
     protected $modelManager;
