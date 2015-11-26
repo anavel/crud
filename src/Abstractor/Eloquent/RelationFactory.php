@@ -23,7 +23,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
         'Illuminate\Database\Eloquent\Relations\HasManyTrough' => self::SELECT_MULTIPLE,
         'Illuminate\Database\Eloquent\Relations\HasOne'        => self::SELECT,
         'Illuminate\Database\Eloquent\Relations\HasOneOrMany'  => self::SELECT_MULTIPLE,
-        'Illuminate\Database\Eloquent\Relations\MorphMany'     => self::SELECT_MULTIPLE_POLYMORPHIC
+        'Illuminate\Database\Eloquent\Relations\MorphMany'     => self::MINI_CRUD
     );
 
     protected $typesMap = array(
