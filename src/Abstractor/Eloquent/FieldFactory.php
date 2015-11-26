@@ -103,13 +103,13 @@ class FieldFactory implements FieldAbstractorFactoryContract
     {
         if (! empty($this->config['form_type'])) {
             if (! in_array($this->config['form_type'], $this->databaseTypeToFormType)) {
-                throw new FactoryException("Unknown form type ".$this->config['form_type']);
+                throw new FactoryException("Unknown form type " . $this->config['form_type']);
             }
 
             $formElementType = $this->config['form_type'];
         } else {
             if (! array_key_exists($this->column->getType()->getName(), $this->databaseTypeToFormType)) {
-                throw new FactoryException("No form type found for database type ".$this->column->getType()->getName());
+                throw new FactoryException("No form type found for database type " . $this->column->getType()->getName());
             }
 
             $formElementType = $this->databaseTypeToFormType[$this->column->getType()->getName()];
@@ -133,11 +133,15 @@ class FieldFactory implements FieldAbstractorFactoryContract
         }
 
         if ($formElementType === 'textarea') {
-            $formElement->class('form-control '.config('crudoado.text_editor'));
+            $formElement->class('form-control ' . config('crudoado.text_editor'));
         }
 
         if (isset($this->config['defaults'])) {
-            $formElement->val($this->config['defaults']);
+            if (! is_array($this->config['defaults'])) {
+                $formElement->val($this->config['defaults']);
+            } else {
+                $formElement->options($this->config['defaults']);
+            }
         }
 
         return $formElement;
