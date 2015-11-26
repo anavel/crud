@@ -240,6 +240,7 @@ class Model implements ModelAbstractorContract
         $formTypes = $this->getConfigValue('edit', 'form_types') ? : [];
         $validationRules = $this->getConfigValue('edit', 'validation') ? : [];
         $functions = $this->getConfigValue('edit', 'functions') ? : [];
+        $defaults = $this->getConfigValue('edit', 'defaults') ? : [];
 
         $fields = array();
         foreach ($columns as $name => $column) {
@@ -267,6 +268,10 @@ class Model implements ModelAbstractorContract
 
                 if (array_key_exists($name, $functions)) {
                     $config['functions'] = $functions[$name];
+                }
+
+                if (array_key_exists($name, $defaults)) {
+                    $config['defaults'] = $defaults[$name];
                 }
 
                 $field = $this->fieldFactory

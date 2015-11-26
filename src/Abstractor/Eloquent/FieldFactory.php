@@ -115,6 +115,11 @@ class FieldFactory implements FieldAbstractorFactoryContract
             $formElementType = $this->databaseTypeToFormType[$this->column->getType()->getName()];
         }
 
+        if (! empty($this->config['defaults']) && is_array($this->config['defaults'])) {
+            $formElementType = 'select';
+        }
+
+
         $formElement = $this->factory->get($formElementType, []);
 
         if (! empty($this->config['attr']) && is_array($this->config['attr'])) {
@@ -129,6 +134,10 @@ class FieldFactory implements FieldAbstractorFactoryContract
 
         if ($formElementType === 'textarea') {
             $formElement->class('form-control '.config('crudoado.text_editor'));
+        }
+
+        if (! empty($this->config['defaults'])) {
+            $formElement->val($this->config['defaults']);
         }
 
         return $formElement;

@@ -4,61 +4,68 @@ return [
     'Blog Posts' => 'App\Post',
 
     'Users' => [
-            'model' => 'App\User',
-            'icon' => 'fa-database',
-            'soft_deletes' => true,
-            'fields_presentation' => [
-                'active' => 'Is Active?',
-                'role_id' => 'Role'
+        'model'                  => 'App\User',
+        'icon'                   => 'fa-database',
+        'soft_deletes'           => true,
+        'fields_presentation'    => [
+            'active'  => 'Is Active?',
+            'role_id' => 'Role'
+        ],
+        'relations_presentation' => [
+            'translations' => 'Translations',
+            'posts'        => 'Published posts'
+        ],
+        'relations'              => [
+            'translations' => [
+                'type' => 'translation',
+                'name' => 'translations'
             ],
-            'relations_presentation' => [
-                'translations' => 'Translations',
-                'posts' => 'Published posts'
+            'group'        => [
+                'type'    => 'select',
+                'name'    => 'group',
+                'display' => 'title'
             ],
-            'relations' => [
-                'translations' => [
-                    'type' => 'translation',
-                    'name' => 'translations'
-                ],
-                'group' => [
-                    'type' => 'select',
-                    'name' => 'group',
-                    'display' => 'title'
-                ],
-                'posts' => [
-                    'type' => 'select-multiple',
-                    'name' => 'posts',
-                    'display' => 'title'
-                ],
-                'photos' => [
-                    'type' => 'select-multiple',
-                    'name' => 'photos',
-                    'display' => 'title'
-                ],
+            'posts'        => [
+                'type'    => 'select-multiple',
+                'name'    => 'posts',
+                'display' => 'title'
             ],
-            'list' => [
-                'display' => ['id', 'username', 'fullname', 'active'],
-                'hide'    => []
+            'photos'       => [
+                'type'    => 'select-multiple',
+                'name'    => 'photos',
+                'display' => 'title'
             ],
-            'detail' => [
-                'display' => ['id', 'username', 'password', 'fullname', 'info', 'active'],
-                'hide'    => []
-            ],
-            'edit' => [
-                'display' => ['id', 'username', 'password'],
-                'hide'    => [],
-                'form_types' => [
-                    'username' => 'email',
-                    'password' => 'password'
-                ],
-                'validation' => [
-                    'username' => 'required|email',
-                    'password' => 'required|min:8'
-                ],
-                'functions' => [
-                    'fullname' => 'slugify',
-                    'password' => 'bcrypt'
+        ],
+        'list'                   => [
+            'display' => ['id', 'username', 'fullname', 'active'],
+            'hide'    => []
+        ],
+        'detail'                 => [
+            'display' => ['id', 'username', 'password', 'fullname', 'info', 'active'],
+            'hide'    => []
+        ],
+        'edit'                   => [
+            'display'    => ['id', 'username', 'password'],
+            'hide'       => [],
+            'defaults'    => [
+                'username' => 'Chompy',
+                'info'     => [
+                    'key'      => 'Value',
+                    'otherKey' => 'Other value'
                 ]
+            ],
+            'form_types' => [
+                'username' => 'email',
+                'password' => 'password'
+            ],
+            'validation' => [
+                'username' => 'required|email',
+                'password' => 'required|min:8'
+            ],
+            'functions'  => [
+                'fullname' => 'slugify',
+                'password' => 'bcrypt'
             ]
         ]
+    ]
 ];
