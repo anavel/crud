@@ -45,10 +45,15 @@ class MiniCrud extends Relation
 
                     $index = $key === 'emptyResult' ? 0 : $result->id;
 
+                    $formType = null;
+                    if ($key !== 'emptyResult' && ($columnName === $this->eloquentRelation->getParent()->getKeyName())) {
+                        $formType = 'hidden';
+                    }
+
                     $config = [
                         'name'         => $this->name . '[' . $index . '][' . $columnName . ']',
                         'presentation' => ucfirst($columnName).' ['. $index .']',
-                        'form_type'    => null,
+                        'form_type'    => $formType,
                         'no_validate'  => true,
                         'validation'   => null,
                         'functions'    => null
@@ -108,7 +113,7 @@ class MiniCrud extends Relation
             return true;
         }
 
-        if ($key !== 'emptyResult' && ($columnName === $this->eloquentRelation->getParent()->getKeyName())) {
+        if ($key === 'emptyResult' && ($columnName === $this->eloquentRelation->getParent()->getKeyName())) {
             return true;
         }
         return false;

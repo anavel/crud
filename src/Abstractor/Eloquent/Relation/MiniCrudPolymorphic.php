@@ -23,7 +23,7 @@ class MiniCrudPolymorphic extends MiniCrud
             return true;
         }
 
-        if ($key !== 'emptyResult' && ($columnName === $this->eloquentRelation->getParent()->getKeyName())) {
+        if ($key === 'emptyResult' && ($columnName === $this->eloquentRelation->getParent()->getKeyName())) {
             return true;
         }
         return false;
