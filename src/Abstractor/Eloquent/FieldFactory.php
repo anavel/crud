@@ -115,7 +115,7 @@ class FieldFactory implements FieldAbstractorFactoryContract
             $formElementType = $this->databaseTypeToFormType[$this->column->getType()->getName()];
         }
 
-        if (! isset($this->config['defaults']) && is_array($this->config['defaults'])) {
+        if (isset($this->config['defaults']) && is_array($this->config['defaults'])) {
             $formElementType = 'select';
         }
 
@@ -136,7 +136,7 @@ class FieldFactory implements FieldAbstractorFactoryContract
             $formElement->class('form-control '.config('crudoado.text_editor'));
         }
 
-        if (! isset($this->config['defaults'])) {
+        if (isset($this->config['defaults'])) {
             $formElement->val($this->config['defaults']);
         }
 
