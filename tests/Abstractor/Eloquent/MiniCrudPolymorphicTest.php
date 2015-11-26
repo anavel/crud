@@ -2,6 +2,7 @@
 namespace Crudoado\Tests\Abstractor\Eloquent;
 
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\MiniCrud;
+use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\MiniCrudPolymorphic;
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Select;
 use Crudoado\Tests\Models\User;
 use Crudoado\Tests\TestBase;
@@ -10,9 +11,9 @@ use Mockery\Mock;
 use phpmock\mockery\PHPMockery;
 
 
-class MiniCrudTest extends TestBase
+class MiniCrudPolymorphicTest extends TestBase
 {
-    /** @var  MiniCrud() */
+    /** @var  MiniCrudPolymorphic */
     protected $sut;
     /** @var  Mock */
     protected $relationMock;
@@ -42,7 +43,7 @@ class MiniCrudTest extends TestBase
     public function buildRelation()
     {
         $config = require __DIR__ . '/../../config.php';
-        $this->sut = new MiniCrud(
+        $this->sut = new MiniCrudPolymorphic(
             $config['Users']['relations']['group'],
             $this->modelManagerMock,
             $user = new User(),
@@ -53,7 +54,7 @@ class MiniCrudTest extends TestBase
 
     public function test_implements_relation_interface()
     {
-        $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\HasMany');
+        $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphMany');
 
         $this->buildRelation();
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation', $this->sut);
@@ -69,7 +70,7 @@ class MiniCrudTest extends TestBase
 
     public function test_get_edit_fields_returns_array()
     {
-        $this->relationMock->shouldReceive('getRelated', 'getPlainForeignKey', 'getParent', 'getKeyName')->andReturn($this->relationMock);
+        $this->relationMock->shouldReceive('getRelated', 'getPlainForeignKey', 'getPlainMorphType', 'getParent', 'getKeyName')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('getResults')->andReturn(collect([$postMock = $this->mock('Crudoado\Tests\Models\Post')]));
         $this->modelManagerMock->shouldReceive('getAbstractionLayer')->andReturn($dbalMock = $this->mock('\ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
         $dbalMock->shouldReceive('getTableColumns')->andReturn([$columnMock = $this->mock('Doctrine\DBAL\Schema\Column')]);
@@ -83,7 +84,7 @@ class MiniCrudTest extends TestBase
         $fieldMock->shouldReceive('setValue')->times(1);
 
 
-        $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\HasMany');
+        $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphMany');
         $this->buildRelation();
         $fields = $this->sut->getEditFields();
 

@@ -11,10 +11,8 @@ class MiniCrud extends Relation
 {
     use CheckRelationCompatibility;
 
-    protected $langs = [];
-
     protected $compatibleEloquentRelations = array(
-        'Illuminate\Database\Eloquent\Relations\MorphMany'
+        'Illuminate\Database\Eloquent\Relations\HasMany'
     );
 
     public function setup()
@@ -41,17 +39,15 @@ class MiniCrud extends Relation
         if (! empty($columns)) {
             foreach ($results as $key => $result) {
                 foreach ($columns as $columnName => $column) {
-                    if ($columnName === $this->eloquentRelation->getPlainForeignKey()) {
+                    if ($this->skipField($columnName, $key)) {
                         continue;
                     }
 
-                    if ($key !== 'emptyResult' && ($columnName === $this->eloquentRelation->getParent()->getKeyName())) {
-                        continue;
-                    }
+                    $index = $key === 'emptyResult' ? 0 : $result->id;
 
                     $config = [
-                        'name'         => $this->name . '[' . ($key === 'emptyResult' ? 0 : $result->id) . '][' . $columnName . ']',
-                        'presentation' => $this->getPresentation(),
+                        'name'         => $this->name . '[' . $index . '][' . $columnName . ']',
+                        'presentation' => ucfirst($columnName).' ['. $index .']',
                         'form_type'    => null,
                         'no_validate'  => true,
                         'validation'   => null,
@@ -105,4 +101,17 @@ class MiniCrud extends Relation
 //            }
 //        }
     }
+
+    public function skipField($columnName, $key)
+    {
+        if ($columnName === $this->eloquentRelation->getPlainForeignKey()) {
+            return true;
+        }
+
+        if ($key !== 'emptyResult' && ($columnName === $this->eloquentRelation->getParent()->getKeyName())) {
+            return true;
+        }
+        return false;
+    }
 }
+
