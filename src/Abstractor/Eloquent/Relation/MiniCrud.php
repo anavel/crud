@@ -4,6 +4,7 @@ namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Field;
 use App;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -52,7 +53,7 @@ class MiniCrud extends Relation
 
                     $config = [
                         'name'         => $this->name . '[' . $index . '][' . $columnName . ']',
-                        'presentation' => ucfirst($columnName).' ['. $index .']',
+                        'presentation' => ucfirst($columnName) . ' [' . $index . ']',
                         'form_type'    => $formType,
                         'no_validate'  => true,
                         'validation'   => null,
@@ -85,29 +86,34 @@ class MiniCrud extends Relation
      */
     public function persist(Request $request)
     {
-//        if (! empty($translationsArray = $request->input($this->name))) {
-//            $currentTranslations = $this->eloquentRelation->get();
-//            $currentTranslations = $currentTranslations->keyBy('locale');
-//
-//            foreach ($translationsArray as $translation) {
-//                if ($currentTranslations->has($translation['locale'])) {
-//                    $translationModel = $currentTranslations->get($translation['locale']);
-//                } else {
-//                    $translationModel = $this->eloquentRelation->getRelated()->newInstance();
-//                }
-//
-//                $translationModel->setAttribute($this->eloquentRelation->getForeignKey(), $this->relatedModel->id);
-//
-//                foreach ($translation as $fieldKey => $fieldValue) {
-//                    $translationModel->setAttribute($fieldKey, $fieldValue);
-//                }
-//
-//                $translationModel->save();
-//            }
-//        }
+        if (! empty($relationArray = $request->input($this->name))) {
+            $currentRelations = $this->eloquentRelation->get()->keyBy($this->eloquentRelation->getParent()->getKeyName());
+            foreach ($relationArray as $relation) {
+                if (! empty($relation[$this->eloquentRelation->getParent()->getKeyName()])
+                    && ($currentRelations->has($relation[$this->eloquentRelation->getParent()->getKeyName()]))
+                ) {
+                    $relationModel = $currentRelations->get($relation[$this->eloquentRelation->getParent()->getKeyName()]);
+                } else {
+                    $relationModel = $this->eloquentRelation->getRelated()->newInstance();
+                }
+
+                $this->setKeys($relationModel);
+
+                foreach ($relation as $fieldKey => $fieldValue) {
+                    $relationModel->setAttribute($fieldKey, $fieldValue);
+                }
+
+                $relationModel->save();
+            }
+        }
     }
 
-    public function skipField($columnName, $key)
+    protected function setKeys(Model $relationModel)
+    {
+        $relationModel->setAttribute($this->eloquentRelation->getForeignKey(), $this->relatedModel->id);
+    }
+
+    protected function skipField($columnName, $key)
     {
         if ($columnName === $this->eloquentRelation->getPlainForeignKey()) {
             return true;
@@ -116,6 +122,7 @@ class MiniCrud extends Relation
         if ($key === 'emptyResult' && ($columnName === $this->eloquentRelation->getParent()->getKeyName())) {
             return true;
         }
+
         return false;
     }
 }

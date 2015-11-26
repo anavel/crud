@@ -69,7 +69,8 @@ class MiniCrudTest extends TestBase
 
     public function test_get_edit_fields_returns_array()
     {
-        $this->relationMock->shouldReceive('getRelated', 'getPlainForeignKey', 'getParent', 'getKeyName')->andReturn($this->relationMock);
+        $this->relationMock->shouldReceive('getRelated', 'getPlainForeignKey', 'getParent',
+            'getKeyName')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('getResults')->andReturn(collect([$postMock = $this->mock('Crudoado\Tests\Models\Post')]));
         $this->modelManagerMock->shouldReceive('getAbstractionLayer')->andReturn($dbalMock = $this->mock('\ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
         $dbalMock->shouldReceive('getTableColumns')->andReturn([$columnMock = $this->mock('Doctrine\DBAL\Schema\Column')]);
@@ -91,17 +92,67 @@ class MiniCrudTest extends TestBase
         $this->assertCount(2, $fields);
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
     }
+
+    public function test_persist_with_no_old_results()
+    {
+        $inputArray = [
+            '0' => [
+                'field' => 1,
+                'otherField' => 3,
+                'someOtherField' => 3,
+            ]
+        ];
+        $requestMock = $this->mock('Illuminate\Http\Request');
 //
-//    public function test_throws_exception_if_display_is_not_set_in_config()
-//    {
-//        $this->setExpectedException('ANavallaSuiza\Crudoado\Abstractor\Exceptions\RelationException', 'Display should be set in config');
+        $requestMock->shouldReceive('input')->with('group')->atLeast()->once()->andReturn($inputArray);
+
+        $this->relationMock->shouldReceive('getForeignKey');
+        $this->relationMock->shouldReceive('getRelated', 'getParent', 'get')->andReturn($this->relationMock);
+        $this->relationMock->shouldReceive('keyBy')->once()->andReturn(collect());
+        $this->relationMock->shouldReceive('getKeyName')->andReturn('id');
+        $this->relationMock->shouldReceive('newInstance')->andReturn($modelMock = $this->mock('Crudoado\Tests\Models\Post'));
+
+        $modelMock->shouldReceive('getKey')->andReturn(1);
+        $modelMock->shouldReceive('setAttribute')->times(4);
+        $modelMock->shouldReceive('save')->times(1);
+
+        $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\HasMany');
+        $this->buildRelation();
+
+        $fields = $this->sut->persist($requestMock);
+    }
+
+    public function test_persist_with_old_results()
+    {
+        $inputArray = [
+            '0' => [
+                'id' => 1,
+                'otherField' => 3,
+                'someOtherField' => 3,
+            ],
+            '1' => [
+                'id' => 1,
+                'otherField' => 3,
+                'someOtherField' => 3,
+            ]
+        ];
+        $requestMock = $this->mock('Illuminate\Http\Request');
 //
-//        $this->sut = new Select(
-//            $this->wrongConfig['Users']['relations']['group'],
-//            $this->modelManagerMock = Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
-//            $user = new User(),
-//            $user->group(),
-//            $this->fieldMock
-//        );
-//    }
+        $requestMock->shouldReceive('input')->with('group')->atLeast()->once()->andReturn($inputArray);
+
+        $this->relationMock->shouldReceive('getForeignKey');
+        $this->relationMock->shouldReceive('getRelated', 'getParent', 'get')->andReturn($this->relationMock);
+        $this->relationMock->shouldReceive('newInstance');
+        $this->relationMock->shouldReceive('keyBy')->once()->andReturn(collect([1 => $modelMock = $this->mock('Crudoado\Tests\Models\Post')]));
+        $this->relationMock->shouldReceive('getKeyName')->andReturn('id');
+
+        $modelMock->shouldReceive('getKey')->andReturn(1);
+        $modelMock->shouldReceive('setAttribute')->times(8);
+        $modelMock->shouldReceive('save')->times(2);
+
+        $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\HasMany');
+        $this->buildRelation();
+
+        $fields = $this->sut->persist($requestMock);
+    }
 }
