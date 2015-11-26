@@ -92,6 +92,8 @@ class ModelTest extends TestBase
 
         $this->assertInternalType('array', $fields);
 
+        $this->assertCount(6, $fields);
+
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
     }
 
@@ -121,6 +123,8 @@ class ModelTest extends TestBase
         $fields = $this->sut->getEditFields();
 
         $this->assertInternalType('array', $fields);
+
+        $this->assertCount(3, $fields);
 
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
     }

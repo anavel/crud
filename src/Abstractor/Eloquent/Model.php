@@ -95,6 +95,13 @@ class Model implements ModelAbstractorContract
     {
         $tableColumns = $this->dbal->getTableColumns();
 
+        $filteredColumns = [];
+        foreach ($tableColumns as $name => $column) {
+            $filteredColumns[str_replace('`', '', $name)] = $column;
+        }
+        $tableColumns = $filteredColumns;
+
+
         $foreignKeysName = [];
         if ($withForeignKeys === false) {
             $foreignKeys = $this->dbal->getTableForeignKeys();
