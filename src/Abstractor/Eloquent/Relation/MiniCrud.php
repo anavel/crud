@@ -99,11 +99,15 @@ class MiniCrud extends Relation
 
                 $this->setKeys($relationModel);
 
+                $isDirty = true;
                 foreach ($relation as $fieldKey => $fieldValue) {
+                    $isDirty = ($isDirty == ($fieldValue === ''));
                     $relationModel->setAttribute($fieldKey, $fieldValue);
                 }
 
-                $relationModel->save();
+                if (! $isDirty) {
+                    $relationModel->save();
+                }
             }
         }
     }
