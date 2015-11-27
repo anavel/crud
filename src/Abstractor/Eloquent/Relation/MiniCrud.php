@@ -101,8 +101,11 @@ class MiniCrud extends Relation
 
                 $shouldBeSkipped = true;
                 foreach ($relation as $fieldKey => $fieldValue) {
-                    $shouldBeSkipped = ($shouldBeSkipped == ($fieldValue === ''));
                     $relationModel->setAttribute($fieldKey, $fieldValue);
+                    if (! $shouldBeSkipped) {
+                        break;
+                    }
+                    $shouldBeSkipped = ($shouldBeSkipped === ($fieldValue === ''));
                 }
 
                 if (! $shouldBeSkipped) {
