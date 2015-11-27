@@ -99,13 +99,13 @@ class MiniCrud extends Relation
 
                 $this->setKeys($relationModel);
 
-                $isDirty = true;
+                $shouldBeSkipped = true;
                 foreach ($relation as $fieldKey => $fieldValue) {
-                    $isDirty = ($isDirty == ($fieldValue === ''));
+                    $shouldBeSkipped = ($shouldBeSkipped == ($fieldValue === ''));
                     $relationModel->setAttribute($fieldKey, $fieldValue);
                 }
 
-                if (! $isDirty) {
+                if (! $shouldBeSkipped) {
                     $relationModel->save();
                 }
             }
