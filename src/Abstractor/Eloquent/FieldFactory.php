@@ -138,9 +138,13 @@ class FieldFactory implements FieldAbstractorFactoryContract
 
         if (isset($this->config['defaults'])) {
             if (! is_array($this->config['defaults'])) {
-                $formElement->val($this->config['defaults']);
+                $formElement->val(transcrud($this->config['defaults']));
             } else {
-                $formElement->options($this->config['defaults']);
+                $defaults = [];
+                foreach ($this->config['defaults'] as $key => $default) {
+                    $defaults[$key] = transcrud($default);
+                }
+                $formElement->options($defaults);
             }
         }
 
