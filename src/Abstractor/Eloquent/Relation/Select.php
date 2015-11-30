@@ -39,7 +39,7 @@ class Select extends Relation
         $options = ['' => ''];
 
         foreach ($results as $result) {
-            $options[$result->getKey()] = $result->getAttribute($this->config['display']);
+            $options[$result->getKey()] = is_array($this->config['display']) ? implode('|', $result->getAttribute($this->config['display'])) : $result->getAttribute($this->config['display']);
         }
 
         $config = [
