@@ -128,8 +128,8 @@ class FieldFactory implements FieldAbstractorFactoryContract
 
         if ($formElementType !== 'hidden') {
             $formElement->class('form-control')
-                ->label(trans('tables.' . $this->getPresentation()))
-                ->placeholder(trans('tables.' . $this->getPresentation()));
+                ->label($this->getPresentation())
+                ->placeholder($this->getPresentation());
         }
 
         if ($formElementType === 'textarea') {
@@ -149,6 +149,6 @@ class FieldFactory implements FieldAbstractorFactoryContract
 
     public function getPresentation()
     {
-        return $this->config['presentation'] ? : ucfirst(str_replace('_', ' ', $this->config['name']));
+        return $this->config['presentation'] ? : ucfirst(str_replace('_', ' ', trans('tables.' . $this->config['name'])));
     }
 }
