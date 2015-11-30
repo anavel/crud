@@ -128,8 +128,8 @@ class FieldFactory implements FieldAbstractorFactoryContract
 
         if ($formElementType !== 'hidden') {
             $formElement->class('form-control')
-                ->label(trans($this->getPresentation()))
-                ->placeholder(trans($this->getPresentation()));
+                ->label(trans('tables.' . $this->getPresentation()))
+                ->placeholder(trans('tables.' . $this->getPresentation()));
         }
 
         if ($formElementType === 'textarea') {
