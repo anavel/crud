@@ -73,7 +73,7 @@ class Model implements ModelAbstractorContract
 
     public function getName()
     {
-        return $this->name;
+        return transcrud($this->name);
     }
 
     public function getModel()

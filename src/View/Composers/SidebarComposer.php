@@ -31,7 +31,7 @@ class SidebarComposer
 
             $items[] = [
                 'route' => route('crudoado.model.index', $modelAbstractor->getSlug()),
-                'name' => transcrud($modelAbstractor->getName()),
+                'name' => $modelAbstractor->getName(),
                 'isActive' => $isActive
             ];
         }
