@@ -5,9 +5,10 @@ use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationComp
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationConfig;
 use ANavallaSuiza\Crudoado\Repository\Criteria\InArrayCriteria;
 use App;
+use Doctrine\DBAL\Schema\Column;
 use Illuminate\Http\Request;
 
-class SelectMultiple extends Relation
+class SelectMultiple extends Select
 {
     use CheckRelationCompatibility;
 
@@ -19,64 +20,6 @@ class SelectMultiple extends Relation
     {
         $this->checkRelationCompatibility();
         $this->checkDisplayConfig();
-    }
-
-    /**
-     * @return array
-     */
-    public function getEditFields()
-    {
-        /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
-        $dbal = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
-
-        $column = $dbal->getTableColumn($this->eloquentRelation->getPlainForeignKey());
-
-        $repo = $this->modelManager->getRepository(get_class($this->eloquentRelation->getRelated()));
-
-        $select = [];
-
-        $results = $repo->all();
-
-        $options = [];
-
-        foreach ($results as $result) {
-            $options[$result->getKey()] = is_array($this->config['display']) ? implode('|', $result->getAttribute($this->config['display'])) : $result->getAttribute($this->config['display']);
-        }
-
-        $config = [
-            'name' => $this->name.'[]',
-            'presentation' => $this->getPresentation(),
-            'form_type' => 'select',
-            'attr' => [
-                'multiple' => true
-            ],
-            'no_validate' => true,
-            'validation' => null,
-            'functions' => null
-        ];
-
-        $field = $this->fieldFactory
-            ->setColumn($column)
-            ->setConfig($config)
-            ->get();
-
-        $field->setOptions($options);
-
-        $results = $this->eloquentRelation->getResults();
-
-        if (! $results->isEmpty()) {
-            $values = [];
-
-            foreach ($results as $result) {
-                $values[] = $result->getKey();
-            }
-
-            $field->setValue($values);
-        }
-
-        $select[] = $field;
-
-        return $select;
     }
 
     /**
@@ -113,5 +56,51 @@ class SelectMultiple extends Relation
                 }
             }
         }
+    }
+
+    /**
+     * @return array
+     */
+    protected function getConfig()
+    {
+        return [
+            'name' => $this->name.'[]',
+            'presentation' => $this->getPresentation(),
+            'form_type' => 'select',
+            'attr' => [
+                'multiple' => true
+            ],
+            'no_validate' => true,
+            'validation' => null,
+            'functions' => null
+        ];
+    }
+
+
+
+    protected function setFieldValue($field)
+    {
+        $results = $this->eloquentRelation->getResults();
+
+        if (! $results->isEmpty()) {
+            $values = [];
+
+            foreach ($results as $result) {
+                $values[] = $result->getKey();
+            }
+
+            $field->setValue($values);
+        }
+        return $field;
+    }
+
+
+    /**
+     * @param \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal
+     * @return Column
+     */
+    protected function getColumn($dbal)
+    {
+        return $dbal->getTableColumn($this->eloquentRelation->getPlainForeignKey());
     }
 }

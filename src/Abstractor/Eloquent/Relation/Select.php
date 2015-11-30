@@ -2,8 +2,9 @@
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationConfig;
 use App;
+use Doctrine\DBAL\Schema\Column;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class Select extends Relation
@@ -28,7 +29,7 @@ class Select extends Relation
         /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
         $dbal = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
 
-        $column = $dbal->getTableColumn($this->eloquentRelation->getOtherKey());
+        $column = $this->getColumn($dbal);
 
         $repo = $this->modelManager->getRepository(get_class($this->eloquentRelation->getRelated()));
 
@@ -39,29 +40,17 @@ class Select extends Relation
         $options = ['' => ''];
 
         foreach ($results as $result) {
-            $options[$result->getKey()] = is_array($this->config['display']) ? implode('|', $result->getAttribute($this->config['display'])) : $result->getAttribute($this->config['display']);
+            $options[$result->getKey()] = $this->setDisplay($result);
         }
-
-        $config = [
-            'name' => $this->eloquentRelation->getForeignKey(),
-            'presentation' => $this->getPresentation(),
-            'form_type' => 'select',
-            'validation' => null,
-            'functions' => null
-        ];
 
         $field = $this->fieldFactory
             ->setColumn($column)
-            ->setConfig($config)
+            ->setConfig($this->getConfig())
             ->get();
 
         $field->setOptions($options);
 
-        $results = $this->eloquentRelation->getResults();
-
-        if (! empty($results)) {
-            $field->setValue($results->getKey());
-        }
+        $field = $this->setFieldValue($field);
 
         $select[] = $field;
 
@@ -75,5 +64,57 @@ class Select extends Relation
     public function persist(Request $request)
     {
         //
+    }
+
+    /**
+     * @param Model $result
+     * @return string
+     */
+    protected function setDisplay($result)
+    {
+        if (is_array($this->config['display'])) {
+            $displayString = '';
+            foreach ($this->config['display'] as $key => $display) {
+                if ($key !== 0) {
+                    $displayString .= ' | ';
+                }
+                $displayString .= $result->getAttribute($display);
+            }
+            return $displayString;
+        }
+        return $result->getAttribute($this->config['display']);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getConfig()
+    {
+        return [
+            'name' => $this->eloquentRelation->getForeignKey(),
+            'presentation' => $this->getPresentation(),
+            'form_type' => 'select',
+            'validation' => null,
+            'functions' => null
+        ];
+    }
+
+    protected function setFieldValue($field)
+    {
+        $results = $this->eloquentRelation->getResults();
+
+        if (! empty($results)) {
+            $field->setValue($results->getKey());
+        }
+        return $field;
+    }
+
+    /**
+     * @param \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal
+     * @return Column
+     */
+    protected function getColumn($dbal)
+    {
+        return $dbal->getTableColumn($this->eloquentRelation->getOtherKey());
     }
 }
