@@ -27,3 +27,18 @@ if (! function_exists('uniqueSlugify')) {
         return Slugger::uniqueSlugify($text);
     }
 }
+
+if (! function_exists('transcrud')) {
+    /**
+     * Translate string but remove file key if translation not found
+     *
+     * @param  string  $text
+     * @return string
+     */
+    function transcrud($text)
+    {
+        $translation = trans('crudoado::models.' . $text);
+
+        return str_replace('crudoado::models.', '', $translation);
+    }
+}
