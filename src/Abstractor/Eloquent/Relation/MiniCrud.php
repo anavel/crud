@@ -53,7 +53,7 @@ class MiniCrud extends Relation
 
                     $config = [
                         'name'         => $this->name . '[' . $index . '][' . $columnName . ']',
-                        'presentation' => ucfirst(transcrud($columnName)) . ' [' . $index . ']',
+                        'presentation' => $this->name . ' ' . ucfirst(transcrud($columnName)) . ' [' . $index . ']',
                         'form_type'    => $formType,
                         'no_validate'  => true,
                         'validation'   => null,

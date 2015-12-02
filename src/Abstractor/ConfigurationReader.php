@@ -5,7 +5,7 @@ trait ConfigurationReader
 {
     public function getConfigValue()
     {
-        if (! property_exists($this, 'config')) {
+        if (! property_exists($this, 'config') || ! is_array($this->config) || empty($this->config)) {
             return null;
         }
 
