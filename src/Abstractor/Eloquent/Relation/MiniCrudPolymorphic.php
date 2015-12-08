@@ -11,7 +11,8 @@ use Illuminate\Support\Collection;
 class MiniCrudPolymorphic extends MiniCrud
 {
     protected $compatibleEloquentRelations = array(
-        'Illuminate\Database\Eloquent\Relations\MorphMany'
+        'Illuminate\Database\Eloquent\Relations\MorphMany',
+        'Illuminate\Database\Eloquent\Relations\MorphOne'
     );
 
     protected function skipField($columnName, $key)
