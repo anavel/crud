@@ -38,7 +38,10 @@ class MiniCrudSingle extends Relation
 
         if (! empty($columns)) {
             foreach ($columns as $columnName => $column) {
-                if ($columnName === $this->eloquentRelation->getPlainForeignKey() || ($columnName === $this->eloquentRelation->getPlainMorphType())) {
+                if ($columnName === $this->eloquentRelation->getPlainForeignKey() ||
+                    ($columnName === $this->eloquentRelation->getPlainMorphType()) ||
+                    $columnName === $this->eloquentRelation->getParent()->getKeyName()
+                ) {
                     continue;
                 }
 
