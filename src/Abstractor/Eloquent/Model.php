@@ -4,7 +4,7 @@ namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractorContract;
 use ANavallaSuiza\Crudoado\Abstractor\ConfigurationReader;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory as RelationFactoryContract;
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory;
+use ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory as FieldFactoryContract;
 use ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer;
 use FormManager\ElementInterface;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
@@ -29,7 +29,7 @@ class Model implements ModelAbstractorContract
     protected $name;
     protected $instance;
 
-    public function __construct($config, AbstractionLayer $dbal, RelationFactoryContract $relationFactory, FieldFactory $fieldFactory, FormGenerator $generator)
+    public function __construct($config, AbstractionLayer $dbal, RelationFactoryContract $relationFactory, FieldFactoryContract $fieldFactory, FormGenerator $generator)
     {
         if (is_array($config)) {
             $this->model = $config['model'];
