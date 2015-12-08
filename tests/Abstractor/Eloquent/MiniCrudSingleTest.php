@@ -1,9 +1,7 @@
 <?php
 namespace Crudoado\Tests\Abstractor\Eloquent;
 
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\MiniCrud;
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\MiniCrudPolymorphic;
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Select;
+use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\MiniCrudSingle;
 use Crudoado\Tests\Models\User;
 use Crudoado\Tests\TestBase;
 use Mockery;
@@ -11,9 +9,9 @@ use Mockery\Mock;
 use phpmock\mockery\PHPMockery;
 
 
-class MiniCrudPolymorphicTest extends TestBase
+class MiniCrudSingleTest extends TestBase
 {
-    /** @var  MiniCrudPolymorphic */
+    /** @var  MiniCrudSingle */
     protected $sut;
     /** @var  Mock */
     protected $relationMock;
@@ -39,10 +37,11 @@ class MiniCrudPolymorphicTest extends TestBase
             'get_class');
     }
 
+    //We can not do the construct in the setup because get_class needs to be mocked differently each time
     public function buildRelation()
     {
         $config = require __DIR__ . '/../../config.php';
-        $this->sut = new MiniCrudPolymorphic(
+        $this->sut = new MiniCrudSingle(
             $config['Users']['relations']['group'],
             $this->modelManagerMock,
             $user = new User(),
@@ -53,12 +52,13 @@ class MiniCrudPolymorphicTest extends TestBase
 
     public function test_implements_relation_interface()
     {
-        $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphMany');
+        $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphOne');
 
         $this->buildRelation();
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation', $this->sut);
     }
 
+//
     public function test_throws_exception_when_class_not_compatible()
     {
         $this->setExpectedException('ANavallaSuiza\Crudoado\Abstractor\Exceptions\RelationException');
@@ -71,9 +71,14 @@ class MiniCrudPolymorphicTest extends TestBase
     {
         $this->relationMock->shouldReceive('getRelated', 'getPlainForeignKey', 'getPlainMorphType', 'getParent',
             'getKeyName')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('getResults')->andReturn(collect([$postMock = $this->mock('Crudoado\Tests\Models\Post')]));
+        $this->relationMock->shouldReceive('getResults')->andReturn($postMock = $this->mock('Crudoado\Tests\Models\Post'));
         $this->modelManagerMock->shouldReceive('getAbstractionLayer')->andReturn($dbalMock = $this->mock('\ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
-        $dbalMock->shouldReceive('getTableColumns')->andReturn([$columnMock = $this->mock('Doctrine\DBAL\Schema\Column')]);
+        $dbalMock->shouldReceive('getTableColumns')->andReturn([
+            $columnMock = $this->mock('Doctrine\DBAL\Schema\Column'),
+            $columnMock = $this->mock('Doctrine\DBAL\Schema\Column')
+        ]);
+        $postMock->shouldReceive('hasGetMutator')->andReturn('false');
+        $postMock->shouldReceive('getAttributeValue')->andReturn('1');
         $postMock->shouldReceive('getAttribute')->andReturn('chompy');
 
 
@@ -81,10 +86,10 @@ class MiniCrudPolymorphicTest extends TestBase
         $this->fieldFactoryMock->shouldReceive('get')->andReturn($fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field'));
         $fieldMock->shouldReceive('setOptions');
 
-        $fieldMock->shouldReceive('setValue')->times(1);
+        $fieldMock->shouldReceive('setValue')->times(2);
 
 
-        $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphMany');
+        $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphOne');
         $this->buildRelation();
         $fields = $this->sut->getEditFields();
 
@@ -96,27 +101,24 @@ class MiniCrudPolymorphicTest extends TestBase
     public function test_persist_with_no_old_results()
     {
         $inputArray = [
-            '0' => [
-                'field'          => 1,
-                'otherField'     => 3,
-                'someOtherField' => 3,
-            ]
+            'field'          => 1,
+            'otherField'     => 3,
+            'someOtherField' => 3,
         ];
         $requestMock = $this->mock('Illuminate\Http\Request');
-//
+
         $requestMock->shouldReceive('input')->with('group')->atLeast()->once()->andReturn($inputArray);
 
         $this->relationMock->shouldReceive('getForeignKey', 'getPlainMorphType', 'getMorphClass');
-        $this->relationMock->shouldReceive('getRelated', 'getParent', 'get')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('keyBy')->once()->andReturn(collect());
-        $this->relationMock->shouldReceive('getKeyName')->andReturn('id');
+        $this->relationMock->shouldReceive('getRelated', 'getParent')->andReturn($this->relationMock);
+        $this->relationMock->shouldReceive('getResults');
         $this->relationMock->shouldReceive('newInstance')->andReturn($modelMock = $this->mock('Crudoado\Tests\Models\Post'));
 
         $modelMock->shouldReceive('getKey')->andReturn(1);
         $modelMock->shouldReceive('setAttribute')->times(5);
         $modelMock->shouldReceive('save')->times(1);
 
-        $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphMany');
+        $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphOne');
         $this->buildRelation();
 
         $fields = $this->sut->persist($requestMock);
@@ -125,32 +127,23 @@ class MiniCrudPolymorphicTest extends TestBase
     public function test_persist_with_old_results()
     {
         $inputArray = [
-            '0' => [
-                'id'             => 1,
-                'otherField'     => 3,
-                'someOtherField' => 3,
-            ],
-            '1' => [
-                'id'             => 1,
-                'otherField'     => 3,
-                'someOtherField' => 3,
-            ]
+            'id'             => 1,
+            'otherField'     => 3,
+            'someOtherField' => 3,
         ];
         $requestMock = $this->mock('Illuminate\Http\Request');
-//
-        $requestMock->shouldReceive('input')->with('group')->atLeast()->once()->andReturn($inputArray);
 
+        $requestMock->shouldReceive('input')->with('group')->atLeast()->once()->andReturn($inputArray);
         $this->relationMock->shouldReceive('getForeignKey', 'getPlainMorphType', 'getMorphClass');
-        $this->relationMock->shouldReceive('getRelated', 'getParent', 'get')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('newInstance');
-        $this->relationMock->shouldReceive('keyBy')->once()->andReturn(collect([1 => $modelMock = $this->mock('Crudoado\Tests\Models\Post')]));
-        $this->relationMock->shouldReceive('getKeyName')->andReturn('id');
+        $this->relationMock->shouldReceive('getRelated', 'getParent')->andReturn($this->relationMock);
+        $this->relationMock->shouldReceive('getResults')->andReturn($modelMock = $this->mock('Crudoado\Tests\Models\Post'));
+        $this->relationMock->shouldReceive('newInstance')->never();
 
         $modelMock->shouldReceive('getKey')->andReturn(1);
-        $modelMock->shouldReceive('setAttribute')->times(10);
-        $modelMock->shouldReceive('save')->times(2);
+        $modelMock->shouldReceive('setAttribute')->times(5);
+        $modelMock->shouldReceive('save')->times(1);
 
-        $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphMany');
+        $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphOne');
         $this->buildRelation();
 
         $fields = $this->sut->persist($requestMock);

@@ -1,18 +1,13 @@
 <?php
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\Field;
 use App;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 
 class MiniCrudPolymorphic extends MiniCrud
 {
     protected $compatibleEloquentRelations = array(
-        'Illuminate\Database\Eloquent\Relations\MorphMany',
-        'Illuminate\Database\Eloquent\Relations\MorphOne'
+        'Illuminate\Database\Eloquent\Relations\MorphMany'
     );
 
     protected function skipField($columnName, $key)

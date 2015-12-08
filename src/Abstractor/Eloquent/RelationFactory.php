@@ -14,6 +14,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
     const SELECT_MULTIPLE_POLYMORPHIC = 'select-multiple-polymorphic';
     const CHECKLIST = 'checklist';
     const MINI_CRUD = 'mini-crud';
+    const MINI_CRUD_SINGLE = 'mini-crud-single';
     const MINI_CRUD_POLYMORPHIC = 'mini-crud-polymorphic';
     const TRANSLATION = 'translation';
 
@@ -25,7 +26,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
         'Illuminate\Database\Eloquent\Relations\HasOne'        => self::SELECT,
         'Illuminate\Database\Eloquent\Relations\HasOneOrMany'  => self::SELECT_MULTIPLE,
         'Illuminate\Database\Eloquent\Relations\MorphMany'     => self::MINI_CRUD_POLYMORPHIC,
-        'Illuminate\Database\Eloquent\Relations\MorphOne'     => self::MINI_CRUD_POLYMORPHIC
+        'Illuminate\Database\Eloquent\Relations\MorphOne'      => self::MINI_CRUD_SINGLE
     );
 
     protected $typesMap = array(
@@ -34,6 +35,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
         self::SELECT_MULTIPLE_POLYMORPHIC => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\SelectMultiplePolymorphic',
         self::CHECKLIST                   => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Checklist',
         self::MINI_CRUD                   => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\MiniCrud',
+        self::MINI_CRUD_SINGLE            => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\MiniCrudSingle',
         self::MINI_CRUD_POLYMORPHIC       => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\MiniCrudPolymorphic',
         self::TRANSLATION                 => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Translation'
     );
