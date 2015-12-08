@@ -13,7 +13,7 @@ return [
     'delete_button'                     => 'Borrar',
     'back_button'                       => 'Volver',
     'cancel_button'                     => 'Cancelar',
-    'save_button'                       => 'Guargar',
+    'save_button'                       => 'Guardar',
     'confirm_button'                    => 'Confirmar',
     'alert_success_model_store_title'   => '¡Todo bien!',
     'alert_success_model_store_text'    => 'El elemento ha sido guardado correctamente',
