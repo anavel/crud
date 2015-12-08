@@ -29,6 +29,8 @@ class FieldFactory implements FieldAbstractorFactoryContract
      */
     protected $databaseTypeToFormType = array(
         DbalType::INTEGER  => 'number',
+        DbalType::SMALLINT => 'number',
+        DbalType::BIGINT   => 'number',
         DbalType::STRING   => 'text',
         DbalType::TEXT     => 'textarea',
         DbalType::BOOLEAN  => 'checkbox',
@@ -153,6 +155,7 @@ class FieldFactory implements FieldAbstractorFactoryContract
 
     public function getPresentation()
     {
-        return transcrud($this->config['presentation']) ? : ucfirst(str_replace('_', ' ', transcrud($this->config['name'])));
+        return transcrud($this->config['presentation']) ? : ucfirst(str_replace('_', ' ',
+            transcrud($this->config['name'])));
     }
 }
