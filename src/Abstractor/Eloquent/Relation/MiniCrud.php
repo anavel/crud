@@ -38,8 +38,12 @@ class MiniCrud extends Relation
 
         $results->put('emptyResult', '');
         if (! empty($columns)) {
+            $readOnly = [Model::CREATED_AT, Model::UPDATED_AT];
             foreach ($results as $key => $result) {
                 foreach ($columns as $columnName => $column) {
+                    if (in_array($columnName, $readOnly, true)) {
+                        continue;
+                    }
                     if ($this->skipField($columnName, $key)) {
                         continue;
                     }

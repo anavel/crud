@@ -36,12 +36,18 @@ class MiniCrudSingle extends Relation
         /** @var Model $result */
         $result = $this->eloquentRelation->getResults();
 
+        $readOnly = [
+            Model::CREATED_AT,
+            Model::UPDATED_AT,
+            $this->eloquentRelation->getPlainForeignKey(),
+            $this->eloquentRelation->getPlainMorphType(),
+            $this->eloquentRelation->getParent()->getKeyName()
+        ];
+
+
         if (! empty($columns)) {
             foreach ($columns as $columnName => $column) {
-                if ($columnName === $this->eloquentRelation->getPlainForeignKey() ||
-                    ($columnName === $this->eloquentRelation->getPlainMorphType()) ||
-                    $columnName === $this->eloquentRelation->getParent()->getKeyName()
-                ) {
+                if (in_array($columnName, $readOnly, true)) {
                     continue;
                 }
 
