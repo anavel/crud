@@ -80,6 +80,7 @@ class MiniCrud extends Relation
             }
         }
 
+        $fields = $this->addSecondaryRelationFields($fields);
 
         return $fields;
     }

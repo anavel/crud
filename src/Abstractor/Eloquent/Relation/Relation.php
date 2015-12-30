@@ -2,6 +2,7 @@
 namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
 
 use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationConfig;
+use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractor;
 use ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation as RelationAbstractorContract;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use Illuminate\Database\Eloquent\Model;
@@ -28,6 +29,8 @@ abstract class Relation implements RelationAbstractorContract
      */
     protected $fieldFactory;
     protected $modelManager;
+    /** @var  ModelAbstractor */
+    protected $modelAbstractor;
     /**
      * @var array
      */
@@ -45,6 +48,18 @@ abstract class Relation implements RelationAbstractorContract
 
         $this->config = $config;
         $this->setup();
+
+        $this->modelAbstractor = \App::make('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory')->getByClassName($this->eloquentRelation->getRelated());
+    }
+
+    public function addSecondaryRelationFields(array $fields)
+    {
+        foreach ($this->modelAbstractor->getRelations() as $relation) {
+            foreach ($relation->getEditFields() as $editField) {
+                $fields[] = $editField;
+            };
+        }
+        return $fields;
     }
 
     public function getName()

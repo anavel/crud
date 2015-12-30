@@ -19,6 +19,8 @@ class TranslationTest extends TestBase
     protected $modelManagerMock;
     /** @var  Mock */
     protected $fieldFactoryMock;
+    /** @var  Mock */
+    protected $modelAbstractorMock;
 
     public function setUp()
     {
@@ -28,6 +30,10 @@ class TranslationTest extends TestBase
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
         $this->fieldFactoryMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
+
+        \App::instance('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory', $modelFactoryMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory'));
+        $modelFactoryMock->shouldReceive('getByClassName')->andReturn($this->modelAbstractorMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model'));
+        $this->relationMock->shouldReceive('getRelated')->andReturn($this->relationMock);
 
         $this->sut = new Translation(
             $config['Users']['relations']['translations'],

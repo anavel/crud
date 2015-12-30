@@ -19,6 +19,8 @@ class MiniCrudSingleTest extends TestBase
     protected $modelManagerMock;
     /** @var  Mock */
     protected $fieldFactoryMock;
+    /** @var  Mock */
+    protected $modelAbstractorMock;
 
     protected $wrongConfig;
     protected $getClassMock;
@@ -35,6 +37,10 @@ class MiniCrudSingleTest extends TestBase
 
         $this->getClassMock = PHPMockery::mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits',
             'get_class');
+
+        \App::instance('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory', $modelFactoryMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory'));
+        $modelFactoryMock->shouldReceive('getByClassName')->andReturn($this->modelAbstractorMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model'));
+        $this->relationMock->shouldReceive('getRelated')->andReturn($this->relationMock);
     }
 
     //We can not do the construct in the setup because get_class needs to be mocked differently each time
@@ -87,6 +93,9 @@ class MiniCrudSingleTest extends TestBase
         $fieldMock->shouldReceive('setOptions');
 
         $fieldMock->shouldReceive('setValue')->times(2);
+
+        $this->modelAbstractorMock->shouldReceive('getRelations')->times(1)->andReturn([$secondaryRelationMock = $this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Select')]);
+        $secondaryRelationMock->shouldReceive('getEditFields')->andReturn([]);
 
 
         $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphOne');

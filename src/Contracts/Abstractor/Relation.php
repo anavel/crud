@@ -32,6 +32,12 @@ interface Relation
     public function getEditFields();
 
     /**
+     * @param array $fields
+     * @return array
+     */
+    public function addSecondaryRelationFields(array $fields);
+
+    /**
      * @param Request $request
      * @return mixed
      */

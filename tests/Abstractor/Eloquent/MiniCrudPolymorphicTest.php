@@ -21,6 +21,8 @@ class MiniCrudPolymorphicTest extends TestBase
     protected $modelManagerMock;
     /** @var  Mock */
     protected $fieldFactoryMock;
+    /** @var  Mock */
+    protected $modelAbstractorMock;
 
     protected $wrongConfig;
     protected $getClassMock;
@@ -37,6 +39,10 @@ class MiniCrudPolymorphicTest extends TestBase
 
         $this->getClassMock = PHPMockery::mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits',
             'get_class');
+
+        \App::instance('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory', $modelFactoryMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory'));
+        $modelFactoryMock->shouldReceive('getByClassName')->andReturn($this->modelAbstractorMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model'));
+        $this->relationMock->shouldReceive('getRelated')->andReturn($this->relationMock);
     }
 
     public function buildRelation()
@@ -82,6 +88,10 @@ class MiniCrudPolymorphicTest extends TestBase
         $fieldMock->shouldReceive('setOptions');
 
         $fieldMock->shouldReceive('setValue')->times(1);
+
+        $this->modelAbstractorMock->shouldReceive('getRelations')->times(1)->andReturn([$this->secondaryRelationMock = $this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Select')]);
+        $this->secondaryRelationMock->shouldReceive('getEditFields')->andReturn([]);
+
 
 
         $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphMany');

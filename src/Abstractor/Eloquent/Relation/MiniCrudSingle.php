@@ -76,6 +76,8 @@ class MiniCrudSingle extends Relation
             }
         }
 
+        $fields = $this->addSecondaryRelationFields($fields);
+
 
         return $fields;
     }

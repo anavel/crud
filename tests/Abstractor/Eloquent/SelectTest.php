@@ -18,6 +18,8 @@ class SelectTest extends TestBase
     protected $modelManagerMock;
     /** @var  Mock */
     protected $fieldMock;
+    /** @var  Mock */
+    protected $modelAbstractorMock;
 
     protected $wrongConfig;
 
@@ -31,6 +33,10 @@ class SelectTest extends TestBase
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
         $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
+
+        \App::instance('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory', $modelFactoryMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory'));
+        $modelFactoryMock->shouldReceive('getByClassName')->andReturn($this->modelAbstractorMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model'));
+        $this->relationMock->shouldReceive('getRelated')->andReturn($this->relationMock);
 
         $this->sut = new Select(
             $config['Users']['relations']['group'],
