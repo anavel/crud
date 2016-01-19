@@ -49,7 +49,7 @@ abstract class Relation implements RelationAbstractorContract
         $this->config = $config;
         $this->setup();
 
-        $this->modelAbstractor = \App::make('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory')->getByClassName($this->eloquentRelation->getRelated());
+        $this->modelAbstractor = \App::make('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory')->getByClassName(get_class($this->eloquentRelation->getRelated()));
     }
 
     public function addSecondaryRelationFields(array $fields)
