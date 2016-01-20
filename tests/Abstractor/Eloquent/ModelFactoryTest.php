@@ -74,7 +74,7 @@ class ModelFactoryTest extends TestBase
     {
         $this->modelManagerMock->shouldReceive('getAbstractionLayer')->once()->andReturn($this->mock('ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
 
-        $model = $this->sut->getByClassName('Crudoado\Tests\Models\User');
+        $model = $this->sut->getByClassName('Crudoado\Tests\Models\User', []);
 
         $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model', $model);
     }
