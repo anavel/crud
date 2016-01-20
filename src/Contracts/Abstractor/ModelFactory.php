@@ -19,5 +19,5 @@ interface ModelFactory
      *
      * @return Model
      */
-    public function getByClassName($classname, $id = null);
+    public function getByClassName($classname, array $config, $id = null);
 }

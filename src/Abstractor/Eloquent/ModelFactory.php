@@ -85,9 +85,9 @@ class ModelFactory implements ModelAbstractorFactoryContract
         return $this->getBySlug($this->slugger->slugify($name));
     }
 
-    public function getByClassName($classname, $id = null)
+    public function getByClassName($classname, array $config, $id = null)
     {
-        $model = new Model(['model' => $classname], $this->modelManager->getAbstractionLayer($classname), $this->relationFactory, $this->fieldFactory, $this->generator);
+        $model = new Model(array_merge(['model' => $classname], $config), $this->modelManager->getAbstractionLayer($classname), $this->relationFactory, $this->fieldFactory, $this->generator);
 
         return $model;
     }
