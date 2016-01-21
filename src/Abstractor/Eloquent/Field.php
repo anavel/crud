@@ -79,6 +79,14 @@ class Field implements FieldAbstractorContract
         return implode('|', $this->validationRules);
     }
 
+    /**
+     * @return array
+     */
+    public function getValidationRulesArray()
+    {
+        return $this->validationRules;
+    }
+
     public function setFunctions($functions)
     {
         if (! is_array($functions)) {
@@ -186,5 +194,14 @@ class Field implements FieldAbstractorContract
         }
 
         return $this->noValidate;
+    }
+
+    /**
+     * @param array $attributes
+     * @return void
+     */
+    public function setFormElementAttributes(array $attributes)
+    {
+        $this->formField->attr($attributes);
     }
 }

@@ -60,4 +60,15 @@ interface Field
      * @return boolean
      */
     public function noValidate($value = null);
+
+    /**
+     * @param array $attributes
+     * @return void
+     */
+    public function setFormElementAttributes(array $attributes);
+
+    /**
+     * @return array
+     */
+    public function getValidationRulesArray();
 }

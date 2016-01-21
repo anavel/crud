@@ -98,6 +98,16 @@ class FieldFactory implements FieldAbstractorFactoryContract
             $field->noValidate(true);
         }
 
+        if (count($rules = $field->getValidationRulesArray()) > 0) {
+            if (in_array('required', $rules)) {
+                $field->setFormElementAttributes(
+                    [
+                        'required' => 'required'
+                    ]
+                );
+            }
+        }
+
         return $field;
     }
 
