@@ -73,6 +73,7 @@ class ModelFactoryTest extends TestBase
     public function test_gets_model_by_classname()
     {
         $this->modelManagerMock->shouldReceive('getAbstractionLayer')->once()->andReturn($this->mock('ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
+        $this->modelManagerMock->shouldReceive('getModelInstance')->once()->with('Crudoado\Tests\Models\User');
 
         $model = $this->sut->getByClassName('Crudoado\Tests\Models\User', []);
 
