@@ -84,7 +84,7 @@ class Field implements FieldAbstractorContract
      */
     public function getValidationRulesArray()
     {
-        return $this->validationRules;
+        return explode('|', $this->getValidationRules());
     }
 
     public function setFunctions($functions)
