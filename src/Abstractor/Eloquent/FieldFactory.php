@@ -102,7 +102,7 @@ class FieldFactory implements FieldAbstractorFactoryContract
             if (in_array('required', $rules)) {
                 $field->setFormElementAttributes(
                     [
-                        'required' => 'required'
+                        'required' => true
                     ]
                 );
             }
