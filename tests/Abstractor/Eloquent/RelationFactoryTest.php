@@ -1,9 +1,9 @@
 <?php
-namespace Crudoado\Tests\Abstractor\Eloquent;
+namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
-use Crudoado\Tests\Models\User;
-use Crudoado\Tests\TestBase;
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\RelationFactory;
+use Anavel\Crud\Tests\Models\User;
+use Anavel\Crud\Tests\TestBase;
+use Anavel\Crud\Abstractor\Eloquent\RelationFactory;
 use Mockery\Mock;
 
 
@@ -24,7 +24,7 @@ class RelationFactoryTest extends TestBase
         parent::setUp();
 
         $this->modelManagerMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
-        $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
+        $this->fieldMock = $this->mock('Anavel\Crud\Contracts\Abstractor\FieldFactory');
 
         $this->sut = new RelationFactory($this->modelManagerMock, $this->fieldMock);
 
@@ -33,14 +33,14 @@ class RelationFactoryTest extends TestBase
 
     public function test_implements_relation_factory_interface()
     {
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory', $this->sut);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\RelationFactory', $this->sut);
     }
 
     public function test_throws_exception_when_relation_not_supported()
     {
         $config = require __DIR__ . '/../../wrong-config.php';
         $this->sut->setConfig($config['Users']['relations']['translations']);
-        $this->setExpectedException('ANavallaSuiza\Crudoado\Abstractor\Exceptions\FactoryException', 'Unexpected relation type: fake');
+        $this->setExpectedException('Anavel\Crud\Abstractor\Exceptions\FactoryException', 'Unexpected relation type: fake');
 
         $relation = $this->sut->get('translations');
     }

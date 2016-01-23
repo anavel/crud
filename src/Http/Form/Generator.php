@@ -1,8 +1,8 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Http\Form;
+namespace Anavel\Crud\Http\Form;
 
-use ANavallaSuiza\Crudoado\Contracts\Form\Generator as GeneratorContract;
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field;
+use Anavel\Crud\Contracts\Form\Generator as GeneratorContract;
+use Anavel\Crud\Abstractor\Eloquent\Field;
 use Doctrine\DBAL\Types\Type as DbalType;
 use FormManager\FactoryInterface;
 use Request;

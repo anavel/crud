@@ -1,5 +1,5 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
+namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
 use App;
 use Illuminate\Database\Eloquent\Model;

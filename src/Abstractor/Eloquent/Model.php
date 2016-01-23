@@ -1,16 +1,16 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
+namespace Anavel\Crud\Abstractor\Eloquent;
 
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractorContract;
-use ANavallaSuiza\Crudoado\Abstractor\ConfigurationReader;
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory as RelationFactoryContract;
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory as FieldFactoryContract;
+use Anavel\Crud\Contracts\Abstractor\Model as ModelAbstractorContract;
+use Anavel\Crud\Abstractor\ConfigurationReader;
+use Anavel\Crud\Contracts\Abstractor\RelationFactory as RelationFactoryContract;
+use Anavel\Crud\Contracts\Abstractor\FieldFactory as FieldFactoryContract;
 use ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer;
 use FormManager\ElementInterface;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
 use App;
-use ANavallaSuiza\Crudoado\Contracts\Form\Generator as FormGenerator;
-use ANavallaSuiza\Crudoado\Abstractor\Exceptions\AbstractorException;
+use Anavel\Crud\Contracts\Form\Generator as FormGenerator;
+use Anavel\Crud\Abstractor\Exceptions\AbstractorException;
 use Illuminate\Http\Request;
 
 class Model implements ModelAbstractorContract
@@ -338,7 +338,7 @@ class Model implements ModelAbstractorContract
                     $modelFolder = $this->slug.DIRECTORY_SEPARATOR;
 
                     $request->file($field->getName())->move(
-                        base_path(config('crudoado.uploads_path').$modelFolder),
+                        base_path(config('anavel-crud.uploads_path').$modelFolder),
                         $fileName
                     );
 

@@ -1,9 +1,9 @@
 <?php
-namespace Crudoado\Tests\Abstractor\Eloquent;
+namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
-use Crudoado\Tests\TestBase;
+use Anavel\Crud\Tests\TestBase;
 use Mockery;
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field;
+use Anavel\Crud\Abstractor\Eloquent\Field;
 use Mockery\Mock;
 
 class FieldTest extends TestBase
@@ -27,7 +27,7 @@ class FieldTest extends TestBase
 
     public function test_implements_field_interface()
     {
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $this->sut);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $this->sut);
     }
 
     public function test_generates_presentation_if_empty()

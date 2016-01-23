@@ -1,7 +1,7 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
+namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
+use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
 use App;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Database\Eloquent\Model;

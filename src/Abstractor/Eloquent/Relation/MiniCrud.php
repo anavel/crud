@@ -1,8 +1,8 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
+namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\Field;
+use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
+use Anavel\Crud\Contracts\Abstractor\Field;
 use App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;

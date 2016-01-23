@@ -1,5 +1,5 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Contracts\Abstractor;
+namespace Anavel\Crud\Contracts\Abstractor;
 
 use FormManager\ElementInterface;
 use Illuminate\Http\Request;

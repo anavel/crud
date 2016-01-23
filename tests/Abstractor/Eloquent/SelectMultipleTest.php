@@ -1,10 +1,10 @@
 <?php
-namespace Crudoado\Tests\Abstractor\Eloquent;
+namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\SelectMultiple;
-use ANavallaSuiza\Crudoado\Repository\Criteria\InArrayCriteria;
-use Crudoado\Tests\Models\User;
-use Crudoado\Tests\TestBase;
+use Anavel\Crud\Abstractor\Eloquent\Relation\SelectMultiple;
+use Anavel\Crud\Repository\Criteria\InArrayCriteria;
+use Anavel\Crud\Tests\Models\User;
+use Anavel\Crud\Tests\TestBase;
 use Illuminate\Database\Eloquent\Collection;
 use Mockery;
 use Mockery\Mock;
@@ -35,10 +35,10 @@ class SelectMultipleTest extends TestBase
 
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
-        $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
+        $this->fieldMock = $this->mock('Anavel\Crud\Contracts\Abstractor\FieldFactory');
 
-        \App::instance('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory', $modelFactoryMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory'));
-        $modelFactoryMock->shouldReceive('getByClassName')->andReturn($this->modelAbstractorMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model'));
+        \App::instance('Anavel\Crud\Contracts\Abstractor\ModelFactory', $modelFactoryMock = $this->mock('Anavel\Crud\Contracts\Abstractor\ModelFactory'));
+        $modelFactoryMock->shouldReceive('getByClassName')->andReturn($this->modelAbstractorMock = $this->mock('Anavel\Crud\Contracts\Abstractor\Model'));
         $this->relationMock->shouldReceive('getRelated')->andReturn($this->relationMock);
 
         $this->sut = new SelectMultiple(
@@ -52,7 +52,7 @@ class SelectMultipleTest extends TestBase
 
     public function test_implements_relation_interface()
     {
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation', $this->sut);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Relation', $this->sut);
     }
 
     public function test_get_edit_fields_returns_array_of_fields_with_proper_key()
@@ -63,7 +63,7 @@ class SelectMultipleTest extends TestBase
         $this->modelManagerMock->shouldReceive('getRepository')->atLeast()->once()
             ->andReturn($repoMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository'));
 
-        $modelMock = $this->mock('Crudoado\Tests\Models\Post');
+        $modelMock = $this->mock('Anavel\Crud\Tests\Models\Post');
         $repoMock->shouldReceive('all')->atLeast()->once()
             ->andReturn(new Collection([$modelMock, $modelMock, $modelMock]));
 
@@ -71,7 +71,7 @@ class SelectMultipleTest extends TestBase
         $modelMock->shouldReceive('getAttribute')->with('title');
 
         $this->fieldMock->shouldReceive('setColumn', 'setConfig')->andReturn($this->fieldMock);
-        $this->fieldMock->shouldReceive('get')->andReturn($field = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field'));
+        $this->fieldMock->shouldReceive('get')->andReturn($field = $this->mock('Anavel\Crud\Contracts\Abstractor\Field'));
 
         $field->shouldReceive('setOptions');
 
@@ -80,7 +80,7 @@ class SelectMultipleTest extends TestBase
         $this->assertInternalType('array', $fields, 'getEditFields should return an array');
         $this->assertCount(1, $fields);
 
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
     }
 
     public function test_persist()
@@ -93,7 +93,7 @@ class SelectMultipleTest extends TestBase
         $this->modelManagerMock->shouldReceive('getRepository')->atLeast()->once()
             ->andReturn($repoMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository'));
 
-        $modelMock = $this->mock('Crudoado\Tests\Models\Post');
+        $modelMock = $this->mock('Anavel\Crud\Tests\Models\Post');
         $modelMock->shouldReceive('getKey')->andReturn(1);
         $modelMock->shouldReceive('setAttribute', 'save')->atLeast()->times(3);
 
@@ -107,7 +107,7 @@ class SelectMultipleTest extends TestBase
 
     public function test_throws_exception_if_display_is_not_set_in_config()
     {
-        $this->setExpectedException('ANavallaSuiza\Crudoado\Abstractor\Exceptions\RelationException', 'Display should be set in config');
+        $this->setExpectedException('Anavel\Crud\Abstractor\Exceptions\RelationException', 'Display should be set in config');
 
         $this->sut = new SelectMultiple(
             $this->wrongConfig['Users']['relations']['posts'],
@@ -122,7 +122,7 @@ class SelectMultipleTest extends TestBase
 
     public function test_throws_exception_if_name_is_not_set_in_config()
     {
-        $this->setExpectedException('ANavallaSuiza\Crudoado\Abstractor\Exceptions\RelationException', 'Relation name should be set');
+        $this->setExpectedException('Anavel\Crud\Abstractor\Exceptions\RelationException', 'Relation name should be set');
 
         $this->sut = new SelectMultiple(
             $this->wrongConfig['Users']['relations']['relation-without-name'],

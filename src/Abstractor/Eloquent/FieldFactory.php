@@ -1,8 +1,8 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
+namespace Anavel\Crud\Abstractor\Eloquent;
 
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory as FieldAbstractorFactoryContract;
-use ANavallaSuiza\Crudoado\Abstractor\Exceptions\FactoryException;
+use Anavel\Crud\Contracts\Abstractor\FieldFactory as FieldAbstractorFactoryContract;
+use Anavel\Crud\Abstractor\Exceptions\FactoryException;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\Type as DbalType;
 use FormManager\FactoryInterface as FormManagerFactory;
@@ -145,7 +145,7 @@ class FieldFactory implements FieldAbstractorFactoryContract
         }
 
         if ($formElementType === 'textarea') {
-            $formElement->class('form-control ' . config('crudoado.text_editor'));
+            $formElement->class('form-control ' . config('anavel-crud.text_editor'));
         }
 
         if (isset($this->config['defaults'])) {

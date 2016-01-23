@@ -1,15 +1,15 @@
 <?php
-namespace ANavallaSuiza\Crudoado;
+namespace Anavel\Crud;
 
-use ANavallaSuiza\Adoadomin\Support\ModuleProvider;
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\ModelFactory as ModelAbstractorFactory;
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\RelationFactory as RelationAbstractorFactory;
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\FieldFactory as FieldAbstractorFactory;
-use ANavallaSuiza\Crudoado\Http\Form\Generator as FormGenerator;
+use Anavel\Adoadomin\Support\ModuleProvider;
+use Anavel\Crud\Abstractor\Eloquent\ModelFactory as ModelAbstractorFactory;
+use Anavel\Crud\Abstractor\Eloquent\RelationFactory as RelationAbstractorFactory;
+use Anavel\Crud\Abstractor\Eloquent\FieldFactory as FieldAbstractorFactory;
+use Anavel\Crud\Http\Form\Generator as FormGenerator;
 use FormManager\Factory as FormFactory;
 use Request;
 
-class CrudoadoModuleProvider extends ModuleProvider
+class CrudModuleProvider extends ModuleProvider
 {
 
     /**
@@ -21,16 +21,16 @@ class CrudoadoModuleProvider extends ModuleProvider
 
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/../views', 'crudoado');
+        $this->loadViewsFrom(__DIR__.'/../views', 'anavel-crud');
 
-        $this->loadTranslationsFrom(__DIR__.'/../lang', 'crudoado');
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'anavel-crud');
 
         $this->publishes([
-            __DIR__.'/../public/js' => public_path('vendor/crudoado/js'),
+            __DIR__.'/../public/js' => public_path('vendor/anavel-crud/js'),
         ], 'assets');
 
         $this->publishes([
-            __DIR__.'/../config/crudoado.php' => config_path('crudoado.php'),
+            __DIR__.'/../config/anavel-crud.php' => config_path('anavel-crud.php'),
         ], 'config');
     }
 
@@ -41,48 +41,48 @@ class CrudoadoModuleProvider extends ModuleProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/crudoado.php', 'crudoado');
+        $this->mergeConfigFrom(__DIR__.'/../config/anavel-crud.php', 'anavel-crud');
 
         $this->app->register('ANavallaSuiza\Laravel\Database\Manager\ModelManagerServiceProvider');
 
         $this->app->bind(
-            'ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory',
+            'Anavel\Crud\Contracts\Abstractor\FieldFactory',
             function () {
                 return new FieldAbstractorFactory(new FormFactory);
             }
         );
 
         $this->app->bind(
-            'ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory',
+            'Anavel\Crud\Contracts\Abstractor\RelationFactory',
             function () {
                 return new RelationAbstractorFactory(
                     $this->app['ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'],
-                    $this->app['ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory']
+                    $this->app['Anavel\Crud\Contracts\Abstractor\FieldFactory']
                 );
             }
         );
 
         $this->app->bind(
-            'ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory',
+            'Anavel\Crud\Contracts\Abstractor\ModelFactory',
             function () {
                 return new ModelAbstractorFactory(
-                    config('crudoado.models'),
+                    config('anavel-crud.models'),
                     $this->app['ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'],
-                    $this->app['ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory'],
-                    $this->app['ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory'],
-                    $this->app['ANavallaSuiza\Crudoado\Contracts\Form\Generator']
+                    $this->app['Anavel\Crud\Contracts\Abstractor\RelationFactory'],
+                    $this->app['Anavel\Crud\Contracts\Abstractor\FieldFactory'],
+                    $this->app['Anavel\Crud\Contracts\Form\Generator']
                 );
             }
         );
 
         $this->app->bind(
-            'ANavallaSuiza\Crudoado\Contracts\Form\Generator',
+            'Anavel\Crud\Contracts\Form\Generator',
             function () {
                 return new FormGenerator(new FormFactory);
             }
         );
 
-        $this->app->register('ANavallaSuiza\Crudoado\Providers\ViewComposersServiceProvider');
+        $this->app->register('Anavel\Crud\Providers\ViewComposersServiceProvider');
     }
 
     /**
@@ -97,7 +97,7 @@ class CrudoadoModuleProvider extends ModuleProvider
 
     public function name()
     {
-        return config('crudoado.name');
+        return config('anavel-crud.name');
     }
 
     public function routes()
@@ -107,7 +107,7 @@ class CrudoadoModuleProvider extends ModuleProvider
 
     public function mainRoute()
     {
-        return route('crudoado.home');
+        return route('anavel-crud.home');
     }
 
     public function hasSidebar()
@@ -117,14 +117,14 @@ class CrudoadoModuleProvider extends ModuleProvider
 
     public function sidebarMenu()
     {
-        return 'crudoado::molecules.sidebar.default';
+        return 'anavel-crud::molecules.sidebar.default';
     }
 
     public function isActive()
     {
         $uri = Request::route()->uri();
 
-        if (strpos($uri, 'crudoado') !== false) {
+        if (strpos($uri, 'crud') !== false) {
             return true;
         }
 

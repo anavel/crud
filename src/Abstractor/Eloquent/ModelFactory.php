@@ -1,13 +1,13 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
+namespace Anavel\Crud\Abstractor\Eloquent;
 
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory as ModelAbstractorFactoryContract;
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory as RelationAbstractorFactoryContract;
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory as FieldAbstractorFactoryContract;
+use Anavel\Crud\Contracts\Abstractor\ModelFactory as ModelAbstractorFactoryContract;
+use Anavel\Crud\Contracts\Abstractor\RelationFactory as RelationAbstractorFactoryContract;
+use Anavel\Crud\Contracts\Abstractor\FieldFactory as FieldAbstractorFactoryContract;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use EasySlugger\Slugger;
-use ANavallaSuiza\Crudoado\Contracts\Form\Generator as FormGenerator;
-use ANavallaSuiza\Crudoado\Abstractor\Exceptions\FactoryException;
+use Anavel\Crud\Contracts\Form\Generator as FormGenerator;
+use Anavel\Crud\Abstractor\Exceptions\FactoryException;
 
 class ModelFactory implements ModelAbstractorFactoryContract
 {

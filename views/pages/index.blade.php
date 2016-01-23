@@ -1,4 +1,4 @@
-@extends('adoadomin::layouts.master')
+@extends('anavel::layouts.master')
 
 @section('content-header')
 <h1>
@@ -8,7 +8,7 @@
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="{{ route('crudoado.home') }}"><i class="fa fa-database"></i> {{ config('crudoado.name') }}</a></li>
+    <li><a href="{{ route('anavel-crud.home') }}"><i class="fa fa-database"></i> {{ config('anavel-crud.name') }}</a></li>
     <li class="active">{{ $abstractor->getName() }}</li>
 
 </ol>
@@ -16,7 +16,7 @@
 
 @section('content')
 
-@include('crudoado::atoms.delete', [
+@include('anavel-crud::atoms.delete', [
     'modelSlug' => $abstractor->getSlug(),
     'modelId'   => '%id%'
 ])
@@ -28,7 +28,7 @@
             <div class="btn-group">
                 <form method="get" action="">
                     <div class="input-group">
-                        <input name="search" type="text" value="{{ Input::get('search') }}" class="form-control pull-right" placeholder="{{ trans('crudoado::messages.search_input') }}">
+                        <input name="search" type="text" value="{{ Input::get('search') }}" class="form-control pull-right" placeholder="{{ trans('anavel-crud::messages.search_input') }}">
                         <div class="input-group-btn">
                             <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                         </div>
@@ -36,7 +36,7 @@
                 </form>
             </div>
             <div class="btn-group">
-                <a href="{{ route('crudoado.model.create', $abstractor->getSlug()) }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('crudoado::messages.create_button') }}</a>
+                <a href="{{ route('anavel-crud.model.create', $abstractor->getSlug()) }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('anavel-crud::messages.create_button') }}</a>
             </div>
         </div>
     </div>
@@ -58,12 +58,12 @@
                         }
                         ?>
                     <th>
-                        <a href="{{ route('crudoado.model.index', [$abstractor->getSlug(), 'sort' => $field->getName(), 'direction' => $sortDirection]) }}">
+                        <a href="{{ route('anavel-crud.model.index', [$abstractor->getSlug(), 'sort' => $field->getName(), 'direction' => $sortDirection]) }}">
                             {{ $field->presentation() }}
                         </a>
                     </th>
                     @endforeach
-                    <th>{{ trans('crudoado::messages.actions_table_header') }}</th>
+                    <th>{{ trans('anavel-crud::messages.actions_table_header') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -73,14 +73,14 @@
                     <td>{!! $item->getAttribute($field->getName()) !!}</td>
                     @endforeach
                     <td>
-                        <a href="{{ route('crudoado.model.show', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('crudoado::messages.show_button') }}</a>
-                        <a href="{{ route('crudoado.model.edit', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i> {{ trans('crudoado::messages.edit_button') }}</a>
-                        <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete-modal"><i class="fa fa-trash-o"></i> {{ trans('crudoado::messages.delete_button') }}</a>
+                        <a href="{{ route('anavel-crud.model.show', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('anavel-crud::messages.show_button') }}</a>
+                        <a href="{{ route('anavel-crud.model.edit', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i> {{ trans('anavel-crud::messages.edit_button') }}</a>
+                        <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete-modal"><i class="fa fa-trash-o"></i> {{ trans('anavel-crud::messages.delete_button') }}</a>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="{{ count($abstractor->getListFields()) + 1 }}" style="text-align: center;">{{ trans('crudoado::messages.empty_list') }}</td>
+                    <td colspan="{{ count($abstractor->getListFields()) + 1 }}" style="text-align: center;">{{ trans('anavel-crud::messages.empty_list') }}</td>
                 </tr>
                 @endforelse
             </tbody>
@@ -89,7 +89,7 @@
 
     @if ($items->hasMorePages())
     <div class="box-footer clearfix">
-        {!! with(new ANavallaSuiza\Crudoado\View\Presenters\Paginator($items))->render() !!}
+        {!! with(new Anavel\Crud\View\Presenters\Paginator($items))->render() !!}
     </div>
     @endif
 </div>

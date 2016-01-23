@@ -1,7 +1,7 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Http\Controllers;
+namespace Anavel\Crud\Http\Controllers;
 
-use ANavallaSuiza\Adoadomin\Http\Controllers\Controller;
+use Anavel\Foundation\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use EasySlugger\Slugger;
 
@@ -9,7 +9,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $models = config('crudoado.models');
+        $models = config('anavel-crud.models');
 
         if (empty($models)) {
             throw new \Exception("No models configured.");
@@ -17,6 +17,6 @@ class HomeController extends Controller
 
         $modelSlug = Slugger::slugify(key($models));
 
-        return new RedirectResponse(route('crudoado.model.index', $modelSlug));
+        return new RedirectResponse(route('anavel-crud.model.index', $modelSlug));
     }
 }

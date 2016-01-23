@@ -1,9 +1,9 @@
 <?php
-namespace Crudoado\Tests\Abstractor\Eloquent;
+namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
-use Crudoado\Tests\TestBase;
+use Anavel\Crud\Tests\TestBase;
 use Mockery;
-use ANavallaSuiza\Crudoado\Http\Form\Generator;
+use Anavel\Crud\Http\Form\Generator;
 use Mockery\Mock;
 
 class GeneratorTest extends TestBase
@@ -31,14 +31,14 @@ class GeneratorTest extends TestBase
 
     public function test_implements_generator_interface()
     {
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Form\Generator', $this->sut);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Form\Generator', $this->sut);
     }
 
     public function test_sets_related_fields()
     {
         $this->factoryMock->shouldReceive('get')->andReturn($formMock = $this->mock('FormManager\ElementInterface'));
         $formMock->shouldReceive('attr', 'add');
-        $relationMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation');
+        $relationMock = $this->mock('Anavel\Crud\Contracts\Abstractor\Relation');
         $relationMock->shouldReceive('getEditFields')
             ->atLeast()
             ->once()

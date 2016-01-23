@@ -1,5 +1,5 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Abstractor\Exceptions;
+namespace Anavel\Crud\Abstractor\Exceptions;
 
 class AbstractorException extends \Exception
 {

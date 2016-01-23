@@ -1,5 +1,5 @@
 <?php
-namespace ANavallaSuiza\Crudoado\View\Presenters;
+namespace Anavel\Crud\View\Presenters;
 
 use Illuminate\Pagination\BootstrapThreePresenter;
 

@@ -1,12 +1,12 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Http\Controllers;
+namespace Anavel\Crud\Http\Controllers;
 
-use ANavallaSuiza\Adoadomin\Http\Controllers\Controller;
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory as ModelAbstractorFactory;
+use Anavel\Foundation\Http\Controllers\Controller;
+use Anavel\Crud\Contracts\Abstractor\ModelFactory as ModelAbstractorFactory;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
-use ANavallaSuiza\Crudoado\Contracts\Form\Generator as FormGenerator;
-use ANavallaSuiza\Crudoado\Repository\Criteria\OrderByCriteria;
-use ANavallaSuiza\Crudoado\Repository\Criteria\SearchCriteria;
+use Anavel\Crud\Contracts\Form\Generator as FormGenerator;
+use Anavel\Crud\Repository\Criteria\OrderByCriteria;
+use Anavel\Crud\Repository\Criteria\SearchCriteria;
 use Illuminate\Http\Request;
 
 class ModelController extends Controller
@@ -49,9 +49,9 @@ class ModelController extends Controller
             $repository->pushCriteria(new OrderByCriteria($request->get('sort'), $request->get('direction') === 'desc' ? true : false));
         }
 
-        $items = $repository->paginate(config('crudoado.list_max_results'));
+        $items = $repository->paginate(config('anavel-crud.list_max_results'));
 
-        return view('crudoado::pages.index', [
+        return view('anavel-crud::pages.index', [
             'abstractor' => $modelAbstractor,
             'items' => $items
         ]);
@@ -67,9 +67,9 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model);
 
-        $form = $modelAbstractor->getForm(route('crudoado.model.store', $modelAbstractor->getSlug()));
+        $form = $modelAbstractor->getForm(route('anavel-crud.model.store', $modelAbstractor->getSlug()));
 
-        return view('crudoado::pages.create', [
+        return view('anavel-crud::pages.create', [
             'abstractor' => $modelAbstractor,
             'form' => $form
         ]);
@@ -87,20 +87,20 @@ class ModelController extends Controller
         $modelAbstractor = $this->modelFactory->getBySlug($model);
 
         // Sets the validation rules
-        $modelAbstractor->getForm(route('crudoado.model.store', $modelAbstractor->getSlug()));
+        $modelAbstractor->getForm(route('anavel-crud.model.store', $modelAbstractor->getSlug()));
 
         $this->validate($request, $modelAbstractor->getValidationRules());
 
         $modelAbstractor->persist($request);
 
-        session()->flash('adoadomin-alert', [
+        session()->flash('anavel-alert', [
             'type'  => 'success',
             'icon'  => 'fa-check',
-            'title' => trans('crudoado::messages.alert_success_model_store_title'),
-            'text'  => trans('crudoado::messages.alert_success_model_store_text')
+            'title' => trans('anavel-crud::messages.alert_success_model_store_title'),
+            'text'  => trans('anavel-crud::messages.alert_success_model_store_text')
         ]);
 
-        return redirect()->route('crudoado.model.index', $model);
+        return redirect()->route('anavel-crud.model.index', $model);
     }
 
     /**
@@ -117,7 +117,7 @@ class ModelController extends Controller
         $repository = $this->modelManager->getRepository($modelAbstractor->getModel());
         $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
 
-        return view('crudoado::pages.show', [
+        return view('anavel-crud::pages.show', [
             'abstractor' => $modelAbstractor,
             'item' => $item
         ]);
@@ -134,9 +134,9 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model, $id);
 
-        $form = $modelAbstractor->getForm(route('crudoado.model.update', [$modelAbstractor->getSlug(), $id]));
+        $form = $modelAbstractor->getForm(route('anavel-crud.model.update', [$modelAbstractor->getSlug(), $id]));
 
-        return view('crudoado::pages.edit', [
+        return view('anavel-crud::pages.edit', [
             'abstractor' => $modelAbstractor,
             'form' => $form
         ]);
@@ -155,20 +155,20 @@ class ModelController extends Controller
         $modelAbstractor = $this->modelFactory->getBySlug($model, $id);
 
         // Sets the validation rules
-        $modelAbstractor->getForm(route('crudoado.model.update', [$modelAbstractor->getSlug(), $id]));
+        $modelAbstractor->getForm(route('anavel-crud.model.update', [$modelAbstractor->getSlug(), $id]));
 
         $this->validate($request, $modelAbstractor->getValidationRules());
 
         $modelAbstractor->persist($request);
 
-        session()->flash('adoadomin-alert', [
+        session()->flash('anavel-alert', [
             'type'  => 'success',
             'icon'  => 'fa-check',
-            'title' => trans('crudoado::messages.alert_success_model_update_title'),
-            'text'  => trans('crudoado::messages.alert_success_model_update_text')
+            'title' => trans('anavel-crud::messages.alert_success_model_update_title'),
+            'text'  => trans('anavel-crud::messages.alert_success_model_update_text')
         ]);
 
-        return redirect()->route('crudoado.model.index', $model);
+        return redirect()->route('anavel-crud.model.index', $model);
     }
 
     /**
@@ -188,13 +188,13 @@ class ModelController extends Controller
 
         $item->delete();
 
-        session()->flash('adoadomin-alert', [
+        session()->flash('anavel-alert', [
             'type'  => 'success',
             'icon'  => 'fa-check',
-            'title' => trans('crudoado::messages.alert_success_model_destroy_title'),
-            'text'  => trans('crudoado::messages.alert_success_model_destroy_text')
+            'title' => trans('anavel-crud::messages.alert_success_model_destroy_title'),
+            'text'  => trans('anavel-crud::messages.alert_success_model_destroy_text')
         ]);
 
-        return redirect()->route('crudoado.model.index', $model);
+        return redirect()->route('anavel-crud.model.index', $model);
     }
 }

@@ -1,9 +1,9 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
+namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationConfig;
-use ANavallaSuiza\Crudoado\Repository\Criteria\InArrayCriteria;
+use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
+use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationConfig;
+use Anavel\Crud\Repository\Criteria\InArrayCriteria;
 use App;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Http\Request;

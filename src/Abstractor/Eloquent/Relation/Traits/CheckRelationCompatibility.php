@@ -1,10 +1,8 @@
 <?php
+namespace Anavel\Crud\Abstractor\Eloquent\Relation\Traits;
 
 
-namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits;
-
-
-use ANavallaSuiza\Crudoado\Abstractor\Exceptions\RelationException;
+use Anavel\Crud\Abstractor\Exceptions\RelationException;
 
 trait CheckRelationCompatibility
 {

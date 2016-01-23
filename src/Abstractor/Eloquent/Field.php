@@ -1,7 +1,7 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
+namespace Anavel\Crud\Abstractor\Eloquent;
 
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\Field as FieldAbstractorContract;
+use Anavel\Crud\Contracts\Abstractor\Field as FieldAbstractorContract;
 use Doctrine\DBAL\Schema\Column;
 use FormManager\Fields\Field as FormManagerField;
 use Request;

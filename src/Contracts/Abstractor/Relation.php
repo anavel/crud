@@ -1,7 +1,7 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Contracts\Abstractor;
+namespace Anavel\Crud\Contracts\Abstractor;
 
-use ANavallaSuiza\Crudoado\Abstractor\Exceptions\RelationException;
+use Anavel\Crud\Abstractor\Exceptions\RelationException;
 use Illuminate\Http\Request;
 
 interface Relation

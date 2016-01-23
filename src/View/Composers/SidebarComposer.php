@@ -1,7 +1,7 @@
 <?php
-namespace ANavallaSuiza\Crudoado\View\Composers;
+namespace Anavel\Crud\View\Composers;
 
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory as ModelAbstractorFactory;
+use Anavel\Crud\Contracts\Abstractor\ModelFactory as ModelAbstractorFactory;
 use Request;
 
 class SidebarComposer
@@ -15,7 +15,7 @@ class SidebarComposer
 
     public function compose($view)
     {
-        $models = config('crudoado.models');
+        $models = config('anavel-crud.models');
 
         $url = Request::url();
 
@@ -30,7 +30,7 @@ class SidebarComposer
             }
 
             $items[] = [
-                'route' => route('crudoado.model.index', $modelAbstractor->getSlug()),
+                'route' => route('anavel-crud.model.index', $modelAbstractor->getSlug()),
                 'name' => $modelAbstractor->getName(),
                 'isActive' => $isActive
             ];

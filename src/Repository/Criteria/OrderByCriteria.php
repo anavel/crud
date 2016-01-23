@@ -1,5 +1,5 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Repository\Criteria;
+namespace Anavel\Crud\Repository\Criteria;
 
 use ANavallaSuiza\Laravel\Database\Contracts\Repository\Criteria;
 use ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository;

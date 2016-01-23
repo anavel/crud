@@ -1,6 +1,12 @@
 {
-    "name": "anavallasuiza/crudoado",
-    "description": "",
+    "name": "anavel/crud",
+    "description": "The fast and simple CRUD generator for Laravel applications",
+    "keywords": [
+        "laravel",
+        "admin",
+        "crud",
+        "cms"
+    ],
     "authors": [
         {
             "name": "Adrian P. Blunier",
@@ -15,7 +21,7 @@
         "php": ">=5.5.9",
         "illuminate/support": "5.1.*",
         "illuminate/translation": "5.1.*",
-        "anavallasuiza/adoadomin": "dev-master",
+        "anavel/foundation": "dev-master",
         "ablunier/laravel-database": "dev-master",
         "javiereguiluz/easyslugger": "1.0.*",
         "form-manager/form-manager": "4.7.*"
@@ -28,15 +34,9 @@
         "whatthejeff/nyancat-phpunit-resultprinter": "~1.2",
         "php-mock/php-mock-mockery": "^1.1"
     },
-    "repositories": [
-      {
-        "type": "vcs",
-        "url" : "https://github.com/anavallasuiza/adoadomin"
-      }
-    ],
     "autoload": {
         "psr-4": {
-            "ANavallaSuiza\\Crudoado\\": "src/"
+            "Anavel\\Crud\\": "src/"
         },
         "files": [
             "src/helpers.php"
@@ -44,7 +44,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Crudoado\\Tests\\": "tests"
+            "Anavel\\Crud\\Tests\\": "tests"
         }
     },
     "minimum-stability": "stable"

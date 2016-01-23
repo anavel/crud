@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Crudoado\Tests\Models;
+namespace Anavel\Crud\Tests\Models;
 
 
 use Illuminate\Database\Eloquent\Model;

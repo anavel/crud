@@ -1,5 +1,5 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Providers;
+namespace Anavel\Crud\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -22,6 +22,6 @@ class ViewComposersServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->view->composer('crudoado::molecules.sidebar.default', 'ANavallaSuiza\Crudoado\View\Composers\SidebarComposer');
+        $this->app->view->composer('anavel-crud::molecules.sidebar.default', 'Anavel\Crud\View\Composers\SidebarComposer');
     }
 }

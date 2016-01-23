@@ -1,11 +1,11 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent;
+namespace Anavel\Crud\Abstractor\Eloquent;
 
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory as RelationAbstractorFactoryContract;
-use ANavallaSuiza\Crudoado\Abstractor\Exceptions\FactoryException;
+use Anavel\Crud\Contracts\Abstractor\RelationFactory as RelationAbstractorFactoryContract;
+use Anavel\Crud\Abstractor\Exceptions\FactoryException;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory;
+use Anavel\Crud\Contracts\Abstractor\FieldFactory;
 
 class RelationFactory implements RelationAbstractorFactoryContract
 {
@@ -30,14 +30,14 @@ class RelationFactory implements RelationAbstractorFactoryContract
     );
 
     protected $typesMap = array(
-        self::SELECT                      => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Select',
-        self::SELECT_MULTIPLE             => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\SelectMultiple',
-        self::SELECT_MULTIPLE_POLYMORPHIC => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\SelectMultiplePolymorphic',
-        self::CHECKLIST                   => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Checklist',
-        self::MINI_CRUD                   => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\MiniCrud',
-        self::MINI_CRUD_SINGLE            => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\MiniCrudSingle',
-        self::MINI_CRUD_POLYMORPHIC       => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\MiniCrudPolymorphic',
-        self::TRANSLATION                 => 'ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Translation'
+        self::SELECT                      => 'Anavel\Crud\Abstractor\Eloquent\Relation\Select',
+        self::SELECT_MULTIPLE             => 'Anavel\Crud\Abstractor\Eloquent\Relation\SelectMultiple',
+        self::SELECT_MULTIPLE_POLYMORPHIC => 'Anavel\Crud\Abstractor\Eloquent\Relation\SelectMultiplePolymorphic',
+        self::CHECKLIST                   => 'Anavel\Crud\Abstractor\Eloquent\Relation\Checklist',
+        self::MINI_CRUD                   => 'Anavel\Crud\Abstractor\Eloquent\Relation\MiniCrud',
+        self::MINI_CRUD_SINGLE            => 'Anavel\Crud\Abstractor\Eloquent\Relation\MiniCrudSingle',
+        self::MINI_CRUD_POLYMORPHIC       => 'Anavel\Crud\Abstractor\Eloquent\Relation\MiniCrudPolymorphic',
+        self::TRANSLATION                 => 'Anavel\Crud\Abstractor\Eloquent\Relation\Translation'
     );
 
     protected $modelManager;

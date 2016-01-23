@@ -37,8 +37,8 @@ if (! function_exists('transcrud')) {
      */
     function transcrud($text)
     {
-        $translation = trans('crudoado::models.' . $text);
+        $translation = trans('anavel-crud::models.' . $text);
 
-        return str_replace('crudoado::models.', '', $translation);
+        return str_replace('anavel-crud::models.', '', $translation);
     }
 }

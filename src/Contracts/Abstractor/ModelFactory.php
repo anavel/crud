@@ -1,5 +1,5 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Contracts\Abstractor;
+namespace Anavel\Crud\Contracts\Abstractor;
 
 interface ModelFactory
 {

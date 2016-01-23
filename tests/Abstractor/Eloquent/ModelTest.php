@@ -1,8 +1,8 @@
 <?php
-namespace Crudoado\Tests\Abstractor\Eloquent;
+namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
-use Crudoado\Tests\TestBase;
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Model;
+use Anavel\Crud\Tests\TestBase;
+use Anavel\Crud\Abstractor\Eloquent\Model;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
 use Mockery\Mock;
 
@@ -30,17 +30,17 @@ class ModelTest extends TestBase
         $config = require __DIR__ . '/../../config.php';
 
         $this->dbalMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer');
-        $this->relationMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\RelationFactory');
-        $this->fieldMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory');
+        $this->relationMock = $this->mock('Anavel\Crud\Contracts\Abstractor\RelationFactory');
+        $this->fieldMock = $this->mock('Anavel\Crud\Contracts\Abstractor\FieldFactory');
         $this->columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
-        $this->generatorMock = $this->mock('ANavallaSuiza\Crudoado\Contracts\Form\Generator');
+        $this->generatorMock = $this->mock('Anavel\Crud\Contracts\Form\Generator');
 
         $this->sut = new Model($config['Users'], $this->dbalMock, $this->relationMock, $this->fieldMock, $this->generatorMock);
     }
 
     public function test_implements_model_interface()
     {
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Model', $this->sut);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Model', $this->sut);
     }
 
     public function test_returns_list_fields_as_array()
@@ -59,13 +59,13 @@ class ModelTest extends TestBase
         $this->fieldMock->shouldReceive('setColumn', 'setConfig')
             ->andReturn($this->fieldMock);
         $this->fieldMock->shouldReceive('get')
-            ->andReturn($this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
+            ->andReturn($this->mock('Anavel\Crud\Abstractor\Eloquent\Field'));
 
         $fields = $this->sut->getListFields();
 
         $this->assertInternalType('array', $fields);
 
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
     }
 
     public function test_returns_detail_fields_as_array()
@@ -86,7 +86,7 @@ class ModelTest extends TestBase
         $this->fieldMock->shouldReceive('setColumn', 'setConfig')
             ->andReturn($this->fieldMock);
         $this->fieldMock->shouldReceive('get')
-            ->andReturn($this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
+            ->andReturn($this->mock('Anavel\Crud\Abstractor\Eloquent\Field'));
 
         $fields = $this->sut->getDetailFields();
 
@@ -94,7 +94,7 @@ class ModelTest extends TestBase
 
         $this->assertCount(6, $fields);
 
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
     }
 
     public function test_returns_edit_fields_as_array()
@@ -118,7 +118,7 @@ class ModelTest extends TestBase
         $this->fieldMock->shouldReceive('setColumn', 'setConfig')
             ->andReturn($this->fieldMock);
         $this->fieldMock->shouldReceive('get')
-            ->andReturn($this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
+            ->andReturn($this->mock('Anavel\Crud\Abstractor\Eloquent\Field'));
 
         $fields = $this->sut->getEditFields();
 
@@ -126,20 +126,20 @@ class ModelTest extends TestBase
 
         $this->assertCount(3, $fields);
 
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
     }
 
     public function test_returns_relations_as_array()
     {
         $this->relationMock->shouldReceive('setModel')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('get')->andReturn($this->mock('\ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation'));
+        $this->relationMock->shouldReceive('get')->andReturn($this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
 
         $relations = $this->sut->getRelations();
 
         $this->assertInternalType('array', $relations, 'Relations is not an array');
 
-        $this->assertInstanceOf('ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation', $relations[0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Relation', $relations[0]);
     }
 
     public function test_get_form()
@@ -169,12 +169,12 @@ class ModelTest extends TestBase
 
         $this->relationMock->shouldReceive('setModel')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('get')->andReturn($this->mock('\ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation'));
+        $this->relationMock->shouldReceive('get')->andReturn($this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
 
         $this->fieldMock->shouldReceive('setColumn', 'setConfig')
             ->andReturn($this->fieldMock);
         $this->fieldMock->shouldReceive('get')
-            ->andReturn($this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
+            ->andReturn($this->mock('Anavel\Crud\Abstractor\Eloquent\Field'));
 
         $form = $this->sut->getForm('crudoado.model.store', 'users');
 
@@ -210,12 +210,12 @@ class ModelTest extends TestBase
 
         $this->relationMock->shouldReceive('setModel')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('get')->andReturn($this->mock('\ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation'));
+        $this->relationMock->shouldReceive('get')->andReturn($this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
 
         $this->fieldMock->shouldReceive('setColumn', 'setConfig')
             ->andReturn($this->fieldMock);
         $this->fieldMock->shouldReceive('get')
-            ->andReturn($this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field'));
+            ->andReturn($this->mock('Anavel\Crud\Abstractor\Eloquent\Field'));
 
         $modelMock = $this->mock('Illuminate\Database\Eloquent\Model');
         $modelMock->shouldReceive('getAttribute');
@@ -246,7 +246,7 @@ class ModelTest extends TestBase
 
         $requestMock->shouldReceive('input');
 
-        $modelManagerMock->shouldReceive('getModelInstance')->andReturn($userMock = $this->mock('Crudoado\Tests\Models\User'));
+        $modelManagerMock->shouldReceive('getModelInstance')->andReturn($userMock = $this->mock('Anavel\Crud\Tests\Models\User'));
 
         $userMock->shouldReceive('setAttribute', 'save');
 
@@ -268,10 +268,10 @@ class ModelTest extends TestBase
 
         $this->relationMock->shouldReceive('setModel')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('get')->andReturn($relationMock = $this->mock('\ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation'));
+        $this->relationMock->shouldReceive('get')->andReturn($relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
         $relationMock->shouldReceive('persist');
 
-        $fieldMock = $this->mock('ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field');
+        $fieldMock = $this->mock('Anavel\Crud\Abstractor\Eloquent\Field');
         $fieldMock->shouldReceive('saveIfEmpty', 'getName', 'applyFunctions');
 
         $this->fieldMock->shouldReceive('setColumn', 'setConfig')
@@ -281,6 +281,6 @@ class ModelTest extends TestBase
 
         $result = $this->sut->persist($requestMock);
 
-        $this->assertInstanceOf('Crudoado\Tests\Models\User', $result);
+        $this->assertInstanceOf('Anavel\Crud\Tests\Models\User', $result);
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Contracts\Abstractor;
+namespace Anavel\Crud\Contracts\Abstractor;
 
 interface RelationFactory
 {
@@ -17,7 +17,7 @@ interface RelationFactory
      *
      * @param string $name The name of the relation
      *
-     * @return \ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Relation
+     * @return \Anavel\Crud\Abstractor\Eloquent\Relation\Relation
      *
      * @throws \Exception
      */

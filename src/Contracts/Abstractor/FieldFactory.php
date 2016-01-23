@@ -1,5 +1,5 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Contracts\Abstractor;
+namespace Anavel\Crud\Contracts\Abstractor;
 
 use Doctrine\DBAL\Schema\Column;
 
@@ -21,7 +21,7 @@ interface FieldFactory
     /**
      * Factory method to create field instances.
      *
-     * @return \ANavallaSuiza\Crudoado\Abstractor\Eloquent\Field
+     * @return \Anavel\Crud\Abstractor\Eloquent\Field
      *
      * @throws \Exception
      */

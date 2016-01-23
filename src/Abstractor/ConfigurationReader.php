@@ -1,5 +1,5 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Abstractor;
+namespace Anavel\Crud\Abstractor;
 
 trait ConfigurationReader
 {

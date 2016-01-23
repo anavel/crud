@@ -1,5 +1,5 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Contracts\Form;
+namespace Anavel\Crud\Contracts\Form;
 
 interface Generator
 {
@@ -12,13 +12,13 @@ interface Generator
     public function getValidationRules();
 
     /**
-     * @param array $relations array of  ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation
+     * @param array $relations array of  Anavel\Crud\Contracts\Abstractor\Relation
      * @return void
      */
     public function setModelRelations(array $relations);
 
     /**
-     * @param array $relations array of  ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation
+     * @param array $relations array of  Anavel\Crud\Contracts\Abstractor\Relation
      * @return void
      */
     public function setRelatedModelFields(array $relations);

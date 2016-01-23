@@ -1,13 +1,13 @@
 <?php
-namespace ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation;
+namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
-use ANavallaSuiza\Crudoado\Abstractor\Eloquent\Relation\Traits\CheckRelationConfig;
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\Model as ModelAbstractor;
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\Relation as RelationAbstractorContract;
+use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationConfig;
+use Anavel\Crud\Contracts\Abstractor\Model as ModelAbstractor;
+use Anavel\Crud\Contracts\Abstractor\Relation as RelationAbstractorContract;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
-use ANavallaSuiza\Crudoado\Contracts\Abstractor\FieldFactory;
+use Anavel\Crud\Contracts\Abstractor\FieldFactory;
 
 abstract class Relation implements RelationAbstractorContract
 {
@@ -49,7 +49,7 @@ abstract class Relation implements RelationAbstractorContract
         $this->config = $config;
         $this->setup();
 
-        $this->modelAbstractor = \App::make('ANavallaSuiza\Crudoado\Contracts\Abstractor\ModelFactory')->getByClassName(get_class($this->eloquentRelation->getRelated()), $this->config);
+        $this->modelAbstractor = \App::make('Anavel\Crud\Contracts\Abstractor\ModelFactory')->getByClassName(get_class($this->eloquentRelation->getRelated()), $this->config);
     }
 
     public function addSecondaryRelationFields(array $fields)
