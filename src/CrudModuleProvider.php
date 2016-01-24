@@ -1,7 +1,7 @@
 <?php
 namespace Anavel\Crud;
 
-use Anavel\Adoadomin\Support\ModuleProvider;
+use Anavel\Foundation\Support\ModuleProvider;
 use Anavel\Crud\Abstractor\Eloquent\ModelFactory as ModelAbstractorFactory;
 use Anavel\Crud\Abstractor\Eloquent\RelationFactory as RelationAbstractorFactory;
 use Anavel\Crud\Abstractor\Eloquent\FieldFactory as FieldAbstractorFactory;
