@@ -87,7 +87,7 @@
         </table>
     </div>
 
-    @if ($items->hasMorePages())
+    @if ($items->total() > $items->perPage())
     <div class="box-footer clearfix">
         {!! with(new Anavel\Crud\View\Presenters\Paginator($items))->render() !!}
     </div>
