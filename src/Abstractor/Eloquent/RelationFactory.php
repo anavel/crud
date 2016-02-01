@@ -72,6 +72,9 @@ class RelationFactory implements RelationAbstractorFactoryContract
 
     public function get($name)
     {
+        if (! empty($this->config) && ! empty($this->config['name'])) {
+            $name = $this->config['name'];
+        }
         if (! method_exists($this->model, $name)) {
             throw new FactoryException("Relation " . $name . " does not exist on " . get_class($this->model));
         }
