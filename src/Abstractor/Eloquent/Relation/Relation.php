@@ -56,7 +56,7 @@ abstract class Relation implements RelationAbstractorContract
     {
         foreach ($this->modelAbstractor->getRelations() as $relation) {
             foreach ($relation->getEditFields() as $editField) {
-                $fields[] = $editField;
+                $fields[$this->name][] = $editField;
             };
         }
         return $fields;
