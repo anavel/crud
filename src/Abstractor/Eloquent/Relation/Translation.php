@@ -28,7 +28,7 @@ class Translation extends Relation
     /**
      * @return array
      */
-    public function getEditFields()
+    public function getEditFields($arrayKey = null)
     {
         /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
         $dbal = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
@@ -37,6 +37,10 @@ class Translation extends Relation
 
         $results = $this->eloquentRelation->getResults();
         $results = $results->keyBy('locale');
+
+        if(empty($arrayKey)) {
+            $arrayKey = $this->name;
+        }
 
         $translationFields = [];
         if (! empty($columns)) {
@@ -57,7 +61,7 @@ class Translation extends Relation
                     }
 
                     $config = [
-                        'name' => $this->name.'['.$key.']['.$columnName.']',
+                        'name' => $key. '['.$columnName.']',
                         'presentation' => ucfirst(transcrud($columnName)).' ['.$lang .']',
                         'form_type' => $formType,
                         'no_validate' => true,
@@ -81,7 +85,7 @@ class Translation extends Relation
                         $field->setValue($item->getAttribute($columnName));
                     }
 
-                    $translationFields[] = $field;
+                    $translationFields[$arrayKey][] = $field;
                 }
             }
         }

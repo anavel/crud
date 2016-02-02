@@ -29,7 +29,7 @@ interface Relation
     /**
      * @return array
      */
-    public function getEditFields();
+    public function getEditFields($arrayKey = null);
 
     /**
      * @param array $fields

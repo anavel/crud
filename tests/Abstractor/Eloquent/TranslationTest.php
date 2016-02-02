@@ -79,8 +79,10 @@ class TranslationTest extends TestBase
         $fields = $this->sut->getEditFields();
 
         $this->assertInternalType('array', $fields, 'getEditFields should return an array');
+        $this->assertCount(1, $fields);
+        $this->assertInternalType('array', $fields['translations'], 'getEditFields should return an array with a "translations" index');
 
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['translations'][0]);
     }
 
     public function test_persist()
