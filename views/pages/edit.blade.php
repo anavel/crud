@@ -30,10 +30,17 @@
         </div>
 
         <div class="box-body">
-            @foreach ($form as $formGroupName => $formGroup)
-                <fieldset>
-                    <legend>{{ $formGroupName }}</legend>
+            @unless($relations->isEmpty())
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#main" aria-controls="main" role="tab" data-toggle="tab">Main</a></li>
+                    @foreach($relations as $relation)
+                        <li role="presentation"><a href="#{{ $relation->getName() }}" aria-controls="{{ $relation->getName() }}" role="tab" data-toggle="tab">{{ $relation->getPresentation() }}</a></li>
+                    @endforeach
+                </ul>
+            @endunless
 
+            @foreach ($form as $formGroupName => $formGroup)
+                <div role="tabpanel" class="tab-pane active" id="home">
                     @foreach($formGroup as $field)
                         <div class="form-group">
                             @if($field->attr('type') != 'hidden')
@@ -44,7 +51,7 @@
                             </div>
                         </div>
                     @endforeach
-                </fieldset>
+                </div>
             @endforeach
         </div>
 

@@ -142,7 +142,7 @@ class ModelController extends Controller
         return view('anavel-crud::pages.edit', [
             'abstractor' => $modelAbstractor,
             'form' => $form,
-            ''
+            'relations' => $modelAbstractor->getRelations()
         ]);
     }
 
