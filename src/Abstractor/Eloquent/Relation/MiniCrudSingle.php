@@ -24,7 +24,7 @@ class MiniCrudSingle extends Relation
     /**
      * @return array
      */
-    public function getEditFields()
+    public function getEditFields($arrayKey = null)
     {
         /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
         $dbal = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
