@@ -31,6 +31,10 @@ class MiniCrud extends Relation
 
         $fields = [];
 
+        if(empty($arrayKey)) {
+            $arrayKey = $this->name;
+        }
+
         $columns = $dbal->getTableColumns();
 
         /** @var Collection $results */
@@ -56,7 +60,7 @@ class MiniCrud extends Relation
                     }
 
                     $config = [
-                        'name'         => $this->name . '[' . $index . '][' . $columnName . ']',
+                        'name'         => '[' . $index . '][' . $columnName . ']',
                         'presentation' => $this->name . ' ' . ucfirst(transcrud($columnName)) . ' [' . $index . ']',
                         'form_type'    => $formType,
                         'no_validate'  => true,
@@ -74,7 +78,7 @@ class MiniCrud extends Relation
                         $field->setValue($result->getAttribute($columnName));
                     }
 
-                    $fields[] = $field;
+                    $fields[$arrayKey][] = $field;
                 }
 
             }

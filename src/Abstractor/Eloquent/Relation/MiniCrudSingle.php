@@ -29,6 +29,10 @@ class MiniCrudSingle extends Relation
         /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
         $dbal = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
 
+        if(empty($arrayKey)) {
+            $arrayKey = $this->name;
+        }
+
         $fields = [];
 
         $columns = $dbal->getTableColumns();
@@ -54,7 +58,7 @@ class MiniCrudSingle extends Relation
                 $formType = null;
 
                 $config = [
-                    'name'         => $this->name . '[' . $columnName . ']',
+                    'name'         => '[' . $columnName . ']',
                     'presentation' => $this->name . ' ' . ucfirst(transcrud($columnName)),
                     'form_type'    => $formType,
                     'no_validate'  => true,
@@ -72,7 +76,7 @@ class MiniCrudSingle extends Relation
                     $field->setValue($result->getAttribute($columnName));
                 }
 
-                $fields[] = $field;
+                $fields[$arrayKey][] = $field;
             }
         }
 

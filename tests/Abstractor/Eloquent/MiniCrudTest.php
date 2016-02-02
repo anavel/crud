@@ -98,8 +98,8 @@ class MiniCrudTest extends TestBase
         $fields = $this->sut->getEditFields();
 
         $this->assertInternalType('array', $fields, 'getEditFields should return an array');
-        $this->assertCount(2, $fields);
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertCount(1, $fields);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['group'][0]);
     }
 
     public function test_persist_with_no_old_results()
