@@ -42,9 +42,11 @@
 
     <div class="box-body">
         <dl class="dl-horizontal">
-            @foreach ($abstractor->getDetailFields() as $field)
-            <dt>{{ $field->presentation() }}</dt>
-            <dd>{!! $item->getAttribute($field->getName()) !!}</dd>
+            @foreach ($abstractor->getDetailFields() as $fieldGroupName => $fieldGroup)
+                @foreach($fieldGroup as $field)
+                    <dt>{{ $field->presentation() }}</dt>
+                    <dd>{!! $item->getAttribute($field->getName()) !!}</dd>
+                @endforeach
             @endforeach
         </dl>
     </div>

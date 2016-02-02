@@ -30,15 +30,21 @@
         </div>
 
         <div class="box-body">
-            @foreach ($form as $field)
-            <div class="form-group">
-                @if($field->attr('type') != 'hidden')
-                    <label for="{{ $field->attr('id') }}" class="col-sm-2 control-label">{{ $field->label->html() }}{{ $field->attr('required') ? ' *' : '' }}</label>
-                @endif
-                <div class="col-sm-10">
-                    {!! $field->input !!}
-                </div>
-            </div>
+            @foreach ($form as $formGroupName => $formGroup)
+                <fieldset>
+                    <legend>{{ $formGroupName }}</legend>
+
+                    @foreach($formGroup as $field)
+                        <div class="form-group">
+                            @if($field->attr('type') != 'hidden')
+                                <label for="{{ $field->attr('id') }}" class="col-sm-2 control-label">{{ $field->label->html() }}{{ $field->attr('required') ? ' *' : '' }}</label>
+                            @endif
+                            <div class="col-sm-10">
+                                {!! $field->input !!}
+                            </div>
+                        </div>
+                    @endforeach
+                </fieldset>
             @endforeach
         </div>
 
