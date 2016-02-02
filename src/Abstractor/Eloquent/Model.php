@@ -341,16 +341,18 @@ class Model implements ModelAbstractorContract
             $item = $modelManager->getModelInstance($this->getModel());
         }
 
+
         $fields = $this->getEditFields(true);
         if (empty($fields['main'])) {
             return;
         }
+
         foreach ($fields['main'] as $field) {
-            if (! $field->saveIfEmpty() && empty($request->input($field->getName()))) {
+            $requestValue = $request->input("main.{$field->getName()}");
+
+            if (! $field->saveIfEmpty() && empty($requestValue)) {
                 continue;
             }
-
-            $requestValue = $request->input($field->getName());
 
             if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
                 if ($request->hasFile($field->getName())) {

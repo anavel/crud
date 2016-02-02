@@ -87,8 +87,12 @@ class Generator implements GeneratorContract
         ]);
 
         $formFields = array();
-        foreach ($this->fields as $field) {
-            $formFields[$field->getName()] = $field->getFormField();
+        foreach ($this->fields as $fieldGroupName => $fieldGroup) {
+            $fields = [];
+            foreach ($fieldGroup as $field) {
+                $fields[$field->getName()] = $field->getFormField();
+            }
+            $formFields[$fieldGroupName] = $this->factory->get('group', [$fields]);
         }
         $form->add($formFields);
 
@@ -99,8 +103,10 @@ class Generator implements GeneratorContract
     {
         $rules = array();
 
-        foreach ($this->fields as $field) {
-            $rules[$field->getName()] = $field->getValidationRules();
+        foreach ($this->fields as $fieldGroupName => $fieldGroup) {
+            foreach ($fieldGroup as $field) {
+                $rules[$fieldGroupName][$field->getName()] = $field->getValidationRules();
+            }
         }
 
         return $rules;

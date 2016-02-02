@@ -86,6 +86,7 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model);
 
+
         // Sets the validation rules
         $modelAbstractor->getForm(route('anavel-crud.model.store', $modelAbstractor->getSlug()));
 
