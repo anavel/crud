@@ -65,7 +65,32 @@ class ModelTest extends TestBase
 
         $this->assertInternalType('array', $fields);
 
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['main'][0]);
+    }
+
+    public function test_returns_list_fields_as_array_with_key()
+    {
+        $this->dbalMock->shouldReceive('getTableColumns')
+            ->once()
+            ->andReturn([
+                'id'       => $this->columnMock,
+                'username' => $this->columnMock,
+                'fullname' => $this->columnMock,
+                'active'   => $this->columnMock
+            ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
+
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('Anavel\Crud\Abstractor\Eloquent\Field'));
+
+        $fields = $this->sut->getListFields('chompy');
+
+        $this->assertInternalType('array', $fields);
+
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['chompy'][0]);
     }
 
     public function test_returns_detail_fields_as_array()
@@ -92,9 +117,38 @@ class ModelTest extends TestBase
 
         $this->assertInternalType('array', $fields);
 
-        $this->assertCount(6, $fields);
+        $this->assertCount(6, $fields['main']);
 
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['main'][0]);
+    }
+
+    public function test_returns_detail_fields_as_array_with_key()
+    {
+        $this->dbalMock->shouldReceive('getTableColumns')
+            ->once()
+            ->andReturn([
+                'id'       => $this->columnMock,
+                'username' => $this->columnMock,
+                'password' => $this->columnMock,
+                'fullname' => $this->columnMock,
+                'info'     => $this->columnMock,
+                'active'   => $this->columnMock
+            ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
+
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('Anavel\Crud\Abstractor\Eloquent\Field'));
+
+        $fields = $this->sut->getDetailFields('chompy');
+
+        $this->assertInternalType('array', $fields);
+
+        $this->assertCount(6, $fields['chompy']);
+
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['chompy'][0]);
     }
 
     public function test_returns_edit_fields_as_array()
@@ -124,9 +178,41 @@ class ModelTest extends TestBase
 
         $this->assertInternalType('array', $fields);
 
-        $this->assertCount(3, $fields);
+        $this->assertCount(3, $fields['main']);
 
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['main'][0]);
+    }
+
+    public function test_returns_edit_fields_as_array_with_key()
+    {
+        $this->dbalMock->shouldReceive('getTableColumns')
+            ->once()
+            ->andReturn([
+                'id'       => $this->columnMock,
+                'username' => $this->columnMock,
+                'password' => $this->columnMock,
+            ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
+
+        $this->dbalMock->shouldReceive('getModel')
+            ->andReturn($this->dbalMock);
+
+        $this->dbalMock->shouldReceive('getKeyName')
+            ->andReturn(LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT);
+
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('Anavel\Crud\Abstractor\Eloquent\Field'));
+
+        $fields = $this->sut->getEditFields(false, 'chompy');
+
+        $this->assertInternalType('array', $fields);
+
+        $this->assertCount(3, $fields['chompy']);
+
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['chompy'][0]);
     }
 
     public function test_returns_relations_as_array()

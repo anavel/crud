@@ -172,7 +172,12 @@ class Model implements ModelAbstractorContract
         return $relations;
     }
 
-    public function getListFields()
+    /**
+     * @param string|null $arrayKey
+     * @return array
+     * @throws AbstractorException
+     */
+    public function getListFields($arrayKey = 'main')
     {
         $columns = $this->getColumns('list');
 
@@ -193,7 +198,7 @@ class Model implements ModelAbstractorContract
                 'functions' => null
             ];
 
-            $fields[] = $this->fieldFactory
+            $fields[$arrayKey][] = $this->fieldFactory
                 ->setColumn($column)
                 ->setConfig($config)
                 ->get();
@@ -202,7 +207,12 @@ class Model implements ModelAbstractorContract
         return $fields;
     }
 
-    public function getDetailFields()
+    /**
+     * @param string|null $arrayKey
+     * @return array
+     * @throws AbstractorException
+     */
+    public function getDetailFields($arrayKey = 'main')
     {
         $columns = $this->getColumns('detail');
 
@@ -223,7 +233,7 @@ class Model implements ModelAbstractorContract
                 'functions' => null
             ];
 
-            $fields[] = $this->fieldFactory
+            $fields[$arrayKey][] = $this->fieldFactory
                 ->setColumn($column)
                 ->setConfig($config)
                 ->get();
@@ -232,7 +242,13 @@ class Model implements ModelAbstractorContract
         return $fields;
     }
 
-    public function getEditFields($withForeignKeys = false)
+    /**
+     * @param bool|null $withForeignKeys
+     * @param string|null $arrayKey
+     * @return array
+     * @throws AbstractorException
+     */
+    public function getEditFields($withForeignKeys = false, $arrayKey = 'main')
     {
         $columns = $this->getColumns('edit', $withForeignKeys);
 
@@ -283,7 +299,7 @@ class Model implements ModelAbstractorContract
                     $field->setValue($this->instance->getAttribute($name));
                 }
 
-                $fields[] = $field;
+                $fields[$arrayKey][] = $field;
             }
         }
 
@@ -325,7 +341,11 @@ class Model implements ModelAbstractorContract
             $item = $modelManager->getModelInstance($this->getModel());
         }
 
-        foreach ($this->getEditFields(true) as $field) {
+        $fields = $this->getEditFields(true);
+        if (empty($fields['main'])) {
+            return;
+        }
+        foreach ($fields['main'] as $field) {
             if (! $field->saveIfEmpty() && empty($request->input($field->getName()))) {
                 continue;
             }

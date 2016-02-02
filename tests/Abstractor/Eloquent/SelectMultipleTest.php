@@ -75,12 +75,12 @@ class SelectMultipleTest extends TestBase
 
         $field->shouldReceive('setOptions');
 
-        $fields = $this->sut->getEditFields();
+        $fields = $this->sut->getEditFields('chompy');
 
         $this->assertInternalType('array', $fields, 'getEditFields should return an array');
-        $this->assertCount(1, $fields);
+        $this->assertCount(1, $fields['chompy']);
 
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['chompy'][0]);
     }
 
     public function test_persist()

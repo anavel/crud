@@ -22,9 +22,10 @@ class Select extends Relation
     }
 
     /**
+     * @param string|null $arrayKey
      * @return array
      */
-    public function getEditFields()
+    public function getEditFields($arrayKey = 'main')
     {
         /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
         $dbal = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
@@ -52,7 +53,7 @@ class Select extends Relation
 
         $field = $this->setFieldValue($field);
 
-        $select[] = $field;
+        $select[$arrayKey][] = $field;
 
         return $select;
     }
