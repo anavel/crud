@@ -58,7 +58,7 @@ class MiniCrudSingle extends Relation
                 $formType = null;
 
                 $config = [
-                    'name'         => '[' . $columnName . ']',
+                    'name'         => $columnName,
                     'presentation' => $this->name . ' ' . ucfirst(transcrud($columnName)),
                     'form_type'    => $formType,
                     'no_validate'  => true,

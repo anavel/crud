@@ -60,7 +60,7 @@ class MiniCrud extends Relation
                     }
 
                     $config = [
-                        'name'         => '[' . $index . '][' . $columnName . ']',
+                        'name'         => $index . '[' . $columnName . ']',
                         'presentation' => $this->name . ' ' . ucfirst(transcrud($columnName)) . ' [' . $index . ']',
                         'form_type'    => $formType,
                         'no_validate'  => true,
