@@ -1,6 +1,8 @@
 <?php
 namespace Anavel\Crud\Contracts\Form;
 
+use Illuminate\Support\Collection;
+
 interface Generator
 {
     public function setModelFields(array $fields);
@@ -12,14 +14,14 @@ interface Generator
     public function getValidationRules();
 
     /**
-     * @param array $relations array of  Anavel\Crud\Contracts\Abstractor\Relation
+     * @param Collection $relations collection of Anavel\Crud\Contracts\Abstractor\Relation
      * @return void
      */
-    public function setModelRelations(array $relations);
+    public function setModelRelations(Collection $relations);
 
     /**
-     * @param array $relations array of  Anavel\Crud\Contracts\Abstractor\Relation
+     * @param Collection $relations collection of Anavel\Crud\Contracts\Abstractor\Relation
      * @return void
      */
-    public function setRelatedModelFields(array $relations);
+    public function setRelatedModelFields(Collection $relations);
 }

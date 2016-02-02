@@ -142,11 +142,14 @@ class Model implements ModelAbstractorContract
         return $columns;
     }
 
+    /**
+     * @return \Illuminate\Support\Collection
+     */
     public function getRelations()
     {
         $configRelations =  $this->getConfigValue('relations');
 
-        $relations = [];
+        $relations = collect();
 
         if (! empty($configRelations)) {
             foreach ($configRelations as $relationName => $configRelation) {
@@ -163,9 +166,9 @@ class Model implements ModelAbstractorContract
                     }
                 }
 
-                $relations[] = $this->relationFactory->setModel($this->instance)
+                $relations->put($relationName, $this->relationFactory->setModel($this->instance)
                     ->setConfig($config)
-                    ->get($relationName);
+                    ->get($relationName));
             }
         }
 

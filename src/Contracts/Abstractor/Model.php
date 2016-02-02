@@ -3,6 +3,7 @@ namespace Anavel\Crud\Contracts\Abstractor;
 
 use FormManager\ElementInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 interface Model
 {
@@ -41,7 +42,7 @@ interface Model
     public function getEditFields();
 
     /**
-     * @return array
+     * @return Collection
      */
     public function getRelations();
 

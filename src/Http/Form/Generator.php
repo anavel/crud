@@ -5,6 +5,7 @@ use Anavel\Crud\Contracts\Form\Generator as GeneratorContract;
 use Anavel\Crud\Abstractor\Eloquent\Field;
 use Doctrine\DBAL\Types\Type as DbalType;
 use FormManager\FactoryInterface;
+use Illuminate\Support\Collection;
 use Request;
 
 class Generator implements GeneratorContract
@@ -20,7 +21,7 @@ class Generator implements GeneratorContract
     protected $fields;
 
     /**
-     * @var array
+     * @var Collection
      */
     protected $relations;
 
@@ -59,16 +60,16 @@ class Generator implements GeneratorContract
         $this->fields = array_merge_recursive($this->fields, $fields);
     }
 
-    public function setModelRelations(array $relations)
+    public function setModelRelations(Collection $relations)
     {
         $this->relations = $relations;
     }
 
-    public function setRelatedModelFields(array $relations)
+    public function setRelatedModelFields(Collection $relations)
     {
         $this->setModelRelations($relations);
 
-        if (count($this->relations > 0)) {
+        if ($this->relations->count() > 0) {
             foreach ($this->relations as $relation) {
                 $this->addModelFields($relation->getEditFields());
             }

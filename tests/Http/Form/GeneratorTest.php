@@ -44,6 +44,6 @@ class GeneratorTest extends TestBase
             ->once()
             ->andReturn([]);
 
-        $this->sut->setRelatedModelFields([$relationMock]);
+        $this->sut->setRelatedModelFields(collect([$relationMock]));
     }
 }

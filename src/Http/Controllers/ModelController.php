@@ -1,6 +1,7 @@
 <?php
 namespace Anavel\Crud\Http\Controllers;
 
+use Anavel\Crud\Contracts\Abstractor\Model;
 use Anavel\Foundation\Http\Controllers\Controller;
 use Anavel\Crud\Contracts\Abstractor\ModelFactory as ModelAbstractorFactory;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
@@ -133,13 +134,15 @@ class ModelController extends Controller
      */
     public function edit($model, $id)
     {
+        /** @var Model $modelAbstractor */
         $modelAbstractor = $this->modelFactory->getBySlug($model, $id);
 
         $form = $modelAbstractor->getForm(route('anavel-crud.model.update', [$modelAbstractor->getSlug(), $id]));
 
         return view('anavel-crud::pages.edit', [
             'abstractor' => $modelAbstractor,
-            'form' => $form
+            'form' => $form,
+            ''
         ]);
     }
 

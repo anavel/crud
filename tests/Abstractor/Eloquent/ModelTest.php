@@ -215,7 +215,7 @@ class ModelTest extends TestBase
         $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['chompy'][0]);
     }
 
-    public function test_returns_relations_as_array()
+    public function test_returns_relations_as_collection()
     {
         $this->relationMock->shouldReceive('setModel')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
@@ -223,9 +223,12 @@ class ModelTest extends TestBase
 
         $relations = $this->sut->getRelations();
 
-        $this->assertInternalType('array', $relations, 'Relations is not an array');
+        $this->assertInstanceOf('Illuminate\Support\Collection', $relations);
 
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Relation', $relations[0]);
+        foreach ($relations as $relation) {
+            $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Relation', $relation);
+        }
+
     }
 
     public function test_get_form()
