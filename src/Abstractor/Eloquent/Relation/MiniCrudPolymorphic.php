@@ -31,5 +31,13 @@ class MiniCrudPolymorphic extends MiniCrud
         $relationModel->setAttribute($this->eloquentRelation->getForeignKey(), $this->relatedModel->id);
         $relationModel->setAttribute($this->eloquentRelation->getPlainMorphType(), $this->eloquentRelation->getMorphClass());
     }
+
+    /**
+     * @return string
+     */
+    public function getDisplayType()
+    {
+        return self::DISPLAY_TYPE_TAB;
+    }
 }
 

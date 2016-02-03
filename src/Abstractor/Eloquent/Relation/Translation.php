@@ -119,4 +119,12 @@ class Translation extends Relation
             }
         }
     }
+
+    /**
+     * @return string
+     */
+    public function getDisplayType()
+    {
+        return self::DISPLAY_TYPE_INLINE;
+    }
 }

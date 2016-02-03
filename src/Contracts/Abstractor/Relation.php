@@ -42,4 +42,9 @@ interface Relation
      * @return mixed
      */
     public function persist(Request $request);
+
+    /**
+     * @return string
+     */
+    public function getDisplayType();
 }

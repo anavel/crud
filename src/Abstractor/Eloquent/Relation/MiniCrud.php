@@ -140,5 +140,13 @@ class MiniCrud extends Relation
 
         return false;
     }
+
+    /**
+     * @return string
+     */
+    public function getDisplayType()
+    {
+        return self::DISPLAY_TYPE_TAB;
+    }
 }
 

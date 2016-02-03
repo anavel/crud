@@ -118,4 +118,12 @@ class Select extends Relation
     {
         return $dbal->getTableColumn($this->eloquentRelation->getOtherKey());
     }
+
+    /**
+     * @return string
+     */
+    public function getDisplayType()
+    {
+        return self::DISPLAY_TYPE_INLINE;
+    }
 }

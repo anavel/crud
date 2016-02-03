@@ -103,4 +103,12 @@ class SelectMultiple extends Select
     {
         return $dbal->getTableColumn($this->eloquentRelation->getPlainForeignKey());
     }
+
+    /**
+     * @return string
+     */
+    public function getDisplayType()
+    {
+        return self::DISPLAY_TYPE_INLINE;
+    }
 }

@@ -122,5 +122,13 @@ class MiniCrudSingle extends Relation
         $relationModel->setAttribute($this->eloquentRelation->getPlainMorphType(),
             $this->eloquentRelation->getMorphClass());
     }
+
+    /**
+     * @return string
+     */
+    public function getDisplayType()
+    {
+        return self::DISPLAY_TYPE_TAB;
+    }
 }
 

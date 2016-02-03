@@ -13,6 +13,9 @@ abstract class Relation implements RelationAbstractorContract
 {
     use CheckRelationConfig;
 
+    const DISPLAY_TYPE_TAB = 'tab';
+    const DISPLAY_TYPE_INLINE = 'inline';
+
     protected $name;
     protected $presentation;
     protected $type;
