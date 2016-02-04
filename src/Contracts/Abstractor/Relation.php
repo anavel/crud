@@ -3,6 +3,7 @@ namespace Anavel\Crud\Contracts\Abstractor;
 
 use Anavel\Crud\Abstractor\Exceptions\RelationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 interface Relation
 {
@@ -47,4 +48,9 @@ interface Relation
      * @return string
      */
     public function getDisplayType();
+
+    /**
+     * @return Collection
+     */
+    public function getSecondaryRelations();
 }

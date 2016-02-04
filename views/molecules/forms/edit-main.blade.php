@@ -2,6 +2,9 @@
     <li role="presentation" class="active"><a href="#main" aria-controls="main" role="tab"
                                               data-toggle="tab">Main</a></li>
     @forelse($relations as $relation)
+        @if ($relation instanceof \Illuminate\Support\Collection)
+            <?php $relation = $relation->get('relation') ?>
+        @endif
         @if($relation->getDisplayType() === Anavel\Crud\Abstractor\Eloquent\Relation\Relation::DISPLAY_TYPE_TAB)
             <li role="presentation"><a href="#{{ $relation->getName() }}"
                                        aria-controls="{{ $relation->getName() }}" role="tab"
@@ -26,38 +29,48 @@
         @endforeach
 
         @forelse($relations as $relationKey => $relation)
-            @if($relation->getDisplayType() === Anavel\Crud\Abstractor\Eloquent\Relation\Relation::DISPLAY_TYPE_INLINE)
-                @foreach($form[$relationKey] as $field)
-                    <div class="form-group">
-                        @if($field->attr('type') != 'hidden')
-                            <label for="{{ $field->attr('id') }}"
-                                   class="col-sm-2 control-label">{{ $field->label->html() }}{{ $field->attr('required') ? ' *' : '' }}</label>
-                        @endif
-                        <div class="col-sm-10">
-                            {!! $field->input !!}
-                        </div>
-                    </div>
-                @endforeach
+            @if ($relation instanceof \Illuminate\Support\Collection)
+                @if($relation->get('relation')->getDisplayType() === Anavel\Crud\Abstractor\Eloquent\Relation\Relation::DISPLAY_TYPE_INLINE && ! empty($form[$relationKey]))
+                    @foreach($form[$relationKey] as $field)
+                        @include('anavel-crud::atoms.forms.field', ['field' => $field])
+                    @endforeach
+                @endif
+                {{--                @if(! $relation->get('secondaryRelations')->isEmpty())--}}
+            @else
+                @if($relation->getDisplayType() === Anavel\Crud\Abstractor\Eloquent\Relation\Relation::DISPLAY_TYPE_INLINE && ! empty($form[$relationKey]))
+                    @foreach($form[$relationKey] as $field)
+                        @include('anavel-crud::atoms.forms.field', ['field' => $field])
+                    @endforeach
+                @endif
             @endif
         @empty
         @endforelse
     </div>
 
     @forelse($relations as $relationKey => $relation)
-        @if($relation->getDisplayType() === Anavel\Crud\Abstractor\Eloquent\Relation\Relation::DISPLAY_TYPE_TAB)
-            <div role="tabpanel" class="tab-pane" id="{{ $relationKey }}">
-                @foreach($form[$relationKey] as $field)
-                    <div class="form-group">
-                        @if($field->attr('type') != 'hidden')
-                            <label for="{{ $field->attr('id') }}"
-                                   class="col-sm-2 control-label">{{ $field->label->html() }}{{ $field->attr('required') ? ' *' : '' }}</label>
+        @if ($relation instanceof \Illuminate\Support\Collection)
+            @if($relation->get('relation')->getDisplayType() === Anavel\Crud\Abstractor\Eloquent\Relation\Relation::DISPLAY_TYPE_TAB && ! empty($form[$relationKey]))
+                <div role="tabpanel" class="tab-pane" id="{{ $relationKey }}">
+                    @foreach($form[$relationKey] as $field)
+                        @if($field instanceof FormManager\Containers\Group)
+                            @foreach($field as $secondaryField)
+                                @include('anavel-crud::atoms.forms.field', ['field' => $secondaryField])
+                            @endforeach
+                        @else
+                            @include('anavel-crud::atoms.forms.field', ['field' => $field])
                         @endif
-                        <div class="col-sm-10">
-                            {!! $field->input !!}
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+                    @endforeach
+                </div>
+            @endif
+            {{--                @if(! $relation->get('secondaryRelations')->isEmpty())--}}
+        @else
+            @if($relation->getDisplayType() === Anavel\Crud\Abstractor\Eloquent\Relation\Relation::DISPLAY_TYPE_TAB && ! empty($form[$relationKey]))
+                <div role="tabpanel" class="tab-pane" id="{{ $relationKey }}">
+                    @foreach($form[$relationKey] as $field)
+                        @include('anavel-crud::atoms.forms.field', ['field' => $field])
+                    @endforeach
+                </div>
+            @endif
         @endif
     @empty
     @endforelse

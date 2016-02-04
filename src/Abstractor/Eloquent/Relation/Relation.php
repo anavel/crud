@@ -57,9 +57,9 @@ abstract class Relation implements RelationAbstractorContract
 
     public function addSecondaryRelationFields(array $fields)
     {
-        foreach ($this->modelAbstractor->getRelations() as $relation) {
-            foreach ($relation->getEditFields() as $editField) {
-                $fields[$this->name][] = $editField;
+        foreach ($this->modelAbstractor->getRelations() as $relationKey => $relation) {
+            foreach ($relation->getEditFields($relationKey) as $editGroupName => $editGroup) {
+                $fields[$this->name][$editGroupName] = $editGroup;
             };
         }
         return $fields;
@@ -78,5 +78,14 @@ abstract class Relation implements RelationAbstractorContract
     public function getType()
     {
         return get_class($this);
+    }
+
+
+    /**
+     * @return Collection
+     */
+    public function getSecondaryRelations()
+    {
+        return $this->modelAbstractor->getRelations();
     }
 }

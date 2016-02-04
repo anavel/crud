@@ -8,6 +8,7 @@ use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use EasySlugger\Slugger;
 use Anavel\Crud\Contracts\Form\Generator as FormGenerator;
 use Anavel\Crud\Abstractor\Exceptions\FactoryException;
+use ReflectionClass;
 
 class ModelFactory implements ModelAbstractorFactoryContract
 {
@@ -90,6 +91,7 @@ class ModelFactory implements ModelAbstractorFactoryContract
     {
 
         $model = new Model(array_merge(['model' => $classname], $config), $this->modelManager->getAbstractionLayer($classname), $this->relationFactory, $this->fieldFactory, $this->generator);
+        $model->setSlug($this->slugger->slugify((new ReflectionClass($classname))->getShortName()));
 
 
         if (is_null($id)) {

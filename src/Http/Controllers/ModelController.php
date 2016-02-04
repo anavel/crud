@@ -70,6 +70,8 @@ class ModelController extends Controller
 
         $form = $modelAbstractor->getForm(route('anavel-crud.model.store', $modelAbstractor->getSlug()));
 
+
+//        dd($form, $modelAbstractor->getRelations());
         return view('anavel-crud::pages.create', [
             'abstractor' => $modelAbstractor,
             'form' => $form,

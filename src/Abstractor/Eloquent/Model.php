@@ -3,6 +3,7 @@ namespace Anavel\Crud\Abstractor\Eloquent;
 
 use Anavel\Crud\Contracts\Abstractor\Model as ModelAbstractorContract;
 use Anavel\Crud\Abstractor\ConfigurationReader;
+use Anavel\Crud\Contracts\Abstractor\Relation;
 use Anavel\Crud\Contracts\Abstractor\RelationFactory as RelationFactoryContract;
 use Anavel\Crud\Contracts\Abstractor\FieldFactory as FieldFactoryContract;
 use ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer;
@@ -166,9 +167,20 @@ class Model implements ModelAbstractorContract
                     }
                 }
 
-                $relations->put($relationName, $this->relationFactory->setModel($this->instance)
+                /** @var Relation $relation */
+                $relation = $this->relationFactory->setModel($this->instance)
                     ->setConfig($config)
-                    ->get($relationName));
+                    ->get($relationName);
+
+                $secondaryRelations = $relation->getSecondaryRelations();
+
+
+                if (! $secondaryRelations->isEmpty()) {
+                    $relations->put($relationName, collect(['relation' => $relation, 'secondaryRelations' => $secondaryRelations]));
+                } else {
+                    $relations->put($relationName, $relation);
+                }
+
             }
         }
 

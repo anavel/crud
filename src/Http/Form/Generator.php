@@ -71,7 +71,11 @@ class Generator implements GeneratorContract
 
         if ($this->relations->count() > 0) {
             foreach ($this->relations as $relation) {
-                $this->addModelFields($relation->getEditFields());
+                if ($relation instanceof Collection) {
+                    $this->addModelFields($relation->get('relation')->getEditFields());
+                } else {
+                    $this->addModelFields($relation->getEditFields());
+                }
             }
         }
     }
@@ -87,14 +91,13 @@ class Generator implements GeneratorContract
             'class'   => 'form-horizontal'
         ]);
 
+
         $formFields = array();
         foreach ($this->fields as $fieldGroupName => $fieldGroup) {
-            $fields = [];
-            foreach ($fieldGroup as $field) {
-                $fields[$field->getName()] = $field->getFormField();
-            }
-            $formFields[$fieldGroupName] = $this->factory->get('group', [$fields]);
+            $tempFields = $this->addFormFields($fieldGroup, $fieldGroupName);
+            $formFields[key($tempFields)] = $tempFields[key($tempFields)];
         }
+
         $form->add($formFields);
 
         return $form;
@@ -111,5 +114,21 @@ class Generator implements GeneratorContract
         }
 
         return $rules;
+    }
+
+    protected function addFormFields(array $fields, $key)
+    {
+        $formFields = array();
+        $tempFields = array();
+            foreach ($fields as $fieldKey => $field) {
+                if (is_array($field)) {
+                    $group = $this->addFormFields($field, $fieldKey);
+                    $formFields[$key][key($group)] = $group[key($group)];
+                } else {
+                    $tempFields[$field->getName()] = $field->getFormField();
+                    $formFields[$key] = $this->factory->get('group', [$tempFields]);
+                }
+            }
+        return $formFields;
     }
 }

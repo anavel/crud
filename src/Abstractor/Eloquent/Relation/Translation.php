@@ -89,6 +89,11 @@ class Translation extends Relation
                 }
             }
         }
+
+//        dd($this->addSecondaryRelationFields($translationFields));
+
+//        $translationFields = $this->addSecondaryRelationFields($translationFields);
+
         return $translationFields;
     }
 
