@@ -1,4 +1,4 @@
-# Anavel CRUD [![Build Status](https://travis-ci.org/anavel/crud.svg)](https://travis-ci.org/anavel/crud)
+# Anavel CRUD [![Build Status](https://travis-ci.org/anavel/crud.svg)](https://travis-ci.org/anavel/crud) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/anavel/crud/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/anavel/crud/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/anavel/crud/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/anavel/crud/?branch=master)
 Anavel CRUD automates the Create, Read, Update and Delete tasks over your Laravel application Eloquent models on a very fast and simple way.
 
 > **Note:** This package is in active development and NOT ready for production.
