@@ -83,7 +83,7 @@ class Model implements ModelAbstractorContract
 
     public function getInstance()
     {
-        return $this->intance;
+        return $this->instance;
     }
 
     public function isSoftDeletes()
