@@ -45,6 +45,7 @@ class Translation extends Relation
         $translationFields = [];
         if (! empty($columns)) {
             foreach ($this->langs as $key => $lang) {
+                $tempFields = [];
                 foreach ($columns as $columnName => $column) {
                     if ($columnName === $this->eloquentRelation->getPlainForeignKey()) {
                         continue;
@@ -61,7 +62,7 @@ class Translation extends Relation
                     }
 
                     $config = [
-                        'name' => $key. '['.$columnName.']',
+                        'name' => $columnName,
                         'presentation' => ucfirst(transcrud($columnName)).' ['.$lang .']',
                         'form_type' => $formType,
                         'no_validate' => true,
@@ -85,16 +86,13 @@ class Translation extends Relation
                         $field->setValue($item->getAttribute($columnName));
                     }
 
-                    $translationFields[$arrayKey][] = $field;
+                    $tempFields[] = $field;
                 }
+                $translationFields[$arrayKey][$key] = $tempFields;
             }
         }
 
-//        dd($this->addSecondaryRelationFields($translationFields));
-
-//        $translationFields = $this->addSecondaryRelationFields($translationFields);
-
-        return $translationFields;
+         return $translationFields;
     }
 
     /**
