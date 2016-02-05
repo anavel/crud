@@ -13,6 +13,7 @@ use App;
 use Anavel\Crud\Contracts\Form\Generator as FormGenerator;
 use Anavel\Crud\Abstractor\Exceptions\AbstractorException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class Model implements ModelAbstractorContract
 {
@@ -30,8 +31,13 @@ class Model implements ModelAbstractorContract
     protected $name;
     protected $instance;
 
-    public function __construct($config, AbstractionLayer $dbal, RelationFactoryContract $relationFactory, FieldFactoryContract $fieldFactory, FormGenerator $generator)
-    {
+    public function __construct(
+        $config,
+        AbstractionLayer $dbal,
+        RelationFactoryContract $relationFactory,
+        FieldFactoryContract $fieldFactory,
+        FormGenerator $generator
+    ) {
         if (is_array($config)) {
             $this->model = $config['model'];
             $this->config = $config;
@@ -121,7 +127,7 @@ class Model implements ModelAbstractorContract
         if (! empty($customDisplayedColumns) && is_array($customDisplayedColumns)) {
             foreach ($customDisplayedColumns as $customColumn) {
                 if (! array_key_exists($customColumn, $tableColumns)) {
-                    throw new AbstractorException("Column ".$customColumn." does not exist on ".$this->getModel());
+                    throw new AbstractorException("Column " . $customColumn . " does not exist on " . $this->getModel());
                 }
 
                 $columns[$customColumn] = $tableColumns[$customColumn];
@@ -148,7 +154,7 @@ class Model implements ModelAbstractorContract
      */
     public function getRelations()
     {
-        $configRelations =  $this->getConfigValue('relations');
+        $configRelations = $this->getConfigValue('relations');
 
         $relations = collect();
 
@@ -176,7 +182,8 @@ class Model implements ModelAbstractorContract
 
 
                 if (! $secondaryRelations->isEmpty()) {
-                    $relations->put($relationName, collect(['relation' => $relation, 'secondaryRelations' => $secondaryRelations]));
+                    $relations->put($relationName,
+                        collect(['relation' => $relation, 'secondaryRelations' => $secondaryRelations]));
                 } else {
                     $relations->put($relationName, $relation);
                 }
@@ -206,11 +213,11 @@ class Model implements ModelAbstractorContract
             }
 
             $config = [
-                'name' => $name,
+                'name'         => $name,
                 'presentation' => $presentation,
-                'form_type' => null,
-                'validation' => null,
-                'functions' => null
+                'form_type'    => null,
+                'validation'   => null,
+                'functions'    => null
             ];
 
             $fields[$arrayKey][] = $this->fieldFactory
@@ -241,11 +248,11 @@ class Model implements ModelAbstractorContract
             }
 
             $config = [
-                'name' => $name,
+                'name'         => $name,
                 'presentation' => $presentation,
-                'form_type' => null,
-                'validation' => null,
-                'functions' => null
+                'form_type'    => null,
+                'validation'   => null,
+                'functions'    => null
             ];
 
             $fields[$arrayKey][] = $this->fieldFactory
@@ -282,11 +289,11 @@ class Model implements ModelAbstractorContract
                 }
 
                 $config = [
-                    'name' => $name,
+                    'name'         => $name,
                     'presentation' => $presentation,
-                    'form_type' => null,
-                    'validation' => null,
-                    'functions' => null
+                    'form_type'    => null,
+                    'validation'   => null,
+                    'functions'    => null
                 ];
 
                 if (array_key_exists($name, $formTypes)) {
@@ -343,7 +350,7 @@ class Model implements ModelAbstractorContract
     }
 
     /**
-     * @param Request $request
+     * @param array $requestForm
      * @return mixed
      */
     public function persist(Request $request)
@@ -371,15 +378,15 @@ class Model implements ModelAbstractorContract
 
             if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
                 if ($request->hasFile($field->getName())) {
-                    $fileName = uniqid().'.'.$request->file($field->getName())->getClientOriginalExtension();
-                    $modelFolder = $this->slug.DIRECTORY_SEPARATOR;
+                    $fileName = uniqid() . '.' . $request->file($field->getName())->getClientOriginalExtension();
+                    $modelFolder = $this->slug . DIRECTORY_SEPARATOR;
 
                     $request->file($field->getName())->move(
-                        base_path(config('anavel-crud.uploads_path').$modelFolder),
+                        base_path(config('anavel-crud.uploads_path') . $modelFolder),
                         $fileName
                     );
 
-                    $requestValue = $modelFolder.$fileName;
+                    $requestValue = $modelFolder . $fileName;
                 }
             }
 
@@ -396,8 +403,23 @@ class Model implements ModelAbstractorContract
         $this->setInstance($item);
 
         if (! empty($relations = $this->getRelations())) {
-            foreach ($relations as $relation) {
-                $relation->persist($request);
+            foreach ($relations as $relationKey => $relation) {
+                if ($relation instanceof Collection) {
+                    $input = $request->input($relationKey);
+                    foreach ($relation->get('secondaryRelations') as $secondaryKey => $secondaryRelation) {
+                        // Secondary relation fields have to be separated from primary ones
+                        unset($input[$secondaryKey]);
+                    }
+                    $relation->get('relation')->persist($input);
+                    $input = $request->input($relationKey);
+                    foreach ($relation->get('secondaryRelations') as $secondaryKey => $secondaryRelation) {
+                        if (! empty($input[$secondaryKey])) {
+                            $secondaryRelation->persist($input[$secondaryKey]);
+                        }
+                    }
+                } else {
+                    $relation->persist($request->input($relationKey));
+                }
             }
         }
 

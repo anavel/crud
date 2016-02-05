@@ -98,16 +98,16 @@ class Translation extends Relation
     }
 
     /**
-     * @param Request $request
+     * @param array|null $relationArray
      * @return mixed
      */
-    public function persist(Request $request)
+    public function persist(array $relationArray = null)
     {
-        if (! empty($translationsArray = $request->input($this->name))) {
+        if (! empty($relationArray)) {
             $currentTranslations = $this->eloquentRelation->get();
             $currentTranslations = $currentTranslations->keyBy('locale');
 
-            foreach ($translationsArray as $translation) {
+            foreach ($relationArray as $translation) {
                 if ($currentTranslations->has($translation['locale'])) {
                     $translationModel = $currentTranslations->get($translation['locale']);
                 } else {

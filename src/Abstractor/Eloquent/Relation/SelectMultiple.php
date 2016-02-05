@@ -23,12 +23,12 @@ class SelectMultiple extends Select
     }
 
     /**
-     * @param Request $request
+     * @param array|null $relationArray
      * @return mixed
      */
-    public function persist(Request $request)
+    public function persist(array $relationArray = null)
     {
-        if (! empty($selectArray = $request->input($this->name))) {
+        if (! empty($relationArray)) {
             /** @var \ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository $repo */
             $repo = $this->modelManager->getRepository(get_class($this->eloquentRelation->getRelated()));
 
@@ -37,7 +37,7 @@ class SelectMultiple extends Select
             $alreadyAssociated = $this->relatedModel->$relationName;
 
             $results = $repo->pushCriteria(
-                new InArrayCriteria($relatedKeyName, $selectArray)
+                new InArrayCriteria($relatedKeyName, $relationArray)
             )->all();
 
             $missing = $alreadyAssociated->diff($results);

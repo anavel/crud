@@ -39,10 +39,10 @@ interface Relation
     public function addSecondaryRelationFields(array $fields);
 
     /**
-     * @param Request $request
+     * @param array|null $relationArray
      * @return mixed
      */
-    public function persist(Request $request);
+    public function persist(array $relationArray = null);
 
     /**
      * @return string

@@ -35,7 +35,6 @@
                         @include('anavel-crud::atoms.forms.field', ['field' => $field])
                     @endforeach
                 @endif
-                {{--                @if(! $relation->get('secondaryRelations')->isEmpty())--}}
             @else
                 @if($relation->getDisplayType() === Anavel\Crud\Abstractor\Eloquent\Relation\Relation::DISPLAY_TYPE_INLINE && ! empty($form[$relationKey]))
                     @foreach($form[$relationKey] as $field)

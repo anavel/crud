@@ -247,8 +247,10 @@ class ModelTest extends TestBase
             $this->assertInstanceOf('Illuminate\Support\Collection', $relation);
             $this->assertArrayHasKey('relation', $relation);
             $this->assertArrayHasKey('secondaryRelations', $relation);
-            $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Relation', $relation->get('relation'));
             $this->assertInstanceOf('Illuminate\Support\Collection', $relation->get('secondaryRelations'));
+            foreach ($relation->get('secondaryRelations') as $secondaryRelation) {
+                $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Relation', $secondaryRelation);
+            }
         }
 
     }

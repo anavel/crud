@@ -109,7 +109,11 @@ class Generator implements GeneratorContract
 
         foreach ($this->fields as $fieldGroupName => $fieldGroup) {
             foreach ($fieldGroup as $field) {
-                $rules[$fieldGroupName][$field->getName()] = $field->getValidationRules();
+                if (is_array($field)) {
+
+                } else {
+                    $rules[$fieldGroupName][$field->getName()] = $field->getValidationRules();
+                }
             }
         }
 

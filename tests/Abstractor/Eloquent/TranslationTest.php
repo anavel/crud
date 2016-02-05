@@ -87,10 +87,6 @@ class TranslationTest extends TestBase
 
     public function test_persist()
     {
-        $requestMock = $this->mock('Illuminate\Http\Request');
-
-        $requestMock->shouldReceive('input')->with('translations')->atLeast()->once();
-
-        $this->sut->persist($requestMock);
+        $this->sut->persist([]);
     }
 }

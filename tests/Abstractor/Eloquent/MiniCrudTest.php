@@ -111,9 +111,6 @@ class MiniCrudTest extends TestBase
                 'someOtherField' => 3,
             ]
         ];
-        $requestMock = $this->mock('Illuminate\Http\Request');
-//
-        $requestMock->shouldReceive('input')->with('group')->atLeast()->once()->andReturn($inputArray);
 
         $this->relationMock->shouldReceive('getForeignKey');
         $this->relationMock->shouldReceive('getRelated', 'getParent', 'get')->andReturn($this->relationMock);
@@ -128,7 +125,7 @@ class MiniCrudTest extends TestBase
         $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\HasMany');
         $this->buildRelation();
 
-        $fields = $this->sut->persist($requestMock);
+        $fields = $this->sut->persist($inputArray);
     }
 
     public function test_persist_with_old_results()
@@ -145,9 +142,6 @@ class MiniCrudTest extends TestBase
                 'someOtherField' => 3,
             ]
         ];
-        $requestMock = $this->mock('Illuminate\Http\Request');
-//
-        $requestMock->shouldReceive('input')->with('group')->atLeast()->once()->andReturn($inputArray);
 
         $this->relationMock->shouldReceive('getForeignKey');
         $this->relationMock->shouldReceive('getRelated', 'getParent', 'get')->andReturn($this->relationMock);
@@ -162,6 +156,6 @@ class MiniCrudTest extends TestBase
         $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\HasMany');
         $this->buildRelation();
 
-        $fields = $this->sut->persist($requestMock);
+        $fields = $this->sut->persist($inputArray);
     }
 }

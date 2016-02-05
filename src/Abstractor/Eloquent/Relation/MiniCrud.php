@@ -90,12 +90,12 @@ class MiniCrud extends Relation
     }
 
     /**
-     * @param Request $request
+     * @param array|null $relationArray
      * @return mixed
      */
-    public function persist(Request $request)
+    public function persist(array $relationArray = null)
     {
-        if (! empty($relationArray = $request->input($this->name))) {
+        if (! empty($relationArray)) {
             $currentRelations = $this->eloquentRelation->get()->keyBy($this->eloquentRelation->getParent()->getKeyName());
             foreach ($relationArray as $relation) {
                 if (! empty($relation[$this->eloquentRelation->getParent()->getKeyName()])

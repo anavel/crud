@@ -87,12 +87,12 @@ class MiniCrudSingle extends Relation
     }
 
     /**
-     * @param Request $request
+     * @param array|null $relationArray
      * @return mixed
      */
-    public function persist(Request $request)
+    public function persist(array $relationArray = null)
     {
-        if (! empty($relation = $request->input($this->name))) {
+        if (! empty($relationArray)) {
             $currentRelation = $this->eloquentRelation->getResults();
             if (! empty($currentRelation)) {
                 $relationModel = $currentRelation;
@@ -103,7 +103,7 @@ class MiniCrudSingle extends Relation
             $this->setKeys($relationModel);
 
             $shouldBeSkipped = true;
-            foreach ($relation as $fieldKey => $fieldValue) {
+            foreach ($relationArray as $fieldKey => $fieldValue) {
                 if ($shouldBeSkipped) {
                     $shouldBeSkipped = ($shouldBeSkipped === ($fieldValue === ''));
                 }
