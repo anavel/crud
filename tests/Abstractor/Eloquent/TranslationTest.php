@@ -81,8 +81,14 @@ class TranslationTest extends TestBase
         $this->assertInternalType('array', $fields, 'getEditFields should return an array');
         $this->assertCount(1, $fields);
         $this->assertInternalType('array', $fields['translations'], 'getEditFields should return an array with a "translations" index');
+        $this->assertArrayHasKey('gl', $fields['translations']);
+        $this->assertArrayHasKey('es', $fields['translations']);
+        $this->assertArrayHasKey('en', $fields['translations']);
 
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['translations'][0]);
+        $this->assertInternalType('array', $fields['translations']['gl']);
+        foreach($fields['translations']['gl'] as $element) {
+            $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $element);
+        }
     }
 
     public function test_persist()

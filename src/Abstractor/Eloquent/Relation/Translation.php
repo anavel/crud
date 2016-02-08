@@ -88,11 +88,11 @@ class Translation extends Relation
 
                     $tempFields[] = $field;
                 }
-                $translationFields[$arrayKey][$key] = $tempFields;
+                $translationFields[$arrayKey][$lang] = $tempFields;
             }
         }
 
-         return $translationFields;
+        return $translationFields;
     }
 
     /**

@@ -44,6 +44,8 @@ class MiniCrud extends Relation
         if (! empty($columns)) {
             $readOnly = [Model::CREATED_AT, Model::UPDATED_AT];
             foreach ($results as $key => $result) {
+                $tempFields = [];
+                $index = $key === 'emptyResult' ? 0 : $result->id;
                 foreach ($columns as $columnName => $column) {
                     if (in_array($columnName, $readOnly, true)) {
                         continue;
@@ -52,7 +54,6 @@ class MiniCrud extends Relation
                         continue;
                     }
 
-                    $index = $key === 'emptyResult' ? 0 : $result->id;
 
                     $formType = null;
                     if ($key !== 'emptyResult' && ($columnName === $this->eloquentRelation->getParent()->getKeyName())) {
@@ -60,7 +61,7 @@ class MiniCrud extends Relation
                     }
 
                     $config = [
-                        'name'         => $index . '[' . $columnName . ']',
+                        'name'         => $columnName,
                         'presentation' => $this->name . ' ' . ucfirst(transcrud($columnName)) . ' [' . $index . ']',
                         'form_type'    => $formType,
                         'no_validate'  => true,
@@ -77,10 +78,9 @@ class MiniCrud extends Relation
                     if ($key !== 'emptyResult') {
                         $field->setValue($result->getAttribute($columnName));
                     }
-
-                    $fields[$arrayKey][] = $field;
+                    $tempFields[] = $field;
                 }
-
+                $fields[$arrayKey][$index] = $tempFields;
             }
         }
 
@@ -147,6 +147,26 @@ class MiniCrud extends Relation
     public function getDisplayType()
     {
         return self::DISPLAY_TYPE_TAB;
+    }
+
+    /**
+     * @param array $fields
+     * @return array
+     */
+    public function addSecondaryRelationFields(array $fields)
+    {
+        foreach ($this->modelAbstractor->getRelations() as $relationKey => $relation) {
+            $tempFields = [];
+            foreach ($relation->getEditFields($relationKey) as $editGroupName => $editGroup) {
+                $tempFields[$editGroupName] = $editGroup;
+            };
+        }
+        foreach ($fields[$this->name] as $groupKey => $mainFields) {
+            $combinedFields = array_merge($mainFields, $tempFields);
+            $fields[$this->name][$groupKey] = $combinedFields;
+        }
+
+        return $fields;
     }
 }
 

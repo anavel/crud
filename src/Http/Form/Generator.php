@@ -6,6 +6,8 @@ use Anavel\Crud\Abstractor\Eloquent\Field;
 use Doctrine\DBAL\Types\Type as DbalType;
 use FormManager\FactoryInterface;
 use Illuminate\Support\Collection;
+use RecursiveArrayIterator;
+use RecursiveIteratorIterator;
 use Request;
 
 class Generator implements GeneratorContract
@@ -99,6 +101,7 @@ class Generator implements GeneratorContract
         }
 
         $form->add($formFields);
+
 
         return $form;
     }
