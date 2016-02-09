@@ -155,8 +155,8 @@ class MiniCrud extends Relation
      */
     public function addSecondaryRelationFields(array $fields)
     {
+        $tempFields = [];
         foreach ($this->modelAbstractor->getRelations() as $relationKey => $relation) {
-            $tempFields = [];
             foreach ($relation->getEditFields($relationKey) as $editGroupName => $editGroup) {
                 $tempFields[$editGroupName] = $editGroup;
             };

@@ -51,13 +51,7 @@
             @if($relation->get('relation')->getDisplayType() === Anavel\Crud\Abstractor\Eloquent\Relation\Relation::DISPLAY_TYPE_TAB && ! empty($form[$relationKey]))
                 <div role="tabpanel" class="tab-pane" id="{{ $relationKey }}">
                     @foreach($form[$relationKey] as $field)
-                        @if($field instanceof FormManager\Containers\Group)
-                            @foreach($field as $secondaryField)
-                                @include('anavel-crud::atoms.forms.field', ['field' => $secondaryField])
-                            @endforeach
-                        @else
-                            @include('anavel-crud::atoms.forms.field', ['field' => $field])
-                        @endif
+                        @include('anavel-crud::atoms.forms.field', ['field' => $field])
                     @endforeach
                 </div>
             @endif

@@ -97,7 +97,7 @@ class Generator implements GeneratorContract
         $formFields = array();
         foreach ($this->fields as $fieldGroupName => $fieldGroup) {
             $tempFields = $this->addFormFields($fieldGroup, $fieldGroupName);
-            $formFields[key($tempFields)] = $tempFields[key($tempFields)];
+            $formFields[key($tempFields)] = $this->factory->get('group', [$tempFields[key($tempFields)]]);
         }
 
         $form->add($formFields);
@@ -123,6 +123,11 @@ class Generator implements GeneratorContract
         return $rules;
     }
 
+    /**
+     * @param array $fields
+     * @param $key
+     * @return array
+     */
     protected function addFormFields(array $fields, $key)
     {
         $formFields = array();
@@ -130,12 +135,12 @@ class Generator implements GeneratorContract
             foreach ($fields as $fieldKey => $field) {
                 if (is_array($field)) {
                     $group = $this->addFormFields($field, $fieldKey);
-                    $formFields[$key][key($group)] = $group[key($group)];
+                    $tempFields[key($group)] = $this->factory->get('group', [$group[key($group)]]);
                 } else {
                     $tempFields[$field->getName()] = $field->getFormField();
-                    $formFields[$key] = $this->factory->get('group', [$tempFields]);
                 }
             }
+        $formFields[$key] = $tempFields;
         return $formFields;
     }
 }
