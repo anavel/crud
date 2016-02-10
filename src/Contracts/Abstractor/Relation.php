@@ -53,4 +53,10 @@ interface Relation
      * @return Collection
      */
     public function getSecondaryRelations();
+
+    /**
+     * @param Model $relatedModel
+     * @return Relation
+     */
+    public function setRelatedModel(\Illuminate\Database\Eloquent\Model $model);
 }

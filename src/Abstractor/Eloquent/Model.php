@@ -402,21 +402,12 @@ class Model implements ModelAbstractorContract
 
         $this->setInstance($item);
 
+
         if (! empty($relations = $this->getRelations())) {
             foreach ($relations as $relationKey => $relation) {
                 if ($relation instanceof Collection) {
                     $input = $request->input($relationKey);
-                    foreach ($relation->get('secondaryRelations') as $secondaryKey => $secondaryRelation) {
-                        // Secondary relation fields have to be separated from primary ones
-                        unset($input[$secondaryKey]);
-                    }
                     $relation->get('relation')->persist($input);
-                    $input = $request->input($relationKey);
-                    foreach ($relation->get('secondaryRelations') as $secondaryKey => $secondaryRelation) {
-                        if (! empty($input[$secondaryKey])) {
-                            $secondaryRelation->persist($input[$secondaryKey]);
-                        }
-                    }
                 } else {
                     $relation->persist($request->input($relationKey));
                 }

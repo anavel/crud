@@ -37,9 +37,11 @@ interface Model
     public function getDetailFields();
 
     /**
+     * @param bool $withForeignKeys
+     * @param string $arrayKey
      * @return array
      */
-    public function getEditFields();
+    public function getEditFields($withForeignKeys = false, $arrayKey = 'main');
 
     /**
      * @return Collection

@@ -8,6 +8,7 @@ use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 use Anavel\Crud\Contracts\Abstractor\FieldFactory;
+use Illuminate\Support\Collection;
 
 abstract class Relation implements RelationAbstractorContract
 {
@@ -58,6 +59,7 @@ abstract class Relation implements RelationAbstractorContract
     public function addSecondaryRelationFields(array $fields)
     {
         foreach ($this->modelAbstractor->getRelations() as $relationKey => $relation) {
+            /** @var RelationAbstractorContract $relation */
             foreach ($relation->getEditFields($relationKey) as $editGroupName => $editGroup) {
                 $fields[$this->name][$editGroupName] = $editGroup;
             };
@@ -80,12 +82,22 @@ abstract class Relation implements RelationAbstractorContract
         return get_class($this);
     }
 
-
     /**
      * @return Collection
      */
     public function getSecondaryRelations()
     {
         return $this->modelAbstractor->getRelations();
+    }
+
+    /**
+     * @param Model $relatedModel
+     * @return Relation
+     */
+    public function setRelatedModel(Model $relatedModel)
+    {
+        $this->relatedModel = $relatedModel;
+
+        return $this;
     }
 }
