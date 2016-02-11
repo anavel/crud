@@ -111,9 +111,9 @@ class Generator implements GeneratorContract
         $rules = array();
 
         foreach ($this->fields as $fieldGroupName => $fieldGroup) {
-            foreach ($fieldGroup as $field) {
+            foreach ($fieldGroup as $fieldKey => $field) {
                 if (is_array($field)) {
-
+                    $rules[$fieldGroupName] = $this->addValidationRules($field, $fieldKey);
                 } else {
                     $rules[$fieldGroupName][$field->getName()] = $field->getValidationRules();
                 }
@@ -142,5 +142,21 @@ class Generator implements GeneratorContract
             }
         $formFields[$key] = $tempFields;
         return $formFields;
+    }
+
+    protected function addValidationRules(array $fields, $key)
+    {
+        $rules = array();
+        $tempFields = array();
+        foreach ($fields as $fieldKey => $field) {
+            if (is_array($field)) {
+                $group = $this->addValidationRules($field, $fieldKey);
+                $tempFields[key($group)] = $group[key($group)];
+            } else {
+                $tempFields[$field->getName()] = $field->getValidationRules();
+            }
+        }
+        $rules[$key] = $tempFields;
+        return $rules;
     }
 }
