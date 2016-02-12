@@ -1,6 +1,7 @@
 <?php
 namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
+use Anavel\Crud\Abstractor\ConfigurationReader;
 use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationConfig;
 use Anavel\Crud\Contracts\Abstractor\Model as ModelAbstractor;
 use Anavel\Crud\Contracts\Abstractor\Relation as RelationAbstractorContract;
@@ -13,6 +14,7 @@ use Illuminate\Support\Collection;
 abstract class Relation implements RelationAbstractorContract
 {
     use CheckRelationConfig;
+    use ConfigurationReader;
 
     const DISPLAY_TYPE_TAB = 'tab';
     const DISPLAY_TYPE_INLINE = 'inline';

@@ -2,6 +2,7 @@
 namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
 use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
+use Anavel\Crud\Abstractor\Eloquent\Traits\ModelFields;
 use Anavel\Crud\Contracts\Abstractor\Field;
 use Anavel\Crud\Contracts\Abstractor\Relation as RelationContract;
 use App;
@@ -12,6 +13,7 @@ use Illuminate\Support\Collection;
 class MiniCrud extends Relation
 {
     use CheckRelationCompatibility;
+    use ModelFields;
 
     /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
     protected $dbal;
@@ -23,8 +25,6 @@ class MiniCrud extends Relation
     public function setup()
     {
         $this->checkRelationCompatibility();
-
-        $this->dbal = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
     }
 
     /**
@@ -38,7 +38,9 @@ class MiniCrud extends Relation
             $arrayKey = $this->name;
         }
 
-        $columns = $this->dbal->getTableColumns();
+        $columns = $this->modelAbstractor->getColumns('edit');
+
+        $this->readConfig('edit');
 
         /** @var Collection $results */
         $results = $this->eloquentRelation->getResults();
@@ -71,6 +73,8 @@ class MiniCrud extends Relation
                         'validation'   => null,
                         'functions'    => null
                     ];
+
+                    $config = $this->setConfig($config, $columnName);
 
                     /** @var Field $field */
                     $field = $this->fieldFactory
@@ -156,19 +160,6 @@ class MiniCrud extends Relation
     protected function skipField($columnName, $key)
     {
         if ($columnName === $this->eloquentRelation->getPlainForeignKey()) {
-            return true;
-        }
-
-        $foreignKeys = $this->dbal->getTableForeignKeys();
-        $foreignKeysName = [];
-
-        foreach ($foreignKeys as $foreignKey) {
-            foreach ($foreignKey->getColumns() as $foreignColumnName) {
-                $foreignKeysName[] = $foreignColumnName;
-            }
-        }
-
-        if (in_array($columnName, $foreignKeysName)) {
             return true;
         }
 

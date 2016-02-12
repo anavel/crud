@@ -20,19 +20,6 @@ class MiniCrudPolymorphic extends MiniCrud
             return true;
         }
 
-        $foreignKeys = $this->dbal->getTableForeignKeys();
-        $foreignKeysName = [];
-
-        foreach ($foreignKeys as $foreignKey) {
-            foreach ($foreignKey->getColumns() as $foreignColumnName) {
-                $foreignKeysName[] = $foreignColumnName;
-            }
-        }
-
-        if (in_array($columnName, $foreignKeysName)) {
-            return true;
-        }
-
         if ($key === 'emptyResult' && ($columnName === $this->eloquentRelation->getParent()->getKeyName())) {
             return true;
         }

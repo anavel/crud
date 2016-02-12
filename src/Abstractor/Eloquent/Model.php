@@ -1,6 +1,7 @@
 <?php
 namespace Anavel\Crud\Abstractor\Eloquent;
 
+use Anavel\Crud\Abstractor\Eloquent\Traits\ModelFields;
 use Anavel\Crud\Contracts\Abstractor\Model as ModelAbstractorContract;
 use Anavel\Crud\Abstractor\ConfigurationReader;
 use Anavel\Crud\Contracts\Abstractor\Relation;
@@ -18,6 +19,7 @@ use Illuminate\Support\Collection;
 class Model implements ModelAbstractorContract
 {
     use ConfigurationReader;
+    use ModelFields;
 
     protected $dbal;
     protected $relationFactory;
@@ -98,7 +100,7 @@ class Model implements ModelAbstractorContract
         return $this->getConfigValue('soft_deletes') ? true : false;
     }
 
-    protected function getColumns($action, $withForeignKeys = false)
+    public function getColumns($action, $withForeignKeys = false)
     {
         $tableColumns = $this->dbal->getTableColumns();
 
@@ -274,18 +276,14 @@ class Model implements ModelAbstractorContract
     {
         $columns = $this->getColumns('edit', $withForeignKeys);
 
-        $fieldsPresentation = $this->getConfigValue('fields_presentation') ? : [];
-        $formTypes = $this->getConfigValue('edit', 'form_types') ? : [];
-        $validationRules = $this->getConfigValue('edit', 'validation') ? : [];
-        $functions = $this->getConfigValue('edit', 'functions') ? : [];
-        $defaults = $this->getConfigValue('edit', 'defaults') ? : [];
+        $this->readConfig('edit');
 
         $fields = array();
         foreach ($columns as $name => $column) {
             if (! in_array($name, $this->getReadOnlyColumns())) {
                 $presentation = null;
-                if (array_key_exists($name, $fieldsPresentation)) {
-                    $presentation = $fieldsPresentation[$name];
+                if (array_key_exists($name, $this->fieldsPresentation)) {
+                    $presentation = $this->fieldsPresentation[$name];
                 }
 
                 $config = [
@@ -296,21 +294,7 @@ class Model implements ModelAbstractorContract
                     'functions'    => null
                 ];
 
-                if (array_key_exists($name, $formTypes)) {
-                    $config['form_type'] = $formTypes[$name];
-                }
-
-                if (array_key_exists($name, $validationRules)) {
-                    $config['validation'] = $validationRules[$name];
-                }
-
-                if (array_key_exists($name, $functions)) {
-                    $config['functions'] = $functions[$name];
-                }
-
-                if (array_key_exists($name, $defaults)) {
-                    $config['defaults'] = $defaults[$name];
-                }
+                $config = $this->setConfig($config, $name);
 
                 $field = $this->fieldFactory
                     ->setColumn($column)

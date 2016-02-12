@@ -81,9 +81,6 @@ class MiniCrudTest extends TestBase
         $this->relationMock->shouldReceive('getRelated', 'getPlainForeignKey', 'getParent',
             'getKeyName')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('getResults')->andReturn(collect([$postMock = $this->mock('Anavel\Crud\Tests\Models\Post')]));
-        $this->modelManagerMock->shouldReceive('getAbstractionLayer')->andReturn($dbalMock = $this->mock('\ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
-        $this->dbalMock->shouldReceive('getTableColumns')->andReturn([$columnMock = $this->mock('Doctrine\DBAL\Schema\Column')]);
-        $this->dbalMock->shouldReceive('getTableForeignKeys')->andReturn([]);
         $postMock->shouldReceive('getAttribute')->andReturn('chompy');
 
 
@@ -94,6 +91,7 @@ class MiniCrudTest extends TestBase
         $fieldMock->shouldReceive('setValue')->times(1);
 
         $this->modelAbstractorMock->shouldReceive('getRelations')->times(1)->andReturn(collect([$secondaryRelationMock = $this->mock('Anavel\Crud\Abstractor\Eloquent\Relation\Select')]));
+        $this->modelAbstractorMock->shouldReceive('getColumns')->times(1)->andReturn([$columnMock = $this->mock('Doctrine\DBAL\Schema\Column')]);
         $secondaryRelationMock->shouldReceive('getEditFields')->andReturn([]);
 
 
