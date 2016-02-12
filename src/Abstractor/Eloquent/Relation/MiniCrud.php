@@ -2,7 +2,6 @@
 namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
 use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
-use Anavel\Crud\Abstractor\Eloquent\Traits\ModelFields;
 use Anavel\Crud\Contracts\Abstractor\Field;
 use Anavel\Crud\Contracts\Abstractor\Relation as RelationContract;
 use App;
@@ -13,7 +12,6 @@ use Illuminate\Support\Collection;
 class MiniCrud extends Relation
 {
     use CheckRelationCompatibility;
-    use ModelFields;
 
     /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
     protected $dbal;

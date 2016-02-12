@@ -26,16 +26,13 @@ class MiniCrudSingle extends Relation
      */
     public function getEditFields($arrayKey = null)
     {
-        /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
-        $dbal = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
-
         if(empty($arrayKey)) {
             $arrayKey = $this->name;
         }
 
         $fields = [];
 
-        $columns = $dbal->getTableColumns();
+        $columns = $this->modelAbstractor->getColumns('edit');
 
         /** @var Model $result */
         $result = $this->eloquentRelation->getResults();
@@ -48,6 +45,8 @@ class MiniCrudSingle extends Relation
             $this->eloquentRelation->getParent()->getKeyName()
         ];
 
+
+        $this->readConfig('edit');
 
         if (! empty($columns)) {
             foreach ($columns as $columnName => $column) {
@@ -65,6 +64,8 @@ class MiniCrudSingle extends Relation
                     'validation'   => null,
                     'functions'    => null
                 ];
+
+                $config = $this->setConfig($config, $columnName);
 
                 /** @var Field $field */
                 $field = $this->fieldFactory

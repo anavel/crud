@@ -60,6 +60,7 @@ class SelectTest extends TestBase
         $repoMock->shouldReceive('all')->andReturn([]);
         $this->fieldMock->shouldReceive('setColumn', 'setConfig')->andReturn($this->fieldMock);
         $this->fieldMock->shouldReceive('get')->andReturn($field = $this->mock('Anavel\Crud\Contracts\Abstractor\Field'));
+        $columnMock->shouldReceive('getName');
 
         $field->shouldReceive('setOptions');
 
@@ -79,6 +80,7 @@ class SelectTest extends TestBase
         $repoMock->shouldReceive('all')->andReturn([]);
         $this->fieldMock->shouldReceive('setColumn', 'setConfig')->andReturn($this->fieldMock);
         $this->fieldMock->shouldReceive('get')->andReturn($field = $this->mock('Anavel\Crud\Contracts\Abstractor\Field'));
+        $columnMock->shouldReceive('getName');
 
         $field->shouldReceive('setOptions');
 

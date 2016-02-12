@@ -38,6 +38,8 @@ class Translation extends Relation
         $results = $this->eloquentRelation->getResults();
         $results = $results->keyBy('locale');
 
+        $this->readConfig('edit');
+
         if(empty($arrayKey)) {
             $arrayKey = $this->name;
         }
@@ -69,6 +71,8 @@ class Translation extends Relation
                         'validation' => null,
                         'functions' => null
                     ];
+
+                    $config = $this->setConfig($config, $columnName);
 
                     /** @var Field $field */
                     $field = $this->fieldFactory

@@ -3,6 +3,7 @@ namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
 use Anavel\Crud\Abstractor\ConfigurationReader;
 use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationConfig;
+use Anavel\Crud\Abstractor\Eloquent\Traits\ModelFields;
 use Anavel\Crud\Contracts\Abstractor\Model as ModelAbstractor;
 use Anavel\Crud\Contracts\Abstractor\Relation as RelationAbstractorContract;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
@@ -15,6 +16,7 @@ abstract class Relation implements RelationAbstractorContract
 {
     use CheckRelationConfig;
     use ConfigurationReader;
+    use ModelFields;
 
     const DISPLAY_TYPE_TAB = 'tab';
     const DISPLAY_TYPE_INLINE = 'inline';

@@ -64,4 +64,11 @@ interface Model
      * @return array
      */
     public function getValidationRules();
+
+    /**
+     * @param string $action
+     * @param bool|false $withForeignKeys
+     * @return array
+     */
+    public function getColumns($action, $withForeignKeys = false);
 }

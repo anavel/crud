@@ -79,10 +79,11 @@ class MiniCrudSingleTest extends TestBase
             'getKeyName')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('getResults')->andReturn($postMock = $this->mock('Anavel\Crud\Tests\Models\Post'));
         $this->modelManagerMock->shouldReceive('getAbstractionLayer')->andReturn($dbalMock = $this->mock('\ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
-        $dbalMock->shouldReceive('getTableColumns')->andReturn([
+        $this->modelAbstractorMock->shouldReceive('getColumns')->times(1)->andReturn([
             $columnMock = $this->mock('Doctrine\DBAL\Schema\Column'),
             $columnMock = $this->mock('Doctrine\DBAL\Schema\Column')
         ]);
+
         $postMock->shouldReceive('hasGetMutator')->andReturn('false');
         $postMock->shouldReceive('getAttributeValue')->andReturn('1');
         $postMock->shouldReceive('getAttribute')->andReturn('chompy');

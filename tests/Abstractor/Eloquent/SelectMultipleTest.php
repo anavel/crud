@@ -59,6 +59,7 @@ class SelectMultipleTest extends TestBase
     {
         $this->modelManagerMock->shouldReceive('getAbstractionLayer')->andReturn($dbalMock = $this->mock('\ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
         $dbalMock->shouldReceive('getTableColumn')->andReturn($columnMock = $this->mock('Doctrine\DBAL\Schema\Column'));
+        $columnMock->shouldReceive('getName');
 
         $this->modelManagerMock->shouldReceive('getRepository')->atLeast()->once()
             ->andReturn($repoMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository'));

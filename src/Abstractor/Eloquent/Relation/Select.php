@@ -40,13 +40,19 @@ class Select extends Relation
 
         $options = ['' => ''];
 
+        $this->readConfig('edit');
+
         foreach ($results as $result) {
             $options[$result->getKey()] = $this->setDisplay($result);
         }
 
+        $config = $this->getConfig();
+
+        $config = $this->setConfig($config, $column->getName());
+
         $field = $this->fieldFactory
             ->setColumn($column)
-            ->setConfig($this->getConfig())
+            ->setConfig($config)
             ->get();
 
         $field->setOptions($options);
