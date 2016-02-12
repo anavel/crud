@@ -17,7 +17,7 @@ class ModelTest extends TestBase
     /** @var Mock */
     protected $columnMock;
     /** @var Mock */
-    protected $relationMock;
+    protected $relationFactoryMock;
     /** @var Mock */
     protected $fieldMock;
     /** @var Mock */
@@ -30,12 +30,12 @@ class ModelTest extends TestBase
         $config = require __DIR__ . '/../../config.php';
 
         $this->dbalMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer');
-        $this->relationMock = $this->mock('Anavel\Crud\Contracts\Abstractor\RelationFactory');
+        $this->relationFactoryMock = $this->mock('Anavel\Crud\Contracts\Abstractor\RelationFactory');
         $this->fieldMock = $this->mock('Anavel\Crud\Contracts\Abstractor\FieldFactory');
         $this->columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
         $this->generatorMock = $this->mock('Anavel\Crud\Contracts\Form\Generator');
 
-        $this->sut = new Model($config['Users'], $this->dbalMock, $this->relationMock, $this->fieldMock, $this->generatorMock);
+        $this->sut = new Model($config['Users'], $this->dbalMock, $this->relationFactoryMock, $this->fieldMock, $this->generatorMock);
     }
 
     public function test_implements_model_interface()
@@ -65,7 +65,32 @@ class ModelTest extends TestBase
 
         $this->assertInternalType('array', $fields);
 
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['main'][0]);
+    }
+
+    public function test_returns_list_fields_as_array_with_key()
+    {
+        $this->dbalMock->shouldReceive('getTableColumns')
+            ->once()
+            ->andReturn([
+                'id'       => $this->columnMock,
+                'username' => $this->columnMock,
+                'fullname' => $this->columnMock,
+                'active'   => $this->columnMock
+            ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
+
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('Anavel\Crud\Abstractor\Eloquent\Field'));
+
+        $fields = $this->sut->getListFields('chompy');
+
+        $this->assertInternalType('array', $fields);
+
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['chompy'][0]);
     }
 
     public function test_returns_detail_fields_as_array()
@@ -92,9 +117,38 @@ class ModelTest extends TestBase
 
         $this->assertInternalType('array', $fields);
 
-        $this->assertCount(6, $fields);
+        $this->assertCount(6, $fields['main']);
 
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['main'][0]);
+    }
+
+    public function test_returns_detail_fields_as_array_with_key()
+    {
+        $this->dbalMock->shouldReceive('getTableColumns')
+            ->once()
+            ->andReturn([
+                'id'       => $this->columnMock,
+                'username' => $this->columnMock,
+                'password' => $this->columnMock,
+                'fullname' => $this->columnMock,
+                'info'     => $this->columnMock,
+                'active'   => $this->columnMock
+            ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
+
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('Anavel\Crud\Abstractor\Eloquent\Field'));
+
+        $fields = $this->sut->getDetailFields('chompy');
+
+        $this->assertInternalType('array', $fields);
+
+        $this->assertCount(6, $fields['chompy']);
+
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['chompy'][0]);
     }
 
     public function test_returns_edit_fields_as_array()
@@ -124,22 +178,81 @@ class ModelTest extends TestBase
 
         $this->assertInternalType('array', $fields);
 
-        $this->assertCount(3, $fields);
+        $this->assertCount(3, $fields['main']);
 
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['main'][0]);
     }
 
-    public function test_returns_relations_as_array()
+    public function test_returns_edit_fields_as_array_with_key()
     {
-        $this->relationMock->shouldReceive('setModel')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('get')->andReturn($this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
+        $this->dbalMock->shouldReceive('getTableColumns')
+            ->once()
+            ->andReturn([
+                'id'       => $this->columnMock,
+                'username' => $this->columnMock,
+                'password' => $this->columnMock,
+            ]);
+        $this->dbalMock->shouldReceive('getTableForeignKeys')
+            ->andReturn([]);
+
+        $this->dbalMock->shouldReceive('getModel')
+            ->andReturn($this->dbalMock);
+
+        $this->dbalMock->shouldReceive('getKeyName')
+            ->andReturn(LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT);
+
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')
+            ->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')
+            ->andReturn($this->mock('Anavel\Crud\Abstractor\Eloquent\Field'));
+
+        $fields = $this->sut->getEditFields(false, 'chompy');
+
+        $this->assertInternalType('array', $fields);
+
+        $this->assertCount(3, $fields['chompy']);
+
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['chompy'][0]);
+    }
+
+    public function test_returns_relations_as_collection()
+    {
+        $this->relationFactoryMock->shouldReceive('setModel')->andReturn($this->relationFactoryMock);
+        $this->relationFactoryMock->shouldReceive('setConfig')->andReturn($this->relationFactoryMock);
+        $this->relationFactoryMock->shouldReceive('get')->andReturn($relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
+        $relationMock->shouldReceive('getSecondaryRelations')->andReturn(collect());
 
         $relations = $this->sut->getRelations();
 
-        $this->assertInternalType('array', $relations, 'Relations is not an array');
+        $this->assertInstanceOf('Illuminate\Support\Collection', $relations);
 
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Relation', $relations[0]);
+        foreach ($relations as $relation) {
+            $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Relation', $relation);
+        }
+
+    }
+
+    public function test_returns_relations_as_multidimensional_collection()
+    {
+        $this->relationFactoryMock->shouldReceive('setModel')->andReturn($this->relationFactoryMock);
+        $this->relationFactoryMock->shouldReceive('setConfig')->andReturn($this->relationFactoryMock);
+        $this->relationFactoryMock->shouldReceive('get')->andReturn($relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
+        $relationMock->shouldReceive('getSecondaryRelations')->andReturn(collect(['chompy' => $relationMock]));
+
+        $relations = $this->sut->getRelations();
+
+        $this->assertInstanceOf('Illuminate\Support\Collection', $relations);
+
+        foreach ($relations as $relation) {
+            $this->assertInstanceOf('Illuminate\Support\Collection', $relation);
+            $this->assertArrayHasKey('relation', $relation);
+            $this->assertArrayHasKey('secondaryRelations', $relation);
+            $this->assertInstanceOf('Illuminate\Support\Collection', $relation->get('secondaryRelations'));
+            foreach ($relation->get('secondaryRelations') as $secondaryRelation) {
+                $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Relation', $secondaryRelation);
+            }
+        }
+
     }
 
     public function test_get_form()
@@ -167,9 +280,10 @@ class ModelTest extends TestBase
         $this->dbalMock->shouldReceive('getKeyName')
             ->andReturn(LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT);
 
-        $this->relationMock->shouldReceive('setModel')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('get')->andReturn($this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
+        $this->relationFactoryMock->shouldReceive('setModel')->andReturn($this->relationFactoryMock);
+        $this->relationFactoryMock->shouldReceive('setConfig')->andReturn($this->relationFactoryMock);
+        $this->relationFactoryMock->shouldReceive('get')->andReturn($relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
+        $relationMock->shouldReceive('getSecondaryRelations')->andReturn(collect());
 
         $this->fieldMock->shouldReceive('setColumn', 'setConfig')
             ->andReturn($this->fieldMock);
@@ -208,9 +322,10 @@ class ModelTest extends TestBase
         $this->dbalMock->shouldReceive('getKeyName')
             ->andReturn(LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT);
 
-        $this->relationMock->shouldReceive('setModel')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('get')->andReturn($this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
+        $this->relationFactoryMock->shouldReceive('setModel')->andReturn($this->relationFactoryMock);
+        $this->relationFactoryMock->shouldReceive('setConfig')->andReturn($this->relationFactoryMock);
+        $this->relationFactoryMock->shouldReceive('get')->andReturn($relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
+        $relationMock->shouldReceive('getSecondaryRelations')->andReturn(collect());
 
         $this->fieldMock->shouldReceive('setColumn', 'setConfig')
             ->andReturn($this->fieldMock);
@@ -266,10 +381,11 @@ class ModelTest extends TestBase
         $this->dbalMock->shouldReceive('getKeyName')
             ->andReturn(LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT);
 
-        $this->relationMock->shouldReceive('setModel')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('setConfig')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('get')->andReturn($relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
+        $this->relationFactoryMock->shouldReceive('setModel')->andReturn($this->relationFactoryMock);
+        $this->relationFactoryMock->shouldReceive('setConfig')->andReturn($this->relationFactoryMock);
+        $this->relationFactoryMock->shouldReceive('get')->andReturn($relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
         $relationMock->shouldReceive('persist');
+        $relationMock->shouldReceive('getSecondaryRelations')->andReturn(collect());
 
         $fieldMock = $this->mock('Anavel\Crud\Abstractor\Eloquent\Field');
         $fieldMock->shouldReceive('saveIfEmpty', 'getName', 'applyFunctions');

@@ -79,10 +79,11 @@ class MiniCrudSingleTest extends TestBase
             'getKeyName')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('getResults')->andReturn($postMock = $this->mock('Anavel\Crud\Tests\Models\Post'));
         $this->modelManagerMock->shouldReceive('getAbstractionLayer')->andReturn($dbalMock = $this->mock('\ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
-        $dbalMock->shouldReceive('getTableColumns')->andReturn([
+        $this->modelAbstractorMock->shouldReceive('getColumns')->times(1)->andReturn([
             $columnMock = $this->mock('Doctrine\DBAL\Schema\Column'),
             $columnMock = $this->mock('Doctrine\DBAL\Schema\Column')
         ]);
+
         $postMock->shouldReceive('hasGetMutator')->andReturn('false');
         $postMock->shouldReceive('getAttributeValue')->andReturn('1');
         $postMock->shouldReceive('getAttribute')->andReturn('chompy');
@@ -103,8 +104,8 @@ class MiniCrudSingleTest extends TestBase
         $fields = $this->sut->getEditFields();
 
         $this->assertInternalType('array', $fields, 'getEditFields should return an array');
-        $this->assertCount(2, $fields);
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertCount(1, $fields);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['group'][0]);
     }
 
     public function test_persist_with_no_old_results()
@@ -114,9 +115,6 @@ class MiniCrudSingleTest extends TestBase
             'otherField'     => 3,
             'someOtherField' => 3,
         ];
-        $requestMock = $this->mock('Illuminate\Http\Request');
-
-        $requestMock->shouldReceive('input')->with('group')->atLeast()->once()->andReturn($inputArray);
 
         $this->relationMock->shouldReceive('getForeignKey', 'getPlainMorphType', 'getMorphClass');
         $this->relationMock->shouldReceive('getRelated', 'getParent')->andReturn($this->relationMock);
@@ -130,7 +128,7 @@ class MiniCrudSingleTest extends TestBase
         $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphOne');
         $this->buildRelation();
 
-        $fields = $this->sut->persist($requestMock);
+        $fields = $this->sut->persist($inputArray);
     }
 
     public function test_persist_with_old_results()
@@ -140,9 +138,6 @@ class MiniCrudSingleTest extends TestBase
             'otherField'     => 3,
             'someOtherField' => 3,
         ];
-        $requestMock = $this->mock('Illuminate\Http\Request');
-
-        $requestMock->shouldReceive('input')->with('group')->atLeast()->once()->andReturn($inputArray);
         $this->relationMock->shouldReceive('getForeignKey', 'getPlainMorphType', 'getMorphClass');
         $this->relationMock->shouldReceive('getRelated', 'getParent')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('getResults')->andReturn($modelMock = $this->mock('Anavel\Crud\Tests\Models\Post'));
@@ -155,6 +150,6 @@ class MiniCrudSingleTest extends TestBase
         $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphOne');
         $this->buildRelation();
 
-        $fields = $this->sut->persist($requestMock);
+        $fields = $this->sut->persist($inputArray);
     }
 }

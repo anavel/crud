@@ -59,6 +59,7 @@ class SelectMultipleTest extends TestBase
     {
         $this->modelManagerMock->shouldReceive('getAbstractionLayer')->andReturn($dbalMock = $this->mock('\ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
         $dbalMock->shouldReceive('getTableColumn')->andReturn($columnMock = $this->mock('Doctrine\DBAL\Schema\Column'));
+        $columnMock->shouldReceive('getName');
 
         $this->modelManagerMock->shouldReceive('getRepository')->atLeast()->once()
             ->andReturn($repoMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository'));
@@ -75,20 +76,17 @@ class SelectMultipleTest extends TestBase
 
         $field->shouldReceive('setOptions');
 
-        $fields = $this->sut->getEditFields();
+        $fields = $this->sut->getEditFields('chompy');
 
         $this->assertInternalType('array', $fields, 'getEditFields should return an array');
-        $this->assertCount(1, $fields);
+        $this->assertCount(1, $fields['chompy']);
 
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['chompy'][0]);
     }
 
     public function test_persist()
     {
         $inputArray = ['user_id' => [1, 3, 4]];
-        $requestMock = $this->mock('Illuminate\Http\Request');
-
-        $requestMock->shouldReceive('input')->with('posts')->atLeast()->once()->andReturn($inputArray);
 
         $this->modelManagerMock->shouldReceive('getRepository')->atLeast()->once()
             ->andReturn($repoMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository'));
@@ -102,7 +100,7 @@ class SelectMultipleTest extends TestBase
         $repoMock->shouldReceive('all')->atLeast()->once()
             ->andReturn(new Collection([$modelMock, $modelMock, $modelMock]));
 
-        $this->sut->persist($requestMock);
+        $this->sut->persist($inputArray);
     }
 
     public function test_throws_exception_if_display_is_not_set_in_config()

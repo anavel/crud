@@ -28,7 +28,7 @@ class Translation extends Relation
     /**
      * @return array
      */
-    public function getEditFields()
+    public function getEditFields($arrayKey = null)
     {
         /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
         $dbal = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
@@ -38,9 +38,16 @@ class Translation extends Relation
         $results = $this->eloquentRelation->getResults();
         $results = $results->keyBy('locale');
 
+        $this->readConfig('edit');
+
+        if(empty($arrayKey)) {
+            $arrayKey = $this->name;
+        }
+
         $translationFields = [];
         if (! empty($columns)) {
             foreach ($this->langs as $key => $lang) {
+                $tempFields = [];
                 foreach ($columns as $columnName => $column) {
                     if ($columnName === $this->eloquentRelation->getPlainForeignKey()) {
                         continue;
@@ -57,13 +64,15 @@ class Translation extends Relation
                     }
 
                     $config = [
-                        'name' => $this->name.'['.$key.']['.$columnName.']',
+                        'name' => $columnName,
                         'presentation' => ucfirst(transcrud($columnName)).' ['.$lang .']',
                         'form_type' => $formType,
                         'no_validate' => true,
                         'validation' => null,
                         'functions' => null
                     ];
+
+                    $config = $this->setConfig($config, $columnName);
 
                     /** @var Field $field */
                     $field = $this->fieldFactory
@@ -81,24 +90,26 @@ class Translation extends Relation
                         $field->setValue($item->getAttribute($columnName));
                     }
 
-                    $translationFields[] = $field;
+                    $tempFields[] = $field;
                 }
+                $translationFields[$arrayKey][$lang] = $tempFields;
             }
         }
+
         return $translationFields;
     }
 
     /**
-     * @param Request $request
+     * @param array|null $relationArray
      * @return mixed
      */
-    public function persist(Request $request)
+    public function persist(array $relationArray = null)
     {
-        if (! empty($translationsArray = $request->input($this->name))) {
+        if (! empty($relationArray)) {
             $currentTranslations = $this->eloquentRelation->get();
             $currentTranslations = $currentTranslations->keyBy('locale');
 
-            foreach ($translationsArray as $translation) {
+            foreach ($relationArray as $translation) {
                 if ($currentTranslations->has($translation['locale'])) {
                     $translationModel = $currentTranslations->get($translation['locale']);
                 } else {
@@ -114,5 +125,13 @@ class Translation extends Relation
                 $translationModel->save();
             }
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisplayType()
+    {
+        return self::DISPLAY_TYPE_INLINE;
     }
 }

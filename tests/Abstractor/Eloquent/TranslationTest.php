@@ -79,16 +79,20 @@ class TranslationTest extends TestBase
         $fields = $this->sut->getEditFields();
 
         $this->assertInternalType('array', $fields, 'getEditFields should return an array');
+        $this->assertCount(1, $fields);
+        $this->assertInternalType('array', $fields['translations'], 'getEditFields should return an array with a "translations" index');
+        $this->assertArrayHasKey('gl', $fields['translations']);
+        $this->assertArrayHasKey('es', $fields['translations']);
+        $this->assertArrayHasKey('en', $fields['translations']);
 
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInternalType('array', $fields['translations']['gl']);
+        foreach($fields['translations']['gl'] as $element) {
+            $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $element);
+        }
     }
 
     public function test_persist()
     {
-        $requestMock = $this->mock('Illuminate\Http\Request');
-
-        $requestMock->shouldReceive('input')->with('translations')->atLeast()->once();
-
-        $this->sut->persist($requestMock);
+        $this->sut->persist([]);
     }
 }

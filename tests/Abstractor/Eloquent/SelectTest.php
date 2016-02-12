@@ -60,6 +60,7 @@ class SelectTest extends TestBase
         $repoMock->shouldReceive('all')->andReturn([]);
         $this->fieldMock->shouldReceive('setColumn', 'setConfig')->andReturn($this->fieldMock);
         $this->fieldMock->shouldReceive('get')->andReturn($field = $this->mock('Anavel\Crud\Contracts\Abstractor\Field'));
+        $columnMock->shouldReceive('getName');
 
         $field->shouldReceive('setOptions');
 
@@ -68,7 +69,27 @@ class SelectTest extends TestBase
 
         $this->assertInternalType('array', $fields, 'getEditFields should return an array');
         $this->assertCount(1, $fields);
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields[0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['main'][0]);
+    }
+
+    public function test_get_edit_fields_return_array_with_one_field_with_key()
+    {
+        $this->modelManagerMock->shouldReceive('getAbstractionLayer')->andReturn($dbalMock = $this->mock('\ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
+        $dbalMock->shouldReceive('getTableColumn')->andReturn($columnMock = $this->mock('Doctrine\DBAL\Schema\Column'));
+        $this->modelManagerMock->shouldReceive('getRepository')->andReturn($repoMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository'));
+        $repoMock->shouldReceive('all')->andReturn([]);
+        $this->fieldMock->shouldReceive('setColumn', 'setConfig')->andReturn($this->fieldMock);
+        $this->fieldMock->shouldReceive('get')->andReturn($field = $this->mock('Anavel\Crud\Contracts\Abstractor\Field'));
+        $columnMock->shouldReceive('getName');
+
+        $field->shouldReceive('setOptions');
+
+
+        $fields = $this->sut->getEditFields('chompy');
+
+        $this->assertInternalType('array', $fields, 'getEditFields should return an array');
+        $this->assertCount(1, $fields);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['chompy'][0]);
     }
 
     public function test_throws_exception_if_display_is_not_set_in_config()

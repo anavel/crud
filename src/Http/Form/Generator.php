@@ -5,6 +5,9 @@ use Anavel\Crud\Contracts\Form\Generator as GeneratorContract;
 use Anavel\Crud\Abstractor\Eloquent\Field;
 use Doctrine\DBAL\Types\Type as DbalType;
 use FormManager\FactoryInterface;
+use Illuminate\Support\Collection;
+use RecursiveArrayIterator;
+use RecursiveIteratorIterator;
 use Request;
 
 class Generator implements GeneratorContract
@@ -20,7 +23,7 @@ class Generator implements GeneratorContract
     protected $fields;
 
     /**
-     * @var array
+     * @var Collection
      */
     protected $relations;
 
@@ -56,21 +59,25 @@ class Generator implements GeneratorContract
 
     public function addModelFields(array $fields)
     {
-        $this->fields = array_merge($this->fields, $fields);
+        $this->fields = array_merge_recursive($this->fields, $fields);
     }
 
-    public function setModelRelations(array $relations)
+    public function setModelRelations(Collection $relations)
     {
         $this->relations = $relations;
     }
 
-    public function setRelatedModelFields(array $relations)
+    public function setRelatedModelFields(Collection $relations)
     {
         $this->setModelRelations($relations);
 
-        if (count($this->relations > 0)) {
+        if ($this->relations->count() > 0) {
             foreach ($this->relations as $relation) {
-                $this->addModelFields($relation->getEditFields());
+                if ($relation instanceof Collection) {
+                    $this->addModelFields($relation->get('relation')->getEditFields());
+                } else {
+                    $this->addModelFields($relation->getEditFields());
+                }
             }
         }
     }
@@ -86,11 +93,15 @@ class Generator implements GeneratorContract
             'class'   => 'form-horizontal'
         ]);
 
+
         $formFields = array();
-        foreach ($this->fields as $field) {
-            $formFields[$field->getName()] = $field->getFormField();
+        foreach ($this->fields as $fieldGroupName => $fieldGroup) {
+            $tempFields = $this->addFormFields($fieldGroup, $fieldGroupName);
+            $formFields[key($tempFields)] = $this->factory->get('group', [$tempFields[key($tempFields)]]);
         }
+
         $form->add($formFields);
+
 
         return $form;
     }
@@ -99,10 +110,53 @@ class Generator implements GeneratorContract
     {
         $rules = array();
 
-        foreach ($this->fields as $field) {
-            $rules[$field->getName()] = $field->getValidationRules();
+        foreach ($this->fields as $fieldGroupName => $fieldGroup) {
+            foreach ($fieldGroup as $fieldKey => $field) {
+                if (is_array($field)) {
+                    $rules[$fieldGroupName] = $this->addValidationRules($field, $fieldKey);
+                } else {
+                    $rules[$fieldGroupName][$field->getName()] = $field->getValidationRules();
+                }
+            }
         }
 
+        return $rules;
+    }
+
+    /**
+     * @param array $fields
+     * @param $key
+     * @return array
+     */
+    protected function addFormFields(array $fields, $key)
+    {
+        $formFields = array();
+        $tempFields = array();
+            foreach ($fields as $fieldKey => $field) {
+                if (is_array($field)) {
+                    $group = $this->addFormFields($field, $fieldKey);
+                    $tempFields[key($group)] = $this->factory->get('group', [$group[key($group)]]);
+                } else {
+                    $tempFields[$field->getName()] = $field->getFormField();
+                }
+            }
+        $formFields[$key] = $tempFields;
+        return $formFields;
+    }
+
+    protected function addValidationRules(array $fields, $key)
+    {
+        $rules = array();
+        $tempFields = array();
+        foreach ($fields as $fieldKey => $field) {
+            if (is_array($field)) {
+                $group = $this->addValidationRules($field, $fieldKey);
+                $tempFields[key($group)] = $group[key($group)];
+            } else {
+                $tempFields[$field->getName()] = $field->getValidationRules();
+            }
+        }
+        $rules[$key] = $tempFields;
         return $rules;
     }
 }

@@ -22,9 +22,10 @@ class Select extends Relation
     }
 
     /**
+     * @param string|null $arrayKey
      * @return array
      */
-    public function getEditFields()
+    public function getEditFields($arrayKey = 'main')
     {
         /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
         $dbal = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
@@ -39,29 +40,35 @@ class Select extends Relation
 
         $options = ['' => ''];
 
+        $this->readConfig('edit');
+
         foreach ($results as $result) {
             $options[$result->getKey()] = $this->setDisplay($result);
         }
 
+        $config = $this->getConfig();
+
+        $config = $this->setConfig($config, $column->getName());
+
         $field = $this->fieldFactory
             ->setColumn($column)
-            ->setConfig($this->getConfig())
+            ->setConfig($config)
             ->get();
 
         $field->setOptions($options);
 
         $field = $this->setFieldValue($field);
 
-        $select[] = $field;
+        $select[$arrayKey][] = $field;
 
         return $select;
     }
 
     /**
-     * @param Request $request
+     * @param array|null $relationArray
      * @return mixed
      */
-    public function persist(Request $request)
+    public function persist(array $relationArray = null)
     {
         //
     }
@@ -116,5 +123,13 @@ class Select extends Relation
     protected function getColumn($dbal)
     {
         return $dbal->getTableColumn($this->eloquentRelation->getOtherKey());
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisplayType()
+    {
+        return self::DISPLAY_TYPE_INLINE;
     }
 }

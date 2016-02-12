@@ -45,7 +45,7 @@
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    @foreach ($abstractor->getListFields() as $field)
+                    @foreach ($abstractor->getListFields()['main'] as $field)
                         <?php
                         $isSorting = false;
                         $sortDirection = 'asc';
@@ -69,7 +69,7 @@
             <tbody>
                 @forelse ($items as $item)
                 <tr>
-                    @foreach ($abstractor->getListFields() as $field)
+                    @foreach ($abstractor->getListFields()['main'] as $field)
                     <td>{!! $item->getAttribute($field->getName()) !!}</td>
                     @endforeach
                     <td>
@@ -80,7 +80,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="{{ count($abstractor->getListFields()) + 1 }}" style="text-align: center;">{{ trans('anavel-crud::messages.empty_list') }}</td>
+                    <td colspan="{{ count($abstractor->getListFields()['main']) + 1 }}" style="text-align: center;">{{ trans('anavel-crud::messages.empty_list') }}</td>
                 </tr>
                 @endforelse
             </tbody>

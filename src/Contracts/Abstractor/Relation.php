@@ -3,6 +3,7 @@ namespace Anavel\Crud\Contracts\Abstractor;
 
 use Anavel\Crud\Abstractor\Exceptions\RelationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 interface Relation
 {
@@ -29,7 +30,7 @@ interface Relation
     /**
      * @return array
      */
-    public function getEditFields();
+    public function getEditFields($arrayKey = null);
 
     /**
      * @param array $fields
@@ -38,8 +39,24 @@ interface Relation
     public function addSecondaryRelationFields(array $fields);
 
     /**
-     * @param Request $request
+     * @param array|null $relationArray
      * @return mixed
      */
-    public function persist(Request $request);
+    public function persist(array $relationArray = null);
+
+    /**
+     * @return string
+     */
+    public function getDisplayType();
+
+    /**
+     * @return Collection
+     */
+    public function getSecondaryRelations();
+
+    /**
+     * @param Model $relatedModel
+     * @return Relation
+     */
+    public function setRelatedModel(\Illuminate\Database\Eloquent\Model $model);
 }

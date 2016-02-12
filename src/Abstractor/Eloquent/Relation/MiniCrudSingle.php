@@ -24,14 +24,15 @@ class MiniCrudSingle extends Relation
     /**
      * @return array
      */
-    public function getEditFields()
+    public function getEditFields($arrayKey = null)
     {
-        /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
-        $dbal = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
+        if(empty($arrayKey)) {
+            $arrayKey = $this->name;
+        }
 
         $fields = [];
 
-        $columns = $dbal->getTableColumns();
+        $columns = $this->modelAbstractor->getColumns('edit');
 
         /** @var Model $result */
         $result = $this->eloquentRelation->getResults();
@@ -45,6 +46,8 @@ class MiniCrudSingle extends Relation
         ];
 
 
+        $this->readConfig('edit');
+
         if (! empty($columns)) {
             foreach ($columns as $columnName => $column) {
                 if (in_array($columnName, $readOnly, true)) {
@@ -54,13 +57,15 @@ class MiniCrudSingle extends Relation
                 $formType = null;
 
                 $config = [
-                    'name'         => $this->name . '[' . $columnName . ']',
+                    'name'         => $columnName,
                     'presentation' => $this->name . ' ' . ucfirst(transcrud($columnName)),
                     'form_type'    => $formType,
                     'no_validate'  => true,
                     'validation'   => null,
                     'functions'    => null
                 ];
+
+                $config = $this->setConfig($config, $columnName);
 
                 /** @var Field $field */
                 $field = $this->fieldFactory
@@ -72,7 +77,7 @@ class MiniCrudSingle extends Relation
                     $field->setValue($result->getAttribute($columnName));
                 }
 
-                $fields[] = $field;
+                $fields[$arrayKey][] = $field;
             }
         }
 
@@ -83,12 +88,12 @@ class MiniCrudSingle extends Relation
     }
 
     /**
-     * @param Request $request
+     * @param array|null $relationArray
      * @return mixed
      */
-    public function persist(Request $request)
+    public function persist(array $relationArray = null)
     {
-        if (! empty($relation = $request->input($this->name))) {
+        if (! empty($relationArray)) {
             $currentRelation = $this->eloquentRelation->getResults();
             if (! empty($currentRelation)) {
                 $relationModel = $currentRelation;
@@ -99,7 +104,7 @@ class MiniCrudSingle extends Relation
             $this->setKeys($relationModel);
 
             $shouldBeSkipped = true;
-            foreach ($relation as $fieldKey => $fieldValue) {
+            foreach ($relationArray as $fieldKey => $fieldValue) {
                 if ($shouldBeSkipped) {
                     $shouldBeSkipped = ($shouldBeSkipped === ($fieldValue === ''));
                 }
@@ -117,6 +122,14 @@ class MiniCrudSingle extends Relation
         $relationModel->setAttribute($this->eloquentRelation->getForeignKey(), $this->relatedModel->id);
         $relationModel->setAttribute($this->eloquentRelation->getPlainMorphType(),
             $this->eloquentRelation->getMorphClass());
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisplayType()
+    {
+        return self::DISPLAY_TYPE_TAB;
     }
 }
 

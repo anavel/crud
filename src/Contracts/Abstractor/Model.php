@@ -3,6 +3,7 @@ namespace Anavel\Crud\Contracts\Abstractor;
 
 use FormManager\ElementInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 interface Model
 {
@@ -36,12 +37,14 @@ interface Model
     public function getDetailFields();
 
     /**
+     * @param bool $withForeignKeys
+     * @param string $arrayKey
      * @return array
      */
-    public function getEditFields();
+    public function getEditFields($withForeignKeys = false, $arrayKey = 'main');
 
     /**
-     * @return array
+     * @return Collection
      */
     public function getRelations();
 
@@ -61,4 +64,11 @@ interface Model
      * @return array
      */
     public function getValidationRules();
+
+    /**
+     * @param string $action
+     * @param bool|false $withForeignKeys
+     * @return array
+     */
+    public function getColumns($action, $withForeignKeys = false);
 }
