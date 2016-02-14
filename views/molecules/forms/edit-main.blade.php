@@ -16,6 +16,7 @@
 
 <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="main">
+        @unless(empty($form['main']))
         @foreach($form['main'] as $field)
             <div class="form-group">
                 @if($field->attr('type') != 'hidden')
@@ -27,6 +28,7 @@
                 </div>
             </div>
         @endforeach
+        @endunless
 
         @forelse($relations as $relationKey => $relation)
             @if ($relation instanceof \Illuminate\Support\Collection)

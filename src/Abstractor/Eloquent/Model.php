@@ -349,36 +349,38 @@ class Model implements ModelAbstractorContract
 
 
         $fields = $this->getEditFields(true);
-        if (empty($fields['main'])) {
+        if (empty($fields['main']) && empty($this->getRelations())) {
             return;
         }
 
-        foreach ($fields['main'] as $field) {
-            $requestValue = $request->input("main.{$field->getName()}");
+        if (! empty($fields['main'])) {
+            foreach ($fields['main'] as $field) {
+                $requestValue = $request->input("main.{$field->getName()}");
 
-            if (! $field->saveIfEmpty() && empty($requestValue)) {
-                continue;
-            }
-
-            if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
-                if ($request->hasFile($field->getName())) {
-                    $fileName = uniqid() . '.' . $request->file($field->getName())->getClientOriginalExtension();
-                    $modelFolder = $this->slug . DIRECTORY_SEPARATOR;
-
-                    $request->file($field->getName())->move(
-                        base_path(config('anavel-crud.uploads_path') . $modelFolder),
-                        $fileName
-                    );
-
-                    $requestValue = $modelFolder . $fileName;
+                if (! $field->saveIfEmpty() && empty($requestValue)) {
+                    continue;
                 }
-            }
 
-            if (! empty($requestValue)) {
-                $item->setAttribute(
-                    $field->getName(),
-                    $field->applyFunctions($requestValue)
-                );
+                if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
+                    if ($request->hasFile($field->getName())) {
+                        $fileName = uniqid() . '.' . $request->file($field->getName())->getClientOriginalExtension();
+                        $modelFolder = $this->slug . DIRECTORY_SEPARATOR;
+
+                        $request->file($field->getName())->move(
+                            base_path(config('anavel-crud.uploads_path') . $modelFolder),
+                            $fileName
+                        );
+
+                        $requestValue = $modelFolder . $fileName;
+                    }
+                }
+
+                if (! empty($requestValue)) {
+                    $item->setAttribute(
+                        $field->getName(),
+                        $field->applyFunctions($requestValue)
+                    );
+                }
             }
         }
 
