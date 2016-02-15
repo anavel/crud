@@ -34,8 +34,6 @@ class Select extends Relation
 
         $repo = $this->modelManager->getRepository(get_class($this->eloquentRelation->getRelated()));
 
-        $select = [];
-
         $results = $repo->all();
 
         $options = ['' => ''];
@@ -59,8 +57,15 @@ class Select extends Relation
 
         $field = $this->setFieldValue($field);
 
-        $select[$arrayKey][] = $field;
+        $select = $this->addToArray($arrayKey, $field);
 
+        return $select;
+    }
+
+    protected function addToArray($arrayKey, $field)
+    {
+        $select = [];
+        $select[$arrayKey][] = $field;
         return $select;
     }
 

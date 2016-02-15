@@ -58,13 +58,25 @@ class SelectMultiple extends Select
         }
     }
 
+
+
+    protected function addToArray($arrayKey, $field)
+    {
+        $select = [];
+        if ($arrayKey == 'main') {
+            $arrayKey = $this->name;
+        }
+        $select[$arrayKey][] = $field;
+        return $select;
+    }
+
     /**
      * @return array
      */
     protected function getConfig()
     {
         return [
-            'name' => $this->name.'[]',
+            'name' => $this->eloquentRelation->getRelated()->getKeyName(),
             'presentation' => $this->getPresentation(),
             'form_type' => 'select',
             'attr' => [
