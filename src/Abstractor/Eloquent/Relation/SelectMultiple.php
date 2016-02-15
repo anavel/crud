@@ -36,8 +36,12 @@ class SelectMultiple extends Select
             $relatedKeyName = $this->eloquentRelation->getRelated()->getKeyName();
             $alreadyAssociated = $this->relatedModel->$relationName;
 
+            $search = [];
+            if (! empty($relationArray[$relatedKeyName])) {
+                $search = $relationArray[$relatedKeyName];
+            }
             $results = $repo->pushCriteria(
-                new InArrayCriteria($relatedKeyName, $relationArray)
+                new InArrayCriteria($relatedKeyName, $search)
             )->all();
 
             $missing = $alreadyAssociated->diff($results);
