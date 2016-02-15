@@ -78,22 +78,32 @@ class MiniCrudTest extends TestBase
 
     public function test_get_edit_fields_returns_array()
     {
+        $this->modelAbstractorMock->shouldReceive('getColumns')->times(1)->andReturn([$columnMock = $this->mock('Doctrine\DBAL\Schema\Column')]);
+
+        $this->relationMock->shouldReceive('getResults')->andReturn(collect([$postMock = $this->mock('Anavel\Crud\Tests\Models\Post')]));
+
         $this->relationMock->shouldReceive('getRelated', 'getPlainForeignKey', 'getParent',
             'getKeyName')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('getResults')->andReturn(collect([$postMock = $this->mock('Anavel\Crud\Tests\Models\Post')]));
-        $postMock->shouldReceive('getAttribute')->andReturn('chompy');
-
 
         $this->fieldFactoryMock->shouldReceive('setColumn', 'setConfig')->andReturn($this->fieldFactoryMock);
         $this->fieldFactoryMock->shouldReceive('get')->andReturn($fieldMock = $this->mock('Anavel\Crud\Contracts\Abstractor\Field'));
+
+
+        $this->relationMock->shouldReceive('newInstance')->andReturn($postMock);
+
+        $this->modelAbstractorMock->shouldReceive('setInstance')->with($postMock);
+
+        $this->modelAbstractorMock->shouldReceive('getRelations')->times(2)->andReturn(collect([$secondaryRelationMock = $this->mock('Anavel\Crud\Abstractor\Eloquent\Relation\Select')]));
+
+        $secondaryRelationMock->shouldReceive('getEditFields')->andReturn([]);
+
+
+        $postMock->shouldReceive('getAttribute')->andReturn('chompy');
+
+
         $fieldMock->shouldReceive('setOptions');
 
         $fieldMock->shouldReceive('setValue')->times(1);
-
-        $this->modelAbstractorMock->shouldReceive('getRelations')->times(1)->andReturn(collect([$secondaryRelationMock = $this->mock('Anavel\Crud\Abstractor\Eloquent\Relation\Select')]));
-        $this->modelAbstractorMock->shouldReceive('getColumns')->times(1)->andReturn([$columnMock = $this->mock('Doctrine\DBAL\Schema\Column')]);
-        $secondaryRelationMock->shouldReceive('getEditFields')->andReturn([]);
-
 
         $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\HasMany');
         $this->buildRelation();
@@ -123,8 +133,10 @@ class MiniCrudTest extends TestBase
         $this->relationMock->shouldReceive('keyBy')->once()->andReturn(collect());
         $this->relationMock->shouldReceive('getKeyName')->andReturn('id');
         $this->relationMock->shouldReceive('newInstance')->andReturn($modelMock = $this->mock('Anavel\Crud\Tests\Models\Post'));
+
+        $this->modelAbstractorMock->shouldReceive('setInstance')->with($modelMock);
         $this->modelAbstractorMock->shouldReceive('getRelations')->andReturn(collect(['relationName' => $secondaryRelationMock = $this->mock('Anavel\Crud\Abstractor\Eloquent\Relation\Translation')]));
-        $secondaryRelationMock->shouldReceive('setRelatedModel', 'persist');
+        $secondaryRelationMock->shouldReceive('persist');
 
         $modelMock->shouldReceive('getKey')->andReturn(1);
         $modelMock->shouldReceive('setAttribute')->times(4); // 3 fields, relationName excluded, + foreign
@@ -157,6 +169,7 @@ class MiniCrudTest extends TestBase
         $this->relationMock->shouldReceive('keyBy')->once()->andReturn(collect([1 => $modelMock = $this->mock('Anavel\Crud\Tests\Models\Post')]));
         $this->relationMock->shouldReceive('getKeyName')->andReturn('id');
         $this->modelAbstractorMock->shouldReceive('getRelations')->andReturn(collect());
+        $this->modelAbstractorMock->shouldReceive('setInstance')->with($modelMock);
 
         $modelMock->shouldReceive('getKey')->andReturn(1);
         $modelMock->shouldReceive('setAttribute')->times(8);

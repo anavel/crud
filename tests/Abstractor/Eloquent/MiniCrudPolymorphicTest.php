@@ -79,20 +79,28 @@ class MiniCrudPolymorphicTest extends TestBase
 
     public function test_get_edit_fields_returns_array()
     {
+        $this->modelAbstractorMock->shouldReceive('getColumns')->times(1)->andReturn([$columnMock = $this->mock('Doctrine\DBAL\Schema\Column')]);
+
+        $this->relationMock->shouldReceive('getResults')->andReturn(collect([$postMock = $this->mock('Anavel\Crud\Tests\Models\Post')]));
+
         $this->relationMock->shouldReceive('getRelated', 'getPlainForeignKey', 'getPlainMorphType', 'getParent',
             'getKeyName')->andReturn($this->relationMock);
-        $this->relationMock->shouldReceive('getResults')->andReturn(collect([$postMock = $this->mock('Anavel\Crud\Tests\Models\Post')]));
-        $postMock->shouldReceive('getAttribute')->andReturn('chompy');
-
 
         $this->fieldFactoryMock->shouldReceive('setColumn', 'setConfig')->andReturn($this->fieldFactoryMock);
         $this->fieldFactoryMock->shouldReceive('get')->andReturn($fieldMock = $this->mock('Anavel\Crud\Contracts\Abstractor\Field'));
+
+        $this->relationMock->shouldReceive('newInstance')->andReturn($postMock);
+
+        $this->modelAbstractorMock->shouldReceive('setInstance')->with($postMock);
+
+        $postMock->shouldReceive('getAttribute')->andReturn('chompy');
+
+
         $fieldMock->shouldReceive('setOptions');
 
         $fieldMock->shouldReceive('setValue')->times(1);
 
-        $this->modelAbstractorMock->shouldReceive('getRelations')->times(1)->andReturn([$this->secondaryRelationMock = $this->mock('Anavel\Crud\Abstractor\Eloquent\Relation\Select')]);
-        $this->modelAbstractorMock->shouldReceive('getColumns')->times(1)->andReturn([$columnMock = $this->mock('Doctrine\DBAL\Schema\Column')]);
+        $this->modelAbstractorMock->shouldReceive('getRelations')->times(2)->andReturn([$this->secondaryRelationMock = $this->mock('Anavel\Crud\Abstractor\Eloquent\Relation\Select')]);
         $this->secondaryRelationMock->shouldReceive('getEditFields')->andReturn([]);
 
 
@@ -126,6 +134,9 @@ class MiniCrudPolymorphicTest extends TestBase
         $this->relationMock->shouldReceive('newInstance')->andReturn($modelMock = $this->mock('Anavel\Crud\Tests\Models\Post'));
         $this->modelAbstractorMock->shouldReceive('getRelations')->andReturn(collect());
 
+        $this->modelAbstractorMock->shouldReceive('setInstance')->with($modelMock);
+
+
         $modelMock->shouldReceive('getKey')->andReturn(1);
         $modelMock->shouldReceive('setAttribute')->times(5);
         $modelMock->shouldReceive('save')->times(1);
@@ -157,6 +168,9 @@ class MiniCrudPolymorphicTest extends TestBase
         $this->relationMock->shouldReceive('keyBy')->once()->andReturn(collect([1 => $modelMock = $this->mock('Anavel\Crud\Tests\Models\Post')]));
         $this->relationMock->shouldReceive('getKeyName')->andReturn('id');
         $this->modelAbstractorMock->shouldReceive('getRelations')->andReturn(collect());
+
+        $this->modelAbstractorMock->shouldReceive('setInstance')->with($modelMock);
+
 
         $modelMock->shouldReceive('getKey')->andReturn(1);
         $modelMock->shouldReceive('setAttribute')->times(10);

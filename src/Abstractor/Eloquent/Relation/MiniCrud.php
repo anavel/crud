@@ -85,11 +85,30 @@ class MiniCrud extends Relation
                     }
                     $tempFields[] = $field;
                 }
+
+                $relationModel = $this->eloquentRelation->getRelated()->newInstance();
+                if (! empty($result)) {
+                    $relationModel = $result;
+                }
+                $this->modelAbstractor->setInstance($relationModel);
+                $secondaryRelations = $this->getSecondaryRelations();
+                if (! empty($secondaryRelations)) {
+                    foreach ($secondaryRelations as $secondaryRelationKey => $secondaryRelation) {
+                        foreach ($secondaryRelation->getEditFields($secondaryRelationKey) as $editGroupName => $editGroup) {
+                            if ($secondaryRelation->getType() === 'Anavel\Crud\Abstractor\Eloquent\Relation\Select') {
+                                $tempFields[key($editGroup)] = $editGroup[key($editGroup)];
+                            } else {
+                                $tempFields[$editGroupName] = $editGroup;
+                            }
+                        };
+                    }
+                }
+
                 $fields[$arrayKey][$index] = $tempFields;
             }
         }
 
-        $fields = $this->addSecondaryRelationFields($fields);
+//        $fields = $this->addSecondaryRelationFields($fields);
 
         return $fields;
     }
@@ -103,7 +122,6 @@ class MiniCrud extends Relation
         if (! empty($relationArray)) {
             $keyName = $this->eloquentRelation->getParent()->getKeyName();
             $currentRelations = $this->eloquentRelation->get()->keyBy($keyName);
-            $secondaryRelations = $this->getSecondaryRelations();
 
             foreach ($relationArray as $relation) {
                 if (! empty($relation[$keyName])
@@ -113,6 +131,10 @@ class MiniCrud extends Relation
                 } else {
                     $relationModel = $this->eloquentRelation->getRelated()->newInstance();
                 }
+
+                $this->modelAbstractor->setInstance($relationModel);
+                $secondaryRelations = $this->getSecondaryRelations();
+
 
                 $this->setKeys($relationModel);
 
@@ -141,7 +163,6 @@ class MiniCrud extends Relation
                             /** @var RelationContract $secondaryRelation */
                             $secondaryRelation = $secondaryRelations->get($relationKey);
 
-                            $secondaryRelation->setRelatedModel($relationModel);
                             $secondaryRelation->persist($delayedRelation);
                         }
                     }
