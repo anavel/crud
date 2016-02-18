@@ -13,20 +13,11 @@
     @empty
     @endforelse
 </ul>
-
 <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="main">
         @unless(empty($form['main']))
         @foreach($form['main'] as $field)
-            <div class="form-group">
-                @if($field->attr('type') != 'hidden')
-                    <label for="{{ $field->attr('id') }}"
-                           class="col-sm-2 control-label">{{ $field->label->html() }}{{ $field->attr('required') ? ' *' : '' }}</label>
-                @endif
-                <div class="col-sm-10">
-                    {!! $field->input !!}
-                </div>
-            </div>
+                @include('anavel-crud::atoms.forms.field', ['field' => $field])
         @endforeach
         @endunless
 

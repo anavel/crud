@@ -15,6 +15,8 @@ use Anavel\Crud\Contracts\Form\Generator as FormGenerator;
 use Anavel\Crud\Abstractor\Exceptions\AbstractorException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
 
 class Model implements ModelAbstractorContract
 {
@@ -306,6 +308,20 @@ class Model implements ModelAbstractorContract
                 }
 
                 $fields[$arrayKey][] = $field;
+
+                if (! empty($config['form_type']) && $config['form_type'] === 'file') {
+                    $field = $this->fieldFactory
+                        ->setColumn($column)
+                        ->setConfig([
+                            'name'         => $name . '__delete',
+                            'presentation' => null,
+                            'form_type'    => 'checkbox',
+                            'validation'   => null,
+                            'functions'    => null
+                        ])
+                        ->get();
+                    $fields[$arrayKey][] = $field;
+                }
             }
         }
 
@@ -354,30 +370,61 @@ class Model implements ModelAbstractorContract
         }
 
         if (! empty($fields['main'])) {
-            foreach ($fields['main'] as $field) {
-                $requestValue = $request->input("main.{$field->getName()}");
+            $skipNext = false;
+            foreach ($fields['main'] as $key => $field) {
+                if ($skipNext === true) {
+                    continue;
+                }
+                $fieldName = $field->getName();
+                $requestValue = $request->input("main.{$fieldName}");
+
+                if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
+                    $modelFolder = $this->slug . DIRECTORY_SEPARATOR;
+                    $basePath = base_path(config('anavel-crud.uploads_path'));
+                    $modelPath = $basePath . $modelFolder;
+                    if (! empty($fields['main'][$key + 1]) && $fields['main'][$key + 1]->getName() === $fieldName . '__delete') {
+                        //We never want to save this field, it doesn't exist in the DB
+                        $skipNext = true;
+
+                        //If user wants to delete the existing file
+                        if (! empty($request->input("main.{$fieldName}__delete"))) {
+                            $adapter = new Local($basePath);
+                            $filesystem = new Filesystem($adapter);
+                            if ($filesystem->has($item->$fieldName)) {
+                                $filesystem->delete($item->$fieldName);
+                            }
+
+
+                            $item->setAttribute(
+                                $fieldName,
+                                null
+                            );
+                            continue;
+                        }
+                    }
+                    if ($request->hasFile('main.'.$fieldName)) {
+                        $fileName = uniqid() . '.' . $request->file('main.'.$fieldName)->getClientOriginalExtension();
+
+
+                        $request->file('main.'.$fieldName)->move(
+                            $modelPath,
+                            $fileName
+                        );
+
+                        $requestValue = $modelFolder . $fileName;
+                    } elseif (! $request->file('main.'.$fieldName)->isValid()) {
+                        throw new \Exception($request->file('main.'.$fieldName)->getErrorMessage());
+                    }
+
+                }
 
                 if (! $field->saveIfEmpty() && empty($requestValue)) {
                     continue;
                 }
 
-                if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
-                    if ($request->hasFile($field->getName())) {
-                        $fileName = uniqid() . '.' . $request->file($field->getName())->getClientOriginalExtension();
-                        $modelFolder = $this->slug . DIRECTORY_SEPARATOR;
-
-                        $request->file($field->getName())->move(
-                            base_path(config('anavel-crud.uploads_path') . $modelFolder),
-                            $fileName
-                        );
-
-                        $requestValue = $modelFolder . $fileName;
-                    }
-                }
-
                 if (! empty($requestValue)) {
                     $item->setAttribute(
-                        $field->getName(),
+                        $fieldName,
                         $field->applyFunctions($requestValue)
                     );
                 }

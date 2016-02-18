@@ -45,9 +45,9 @@ return [
             'hide'    => []
         ],
         'edit'                   => [
-            'display'    => ['id', 'username', 'password'],
+            'display'    => ['id', 'username', 'password', 'image'],
             'hide'       => [],
-            'defaults'    => [
+            'defaults'   => [
                 'username' => 'Chompy',
                 'info'     => [
                     'key'      => 'Value',
@@ -56,7 +56,8 @@ return [
             ],
             'form_types' => [
                 'username' => 'email',
-                'password' => 'password'
+                'password' => 'password',
+                'image'    => 'file'
             ],
             'validation' => [
                 'username' => 'required|email',
