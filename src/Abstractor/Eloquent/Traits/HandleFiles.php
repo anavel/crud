@@ -48,7 +48,7 @@ trait HandleFiles
             );
 
             $requestValue = $modelFolder . $fileName;
-        } elseif (! $request->file($groupName .'.'.$fieldName)->isValid()) {
+        } elseif (! empty($request->file($groupName .'.'.$fieldName)) && ! $request->file($groupName .'.'.$fieldName)->isValid()) {
             throw new \Exception($request->file($groupName .'.'.$fieldName)->getErrorMessage());
         }
 
