@@ -81,7 +81,11 @@ class FieldFactory implements FieldAbstractorFactoryContract
         $field = new Field($this->column, $formElement, $this->config['name'], $this->config['presentation']);
 
         if (! empty($this->config['validation'])) {
-            $field->setValidationRules($this->config['validation']);
+            if ($this->config['validation'] === 'no_validate') {
+                $this->config['no_validate'] = true;
+            } else {
+                $field->setValidationRules($this->config['validation']);
+            }
         }
 
         if (! empty($this->config['functions'])) {
