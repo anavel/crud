@@ -375,6 +375,7 @@ class Model implements ModelAbstractorContract
             $skipNext = false;
             foreach ($fields['main'] as $key => $field) {
                 if ($skipNext === true) {
+                    $skipNext = false;
                     continue;
                 }
                 $fieldName = $field->getName();
