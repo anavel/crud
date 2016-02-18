@@ -1,6 +1,7 @@
 <?php
 namespace Anavel\Crud\Abstractor\Eloquent;
 
+use Anavel\Crud\Abstractor\Eloquent\Traits\HandleFiles;
 use Anavel\Crud\Abstractor\Eloquent\Traits\ModelFields;
 use Anavel\Crud\Contracts\Abstractor\Model as ModelAbstractorContract;
 use Anavel\Crud\Abstractor\ConfigurationReader;
@@ -22,6 +23,7 @@ class Model implements ModelAbstractorContract
 {
     use ConfigurationReader;
     use ModelFields;
+    use HandleFiles;
 
     protected $dbal;
     protected $relationFactory;
@@ -379,43 +381,13 @@ class Model implements ModelAbstractorContract
                 $requestValue = $request->input("main.{$fieldName}");
 
                 if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
-                    $modelFolder = $this->slug . DIRECTORY_SEPARATOR;
-                    $basePath = base_path(config('anavel-crud.uploads_path'));
-                    $modelPath = $basePath . $modelFolder;
-                    if (! empty($fields['main'][$key + 1]) && $fields['main'][$key + 1]->getName() === $fieldName . '__delete') {
-                        //We never want to save this field, it doesn't exist in the DB
-                        $skipNext = true;
-
-                        //If user wants to delete the existing file
-                        if (! empty($request->input("main.{$fieldName}__delete"))) {
-                            $adapter = new Local($basePath);
-                            $filesystem = new Filesystem($adapter);
-                            if ($filesystem->has($item->$fieldName)) {
-                                $filesystem->delete($item->$fieldName);
-                            }
-
-
-                            $item->setAttribute(
-                                $fieldName,
-                                null
-                            );
-                            continue;
-                        }
+                    $handleResult = $this->handleField($request, $item, $fields, $key, 'main', $fieldName);
+                    if (! empty($handleResult['skipNext'])) {
+                        $skipNext = $handleResult['skipNext'];
                     }
-                    if ($request->hasFile('main.'.$fieldName)) {
-                        $fileName = uniqid() . '.' . $request->file('main.'.$fieldName)->getClientOriginalExtension();
-
-
-                        $request->file('main.'.$fieldName)->move(
-                            $modelPath,
-                            $fileName
-                        );
-
-                        $requestValue = $modelFolder . $fileName;
-                    } elseif (! $request->file('main.'.$fieldName)->isValid()) {
-                        throw new \Exception($request->file('main.'.$fieldName)->getErrorMessage());
+                    if (! empty($handleResult['requestValue'])) {
+                        $requestValue = $handleResult['requestValue'];
                     }
-
                 }
 
                 if (! $field->saveIfEmpty() && empty($requestValue)) {
