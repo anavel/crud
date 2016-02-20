@@ -41,8 +41,7 @@ class ModelTest extends TestBase
 
         $this->getClassMock = PHPMockery::mock('Anavel\Crud\Abstractor\Eloquent', 'get_class');
 
-        $this->sut = new Model($config['Users'], $this->dbalMock, $this->relationFactoryMock, $this->fieldFactoryMock,
-            $this->generatorMock);
+        $this->sut = \Mockery::mock(Model::class, [$config['Users'], $this->dbalMock, $this->relationFactoryMock, $this->fieldFactoryMock,$this->generatorMock])->makePartial();
     }
 
     public function test_implements_model_interface()
@@ -436,36 +435,27 @@ class ModelTest extends TestBase
             $modelManagerMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'));
         $requestMock = $this->mock('Illuminate\Http\Request');
 
-        $requestMock->shouldReceive('input');
+        $requestMock->shouldReceive('input')->andReturn('something', ['somethingElse' => ['someValue']]);
 
         $modelManagerMock->shouldReceive('getModelInstance')->andReturn($userMock = $this->mock('Anavel\Crud\Tests\Models\User'));
 
-        $userMock->shouldReceive('setAttribute', 'save');
+        $fieldMock = $this->mock('Anavel\Crud\Abstractor\Eloquent\Field');
+        $this->sut->shouldReceive('getEditFields')->times(1)->with(true)->andReturn([
+            'main' => [
+                $fieldMock,
+                $fieldMock,
+                $fieldMock,
+                $fieldMock,
+            ]
+        ]);
 
-        $this->dbalMock->shouldReceive('getTableColumns')
-            ->once()
-            ->andReturn([
-                'id'       => $this->columnMock,
-                'username' => $this->columnMock,
-                'password' => $this->columnMock,
-                'image'    => $this->columnMock,
-            ]);
-        $this->dbalMock->shouldReceive('getTableForeignKeys')
-            ->andReturn([]);
+        $this->sut->shouldReceive('getRelations')->andReturn(collect(['group' => $relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation')]));
 
-        $this->dbalMock->shouldReceive('getModel')
-            ->andReturn($this->dbalMock);
+        $userMock->shouldReceive('setAttribute', 'save')->atLeast()->once();
 
-        $this->dbalMock->shouldReceive('getKeyName')
-            ->andReturn(LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT);
-
-        $this->relationFactoryMock->shouldReceive('setModel')->andReturn($this->relationFactoryMock);
-        $this->relationFactoryMock->shouldReceive('setConfig')->andReturn($this->relationFactoryMock);
-        $this->relationFactoryMock->shouldReceive('get')->andReturn($relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
         $relationMock->shouldReceive('persist');
         $relationMock->shouldReceive('getSecondaryRelations')->andReturn(collect());
 
-        $fieldMock = $this->mock('Anavel\Crud\Abstractor\Eloquent\Field');
         $fieldMock->shouldReceive('getName', 'applyFunctions')->andReturn($fieldMock);
         $fieldMock->shouldReceive('saveIfEmpty')->andReturn(true);
         $fieldMock->shouldReceive('getFormField')->andReturn($fieldMock);
@@ -473,10 +463,6 @@ class ModelTest extends TestBase
         $this->getClassMock->andReturn('nomatch');
 
 
-        $this->fieldFactoryMock->shouldReceive('setColumn', 'setConfig')
-            ->andReturn($this->fieldFactoryMock);
-        $this->fieldFactoryMock->shouldReceive('get')
-            ->andReturn($fieldMock);
 
         $result = $this->sut->persist($requestMock);
 

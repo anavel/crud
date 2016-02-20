@@ -367,7 +367,7 @@ class Model implements ModelAbstractorContract
 
 
         $fields = $this->getEditFields(true);
-        if (empty($fields['main']) && empty($this->getRelations())) {
+        if (empty($fields['main']) && $this->getRelations()->isEmpty()) {
             return;
         }
 
@@ -390,6 +390,7 @@ class Model implements ModelAbstractorContract
                         $requestValue = $handleResult['requestValue'];
                     }
                 }
+
 
                 if (! $field->saveIfEmpty() && empty($requestValue)) {
                     continue;
