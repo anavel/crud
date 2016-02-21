@@ -2,6 +2,7 @@
 namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
 use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
+use Anavel\Crud\Abstractor\Eloquent\Traits\HandleFiles;
 use Anavel\Crud\Contracts\Abstractor\Field;
 use Anavel\Crud\Contracts\Abstractor\Relation as RelationContract;
 use App;
@@ -12,13 +13,28 @@ use Illuminate\Support\Collection;
 class MiniCrud extends Relation
 {
     use CheckRelationCompatibility;
+    use HandleFiles;
 
     /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
     protected $dbal;
 
+    /** @var  Collection */
+    protected $results;
+
     protected $compatibleEloquentRelations = array(
         'Illuminate\Database\Eloquent\Relations\HasMany'
     );
+
+    /**
+     * @return Collection
+     */
+    protected function getResults()
+    {
+        if (empty($this->results)) {
+            return $this->results = $this->eloquentRelation->getResults();
+        }
+        return $this->results;
+    }
 
     public function setup()
     {
@@ -31,68 +47,43 @@ class MiniCrud extends Relation
     public function getEditFields($arrayKey = null)
     {
         $fields = [];
-
         if (empty($arrayKey)) {
             $arrayKey = $this->name;
         }
 
-        $columns = $this->modelAbstractor->getColumns('edit');
+        $fieldsBase = $this->getEditFieldsBase();
 
-        $this->readConfig('edit');
 
         /** @var Collection $results */
-        $results = $this->eloquentRelation->getResults();
+        $results = $this->getResults();
 
         $results->put('emptyResult', '');
-        if (! empty($columns)) {
-            $readOnly = [Model::CREATED_AT, Model::UPDATED_AT];
+        if (!empty($fieldsBase)) {
             foreach ($results as $key => $result) {
                 $tempFields = [];
                 $index = $key === 'emptyResult' ? 0 : $result->id;
-                foreach ($columns as $columnName => $column) {
-                    if (in_array($columnName, $readOnly, true)) {
-                        continue;
-                    }
+
+                foreach ($fieldsBase as $columnName => $fieldBase) {
+                    $field = clone $fieldBase;
                     if ($this->skipField($columnName, $key)) {
                         continue;
                     }
 
-
-                    $formType = null;
-                    if ($key !== 'emptyResult' && ($columnName === $this->eloquentRelation->getParent()->getKeyName())) {
-                        $formType = 'hidden';
-                    }
-
-                    $config = [
-                        'name'         => $columnName,
-                        'presentation' => $this->name . ' ' . ucfirst(transcrud($columnName)) . ' [' . $index . ']',
-                        'form_type'    => $formType,
-                        'no_validate'  => true,
-                        'validation'   => null,
-                        'functions'    => null
-                    ];
-
-                    $config = $this->setConfig($config, $columnName);
-
-                    /** @var Field $field */
-                    $field = $this->fieldFactory
-                        ->setColumn($column)
-                        ->setConfig($config)
-                        ->get();
-
                     if ($key !== 'emptyResult') {
                         $field->setValue($result->getAttribute($columnName));
                     }
-                    $tempFields[] = $field;
+                    $tempFields[$columnName] = $field;
+
                 }
 
                 $relationModel = $this->eloquentRelation->getRelated()->newInstance();
-                if (! empty($result)) {
+                if (!empty($result)) {
                     $relationModel = $result;
                 }
+
                 $this->modelAbstractor->setInstance($relationModel);
                 $secondaryRelations = $this->getSecondaryRelations();
-                if (! empty($secondaryRelations)) {
+                if (!empty($secondaryRelations)) {
                     foreach ($secondaryRelations as $secondaryRelationKey => $secondaryRelation) {
                         foreach ($secondaryRelation->getEditFields($secondaryRelationKey) as $editGroupName => $editGroup) {
                             if ($secondaryRelation->getType() === 'Anavel\Crud\Abstractor\Eloquent\Relation\Select') {
@@ -104,11 +95,67 @@ class MiniCrud extends Relation
                     }
                 }
 
+
                 $fields[$arrayKey][$index] = $tempFields;
             }
         }
 
-//        $fields = $this->addSecondaryRelationFields($fields);
+        return $fields;
+    }
+
+    public function getEditFieldsBase()
+    {
+        $fields = [];
+        $columns = $this->modelAbstractor->getColumns('edit');
+        $this->readConfig('edit');
+
+        if (!empty($columns)) {
+            $readOnly = [Model::CREATED_AT, Model::UPDATED_AT];
+            foreach ($columns as $columnName => $column) {
+                if (in_array($columnName, $readOnly, true)) {
+                    continue;
+                }
+
+                $formType = null;
+                if ($columnName === $this->eloquentRelation->getParent()->getKeyName()) {
+                    $formType = 'hidden';
+                }
+
+                $config = [
+                    'name' => $columnName,
+                    'presentation' => $this->name . ' ' . ucfirst(transcrud($columnName)),
+                    'form_type' => $formType,
+                    'no_validate' => true,
+                    'validation' => null,
+                    'functions' => null
+                ];
+
+                $config = $this->setConfig($config, $columnName);
+
+                /** @var Field $field */
+                $field = $this->fieldFactory
+                    ->setColumn($column)
+                    ->setConfig($config)
+                    ->get();
+
+                $fields[$columnName] = $field;
+
+                if (!empty($config['form_type']) && $config['form_type'] === 'file') {
+                    $field = $this->fieldFactory
+                        ->setColumn($column)
+                        ->setConfig([
+                            'name' => $columnName . '__delete',
+                            'presentation' => null,
+                            'form_type' => 'checkbox',
+                            'no_validate' => true,
+                            'validation' => null,
+                            'functions' => null
+                        ])
+                        ->get();
+                    $fields[$columnName . '__delete'] = $field;
+                }
+            }
+        }
 
         return $fields;
     }
@@ -117,14 +164,17 @@ class MiniCrud extends Relation
      * @param array|null $relationArray
      * @return mixed
      */
-    public function persist(array $relationArray = null)
+    public function persist(array $relationArray = null, Request $request)
     {
-        if (! empty($relationArray)) {
+        if (!empty($relationArray)) {
             $keyName = $this->eloquentRelation->getParent()->getKeyName();
-            $currentRelations = $this->eloquentRelation->get()->keyBy($keyName);
+            $currentRelations = $this->getResults()->keyBy($keyName);
 
-            foreach ($relationArray as $relation) {
-                if (! empty($relation[$keyName])
+            $this->readConfig('edit');
+            $fieldsBase = $this->getEditFieldsBase();
+
+            foreach ($relationArray as $relationIndex => &$relation) {
+                if (!empty($relation[$keyName])
                     && ($currentRelations->has($relation[$keyName]))
                 ) {
                     $relationModel = $currentRelations->get($relation[$keyName]);
@@ -142,6 +192,21 @@ class MiniCrud extends Relation
                 $delayedRelations = collect();
 
 
+                foreach ($fieldsBase as $fieldBaseKey => $field) {
+                    $fieldName = $field->getName();
+
+                    if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
+                        $handleResult = $this->handleField($request, $relationModel, $relation, $this->name . ".$relationIndex", $fieldName);
+                        if (! empty($handleResult['skipNext'])) {
+                            unset($relationArray[$relationIndex][$handleResult['skipNext']]);
+                        }
+                        if (! empty($handleResult['requestValue'])) {
+                            $relationArray[$relationIndex][$fieldName] = $handleResult['requestValue'];
+                        }
+                    }
+                }
+
+
                 foreach ($relation as $fieldKey => $fieldValue) {
                     if ($secondaryRelations->has($fieldKey)) {
                         $delayedRelations->put($fieldKey, $fieldValue);
@@ -155,15 +220,15 @@ class MiniCrud extends Relation
                     $relationModel->setAttribute($fieldKey, $fieldValue);
                 }
 
-                if (! $shouldBeSkipped) {
+                if (!$shouldBeSkipped) {
                     $relationModel->save();
 
-                    if (! $delayedRelations->isEmpty()) {
+                    if (!$delayedRelations->isEmpty()) {
                         foreach ($delayedRelations as $relationKey => $delayedRelation) {
                             /** @var RelationContract $secondaryRelation */
                             $secondaryRelation = $secondaryRelations->get($relationKey);
 
-                            $secondaryRelation->persist($delayedRelation);
+                            $secondaryRelation->persist($delayedRelation, $request);
                         }
                     }
                 }

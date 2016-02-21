@@ -104,7 +104,7 @@ class Translation extends Relation
      * @param array|null $relationArray
      * @return mixed
      */
-    public function persist(array $relationArray = null)
+    public function persist(array $relationArray = null, Request $request)
     {
         if (! empty($relationArray)) {
             $currentTranslations = $this->eloquentRelation->get();

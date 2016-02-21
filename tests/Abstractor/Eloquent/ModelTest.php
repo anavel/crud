@@ -238,7 +238,7 @@ class ModelTest extends TestBase
                 'name'         => 'image__delete',
                 'presentation' => null,
                 'form_type'    => 'checkbox',
-                'validation'   => null,
+                'no_validate'   => true,
                 'functions'    => null,
             ])
             ->andReturn($this->fieldFactoryMock);
@@ -252,7 +252,8 @@ class ModelTest extends TestBase
 
         $this->assertCount(5, $fields['main']);
 
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['main'][0]);
+        $this->assertArrayHasKey('username', $fields['main']);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['main']['username']);
 
     }
 
@@ -286,7 +287,8 @@ class ModelTest extends TestBase
 
         $this->assertCount(5, $fields['chompy']);
 
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['chompy'][0]);
+        $this->assertArrayHasKey('username', $fields['chompy']);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['chompy']['username']);
     }
 
     public function test_returns_relations_as_collection()

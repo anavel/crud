@@ -21,6 +21,8 @@ class TranslationTest extends TestBase
     protected $fieldFactoryMock;
     /** @var  Mock */
     protected $modelAbstractorMock;
+    /** @var  Mock */
+    protected $requestMock;
 
     public function setUp()
     {
@@ -30,6 +32,7 @@ class TranslationTest extends TestBase
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
         $this->fieldFactoryMock = $this->mock('Anavel\Crud\Contracts\Abstractor\FieldFactory');
+        $this->requestMock = $this->mock('Illuminate\Http\Request');
 
         \App::instance('Anavel\Crud\Contracts\Abstractor\ModelFactory', $modelFactoryMock = $this->mock('Anavel\Crud\Contracts\Abstractor\ModelFactory'));
         $modelFactoryMock->shouldReceive('getByClassName')->andReturn($this->modelAbstractorMock = $this->mock('Anavel\Crud\Contracts\Abstractor\Model'));
@@ -93,6 +96,6 @@ class TranslationTest extends TestBase
 
     public function test_persist()
     {
-        $this->sut->persist([]);
+        $this->sut->persist([], $this->requestMock);
     }
 }

@@ -9,21 +9,23 @@ use Illuminate\Http\Request;
 
 trait HandleFiles
 {
-    protected function handleField(Request $request, $item, array $fields, $currentKey,  $groupName, $fieldName)
+    protected function handleField(Request $request, $item, array $fields, $groupName, $fieldName)
     {
         $modelFolder = $this->slug . DIRECTORY_SEPARATOR;
         $basePath = base_path(config('anavel-crud.uploads_path'));
         $modelPath = $basePath . $modelFolder;
-        $skipNext = false;
+        $skip = null;
         $requestValue = null;
-        if (! empty($fields[$groupName][$currentKey + 1]) && $fields[$groupName][$currentKey + 1]->getName() === $fieldName . '__delete') {
+        if (! empty($fields["{$fieldName}__delete"])) {
             //We never want to save this field, it doesn't exist in the DB
-            $skipNext = true;
+            $skip = "{$fieldName}__delete";
+
 
             //If user wants to delete the existing file
-            if (! empty($request->input("main.{$fieldName}__delete"))) {
+            if (! empty($request->input("{$groupName}.{$fieldName}__delete"))) {
                 $adapter = new Local($basePath);
                 $filesystem = new Filesystem($adapter);
+                dd($item);
                 if ($filesystem->has($item->$fieldName)) {
                     $filesystem->delete($item->$fieldName);
                 }
@@ -34,7 +36,7 @@ trait HandleFiles
                     null
                 );
                 return [
-                    'skipNext' => $skipNext
+                    'skip' => $skip
                 ];
             }
         }
@@ -54,7 +56,7 @@ trait HandleFiles
 
         return [
             'requestValue' => $requestValue,
-            'skipNext' => $skipNext
+            'skip' => $skip
         ];
     }
 }

@@ -23,6 +23,8 @@ class SelectMultipleTest extends TestBase
     protected $fieldMock;
     /** @var  Mock */
     protected $modelAbstractorMock;
+    /** @var  Mock */
+    protected $requestMock;
 
     protected $wrongConfig;
 
@@ -36,6 +38,7 @@ class SelectMultipleTest extends TestBase
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
         $this->fieldMock = $this->mock('Anavel\Crud\Contracts\Abstractor\FieldFactory');
+        $this->requestMock = $this->mock('Illuminate\Http\Request');
 
         \App::instance('Anavel\Crud\Contracts\Abstractor\ModelFactory', $modelFactoryMock = $this->mock('Anavel\Crud\Contracts\Abstractor\ModelFactory'));
         $modelFactoryMock->shouldReceive('getByClassName')->andReturn($this->modelAbstractorMock = $this->mock('Anavel\Crud\Contracts\Abstractor\Model'));
@@ -100,7 +103,7 @@ class SelectMultipleTest extends TestBase
         $repoMock->shouldReceive('all')->atLeast()->once()
             ->andReturn(new Collection([$modelMock, $modelMock, $modelMock]));
 
-        $this->sut->persist($inputArray);
+        $this->sut->persist($inputArray, $this->requestMock);
     }
 
     public function test_throws_exception_if_display_is_not_set_in_config()

@@ -21,6 +21,8 @@ class MiniCrudSingleTest extends TestBase
     protected $fieldFactoryMock;
     /** @var  Mock */
     protected $modelAbstractorMock;
+    /** @var  Mock */
+    protected $requestMock;
 
     protected $wrongConfig;
     protected $getClassMock;
@@ -34,6 +36,7 @@ class MiniCrudSingleTest extends TestBase
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
         $this->fieldFactoryMock = $this->mock('Anavel\Crud\Contracts\Abstractor\FieldFactory');
         $this->modelManagerMock = Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
+        $this->requestMock = $this->mock('Illuminate\Http\Request');
 
         $this->getClassMock = PHPMockery::mock('Anavel\Crud\Abstractor\Eloquent\Relation\Traits',
             'get_class');
@@ -128,7 +131,7 @@ class MiniCrudSingleTest extends TestBase
         $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphOne');
         $this->buildRelation();
 
-        $fields = $this->sut->persist($inputArray);
+        $fields = $this->sut->persist($inputArray, $this->requestMock);
     }
 
     public function test_persist_with_old_results()
@@ -150,6 +153,6 @@ class MiniCrudSingleTest extends TestBase
         $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphOne');
         $this->buildRelation();
 
-        $fields = $this->sut->persist($inputArray);
+        $fields = $this->sut->persist($inputArray, $this->requestMock);
     }
 }

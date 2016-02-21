@@ -132,6 +132,7 @@ class Generator implements GeneratorContract
     {
         $formFields = array();
         $tempFields = array();
+
             foreach ($fields as $fieldKey => $field) {
                 if (is_array($field)) {
                     $group = $this->addFormFields($field, $fieldKey);

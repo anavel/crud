@@ -22,6 +22,7 @@ abstract class Relation implements RelationAbstractorContract
     const DISPLAY_TYPE_INLINE = 'inline';
 
     protected $name;
+    protected $slug;
     protected $presentation;
     protected $type;
     /**
@@ -48,6 +49,7 @@ abstract class Relation implements RelationAbstractorContract
     {
         $this->checkNameConfig($config);
         $this->name = $config['name'];
+        $this->slug = $config['name'];
         $this->relatedModel = $model;
         $this->eloquentRelation = $eloquentRelation;
         $this->fieldFactory = $fieldFactory;
