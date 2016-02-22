@@ -373,11 +373,11 @@ class Model implements ModelAbstractorContract
         }
 
         if (! empty($fields['main'])) {
-            $skipNext = false;
+            $skip = null;
             foreach ($fields['main'] as $key => $field) {
                 /** @var FieldContract $field */
-                if ($skipNext === true) {
-                    $skipNext = false;
+                if ($skip === $key) {
+                    $skip = null;
                     continue;
                 }
                 $fieldName = $field->getName();
@@ -392,8 +392,8 @@ class Model implements ModelAbstractorContract
 
                 if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
                     $handleResult = $this->handleField($request, $item, $fields['main'], 'main', $fieldName);
-                    if (! empty($handleResult['skipNext'])) {
-                        $skipNext = $handleResult['skipNext'];
+                    if (! empty($handleResult['skip'])) {
+                        $skip = $handleResult['skip'];
                     }
                     if (! empty($handleResult['requestValue'])) {
                         $requestValue = $handleResult['requestValue'];

@@ -25,7 +25,6 @@ trait HandleFiles
             if (! empty($request->input("{$groupName}.{$fieldName}__delete"))) {
                 $adapter = new Local($basePath);
                 $filesystem = new Filesystem($adapter);
-                dd($item);
                 if ($filesystem->has($item->$fieldName)) {
                     $filesystem->delete($item->$fieldName);
                 }
