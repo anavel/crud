@@ -207,6 +207,8 @@ class MiniCrud extends Relation
                         if (empty($relationArray[$relationIndex][$fieldName])) {
                             // Unchecked checkboxes are not sent, so we force setting them to false
                             $relationModel->setAttribute($fieldName, null);
+                        } else {
+                            $relationArray[$relationIndex][$fieldName] = true;
                         }
                     }
                 }

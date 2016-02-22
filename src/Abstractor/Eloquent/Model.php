@@ -390,6 +390,8 @@ class Model implements ModelAbstractorContract
                             $fieldName,
                             $field->applyFunctions(null)
                         );
+                    } else {
+                        $requestValue = true;
                     }
                 }
 
