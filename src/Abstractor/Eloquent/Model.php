@@ -386,7 +386,10 @@ class Model implements ModelAbstractorContract
                 if (get_class($field->getFormField()) === \FormManager\Fields\Checkbox::class) {
                     if (empty($requestValue)) {
                         // Unchecked checkboxes are not sent, so we force setting them to false
-                        $requestValue = false;
+                        $item->setAttribute(
+                            $fieldName,
+                            $field->applyFunctions(null)
+                        );
                     }
                 }
 
@@ -405,10 +408,12 @@ class Model implements ModelAbstractorContract
                     continue;
                 }
 
-                $item->setAttribute(
-                    $fieldName,
-                    $field->applyFunctions($requestValue)
-                );
+                if (! empty($requestValue)) {
+                    $item->setAttribute(
+                        $fieldName,
+                        $field->applyFunctions($requestValue)
+                    );
+                }
             }
         }
 
