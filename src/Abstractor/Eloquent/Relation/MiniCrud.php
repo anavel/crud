@@ -204,6 +204,13 @@ class MiniCrud extends Relation
                             $relationArray[$relationIndex][$fieldName] = $handleResult['requestValue'];
                         }
                     }
+
+                    if (get_class($field->getFormField()) === \FormManager\Fields\Checkbox::class) {
+                        if (empty($relationArray[$relationIndex][$fieldName])) {
+                            // Unchecked checkboxes are not sent, so we force setting them to false
+                            $relationArray[$relationIndex][$fieldName] = false;
+                        }
+                    }
                 }
 
 
