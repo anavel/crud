@@ -95,7 +95,6 @@ class MiniCrud extends Relation
                     }
                 }
 
-
                 $fields[$arrayKey][$index] = $tempFields;
             }
         }

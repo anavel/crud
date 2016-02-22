@@ -40,6 +40,15 @@ class Field implements FieldAbstractorContract
         $this->noValidate = false;
     }
 
+    public function __clone()
+    {
+        $formField = clone $this->formField;
+        $this->formField = $formField;
+        $field = new Field($this->dbal, $formField, $this->name, $this->presentation);
+
+        return $field;
+    }
+
     public function getName()
     {
         return $this->name;
