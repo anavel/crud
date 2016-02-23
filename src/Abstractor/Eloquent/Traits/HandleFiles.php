@@ -12,7 +12,7 @@ trait HandleFiles
     protected function handleField(Request $request, $item, array $fields, $groupName, $fieldName)
     {
         $modelFolder = $this->slug . DIRECTORY_SEPARATOR;
-        $basePath = base_path(config('anavel-crud.uploads_path'));
+        $basePath = base_path(DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR .config('anavel-crud.uploads_path'));
         $modelPath = $basePath . $modelFolder;
         $skip = null;
         $requestValue = null;
