@@ -195,8 +195,8 @@ class MiniCrud extends Relation
 
                     if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
                         $handleResult = $this->handleField($request, $relationModel, $relation, $this->name . ".$relationIndex", $fieldName);
-                        if (! empty($handleResult['skipNext'])) {
-                            unset($relationArray[$relationIndex][$handleResult['skipNext']]);
+                        if (! empty($handleResult['skip'])) {
+                            unset($relationArray[$relationIndex][$handleResult['skip']]);
                         }
                         if (! empty($handleResult['requestValue'])) {
                             $relationArray[$relationIndex][$fieldName] = $handleResult['requestValue'];
