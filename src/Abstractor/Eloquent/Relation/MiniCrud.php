@@ -190,20 +190,22 @@ class MiniCrud extends Relation
                 $shouldBeSkipped = true;
                 $delayedRelations = collect();
 
+                $skip = null;
                 foreach ($fieldsBase as $fieldBaseKey => $field) {
                     $fieldName = $field->getName();
 
                     if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
-                        $handleResult = $this->handleField($request, $relationModel, $relation, $this->name . ".$relationIndex", $fieldName);
+                        $handleResult = $this->handleField($request, $relationModel, $fieldsBase, $this->name . ".$relationIndex", $fieldName);
                         if (! empty($handleResult['skip'])) {
-                            unset($relationArray[$relationIndex][$handleResult['skip']]);
+                            $skip = $handleResult['skip'];
+                            unset($relationArray[$relationIndex][$skip]);
                         }
                         if (! empty($handleResult['requestValue'])) {
                             $relationArray[$relationIndex][$fieldName] = $handleResult['requestValue'];
                         }
                     }
 
-                    if (get_class($field->getFormField()) === \FormManager\Fields\Checkbox::class) {
+                    if ($fieldName != $skip && (get_class($field->getFormField()) === \FormManager\Fields\Checkbox::class)) {
                         if (empty($relationArray[$relationIndex][$fieldName])) {
                             // Unchecked checkboxes are not sent, so we force setting them to false
                             $relationModel->setAttribute($fieldName, null);
