@@ -174,7 +174,7 @@ class ModelController extends Controller
             'text'  => trans('anavel-crud::messages.alert_success_model_update_text')
         ]);
 
-        return redirect()->route('anavel-crud.model.index', $model);
+        return redirect()->route('anavel-crud.model.edit', [$model, $id]);
     }
 
     /**
