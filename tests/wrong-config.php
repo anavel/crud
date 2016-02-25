@@ -31,6 +31,10 @@ return [
                 'relation-without-name' => [
                     'type' => 'select-multiple',
                 ],
+                'roles'        => [
+                    'type'    => 'select-multiple-many-to-many',
+                    'name'    => 'roles'
+                ]
             ],
             'list' => [
                 'display' => ['id', 'username', 'fullname', 'active'],

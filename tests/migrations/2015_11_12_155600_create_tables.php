@@ -11,11 +11,11 @@ class CreateTables extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_group_id');
-            $table->string('username');
-            $table->string('fullname');
-            $table->string('info');
-            $table->string('password');
+            $table->unsignedInteger('user_group_id')->nullable();
+            $table->string('username')->nullable();
+            $table->string('fullname')->nullable();
+            $table->string('info')->nullable();
+            $table->string('password')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
@@ -34,6 +34,20 @@ class CreateTables extends Migration
         Schema::create('user_groups', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+        });
+
+        Schema::create('roles', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+        });
+
+        Schema::create('roles_users', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('role_id');
+            $table->unsignedInteger('user_id');
+
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
 
         Schema::create('posts', function (Blueprint $table) {
@@ -60,5 +74,7 @@ class CreateTables extends Migration
         Schema::dropIfExists('user_groups');
         Schema::dropIfExists('user_translations');
         Schema::dropIfExists('users');
+        Schema::dropIfExists('roles_users');
+        Schema::dropIfExists('roles');
     }
 }

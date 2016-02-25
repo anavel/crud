@@ -35,6 +35,11 @@ return [
                 'name'    => 'photos',
                 'display' => 'title'
             ],
+            'roles'        => [
+                'type'    => 'select-multiple-many-to-many',
+                'name'    => 'roles',
+                'display' => 'name'
+            ]
         ],
         'list'                   => [
             'display' => ['id', 'username', 'fullname', 'active'],

@@ -36,4 +36,9 @@ class User extends Model
     {
         return $this->morphMany(Photo::class, 'imageable');
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'roles_users');
+    }
 }
