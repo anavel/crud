@@ -29,7 +29,11 @@ class SelectMultipleManyToMany extends SelectMultiple
     public function persist(array $relationArray = null, Request $request)
     {
         if (! empty($relationArray)) {
-            $this->eloquentRelation->sync($relationArray[$this->eloquentRelation->getRelated()->getKeyName()]);
+            $array = $relationArray[$this->eloquentRelation->getRelated()->getKeyName()];
+            if (in_array('', $array)) {
+                $array = [];
+            }
+            $this->eloquentRelation->sync($array);
         }
     }
 
