@@ -3,10 +3,12 @@ namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
 use Anavel\Crud\Abstractor\Eloquent\Relation\Translation;
 use Anavel\Crud\Tests\Models\User;
+use Anavel\Crud\Tests\Models\UserTranslations;
 use Anavel\Crud\Tests\TestBase;
 use Mockery;
 use Mockery\Mock;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
+use phpmock\mockery\PHPMockery;
 
 
 class TranslationTest extends TestBase
@@ -38,11 +40,15 @@ class TranslationTest extends TestBase
         $modelFactoryMock->shouldReceive('getByClassName')->andReturn($this->modelAbstractorMock = $this->mock('Anavel\Crud\Contracts\Abstractor\Model'));
         $this->relationMock->shouldReceive('getRelated')->andReturn($this->relationMock);
 
+        $this->getClassMock = PHPMockery::mock('Anavel\Crud\Abstractor\Eloquent\Relation\Traits',
+            'get_class');
+        $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\HasMany');
+
         $this->sut = new Translation(
             $config['Users']['relations']['translations'],
             $this->modelManagerMock = Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'),
             $user = new User(),
-            $user->translations(),
+            $this->relationMock,
             $this->fieldFactoryMock
         );
     }
@@ -62,6 +68,10 @@ class TranslationTest extends TestBase
             ->andReturn($fieldMock = $this->mock('Anavel\Crud\Abstractor\Eloquent\Field'));
 
         $fieldMock->shouldReceive('setValue');
+
+        $this->relationMock->shouldReceive('getResults')->andReturn(collect());
+        $this->relationMock->shouldReceive('getPlainForeignKey', 'getKeyName')->andReturn('id');
+        $this->relationMock->shouldReceive('getParent')->andReturn($this->relationMock);
 
         $columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
 
@@ -94,8 +104,55 @@ class TranslationTest extends TestBase
         }
     }
 
-    public function test_persist()
+    public function test_persist_with_no_results()
     {
-        $this->sut->persist([], $this->requestMock);
+        $inputArray = [
+            'es' => [
+                'locale' => 'es',
+                'otherField' => 'something',
+            ],
+            'en' => [
+                'locale' => 'en',
+                'otherField' => '',
+            ]
+        ];
+
+        $this->relationMock->shouldReceive('getResults')->andReturn(collect());
+        $this->relationMock->shouldReceive('getForeignKey')->andReturn('id');
+        $this->relationMock->shouldReceive('newInstance')->andReturn($modelMock = $this->mock(UserTranslations::class));
+
+        $modelMock->shouldReceive('setAttribute')->times(3); // Should pass the language with only locale
+        $modelMock->shouldReceive('save')->twice();
+
+
+        $this->sut->persist($inputArray, $this->requestMock);
+    }
+
+    public function test_persist_with_old_results()
+    {
+        $inputArray = [
+            'es' => [
+                'locale' => 'es',
+                'otherField' => 'something',
+            ],
+            'en' => [
+                'locale' => 'en',
+                'otherField' => '',
+            ]
+        ];
+
+        $modelMock = $this->mock(UserTranslations::class);
+        $this->relationMock->shouldReceive('getResults')->andReturn($this->relationMock);
+        $this->relationMock->shouldReceive('keyBy')->andReturn(collect(['es' => $modelMock, 'en' => $modelMock]));
+        $this->relationMock->shouldReceive('getResults')->andReturn($this->relationMock);
+        $this->relationMock->shouldReceive('getForeignKey')->andReturn('id');
+        $this->relationMock->shouldReceive('newInstance')->andReturn();
+
+        $modelMock->shouldReceive('setAttribute')->times(3); // Should pass the language with only locale
+        $modelMock->shouldReceive('delete')->once(); // Should delete the already existing language, since it's empty
+        $modelMock->shouldReceive('save')->once();
+
+
+        $this->sut->persist($inputArray, $this->requestMock);
     }
 }

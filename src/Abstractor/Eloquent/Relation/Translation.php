@@ -41,7 +41,7 @@ class Translation extends Relation
 
         $this->readConfig('edit');
 
-        if(empty($arrayKey)) {
+        if (empty($arrayKey)) {
             $arrayKey = $this->name;
         }
 
@@ -65,12 +65,12 @@ class Translation extends Relation
                     }
 
                     $config = [
-                        'name' => $columnName,
-                        'presentation' => ucfirst(transcrud($columnName)).' ['.$lang .']',
-                        'form_type' => $formType,
-                        'no_validate' => true,
-                        'validation' => null,
-                        'functions' => null
+                        'name'         => $columnName,
+                        'presentation' => ucfirst(transcrud($columnName)) . ' [' . $lang . ']',
+                        'form_type'    => $formType,
+                        'no_validate'  => true,
+                        'validation'   => null,
+                        'functions'    => null
                     ];
 
                     $config = $this->setConfig($config, $columnName);
@@ -107,22 +107,35 @@ class Translation extends Relation
     public function persist(array $relationArray = null, Request $request)
     {
         if (! empty($relationArray)) {
-            $currentTranslations = $this->eloquentRelation->get();
+            $currentTranslations = $this->eloquentRelation->getResults();
             $currentTranslations = $currentTranslations->keyBy('locale');
 
             foreach ($relationArray as $translation) {
+                $isEmpty = true;
+
+                foreach ($translation as $fieldKey => $fieldValue) {
+                    if ($isEmpty && $fieldKey != 'locale') {
+                        $isEmpty = ($isEmpty === ($fieldValue === ''));
+                    }
+                }
+
                 if ($currentTranslations->has($translation['locale'])) {
                     $translationModel = $currentTranslations->get($translation['locale']);
+                    if ($isEmpty) {
+                        $translationModel->delete();
+                        continue;
+                    }
                 } else {
                     $translationModel = $this->eloquentRelation->getRelated()->newInstance();
                 }
 
-                $translationModel->setAttribute($this->eloquentRelation->getForeignKey(), $this->relatedModel->id);
+                if ($isEmpty === false) {
+                    $translationModel->setAttribute($this->eloquentRelation->getForeignKey(), $this->relatedModel->id);
 
-                foreach ($translation as $fieldKey => $fieldValue) {
-                    $translationModel->setAttribute($fieldKey, $fieldValue);
+                    foreach ($translation as $fieldKey => $fieldValue) {
+                        $translationModel->setAttribute($fieldKey, $fieldValue);
+                    }
                 }
-
                 $translationModel->save();
             }
         }
