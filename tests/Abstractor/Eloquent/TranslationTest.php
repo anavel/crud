@@ -122,7 +122,7 @@ class TranslationTest extends TestBase
         $this->relationMock->shouldReceive('newInstance')->andReturn($modelMock = $this->mock(UserTranslations::class));
 
         $modelMock->shouldReceive('setAttribute')->times(3); // Should pass the language with only locale
-        $modelMock->shouldReceive('save')->twice();
+        $modelMock->shouldReceive('save')->once();
 
 
         $this->sut->persist($inputArray, $this->requestMock);

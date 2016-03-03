@@ -135,8 +135,8 @@ class Translation extends Relation
                     foreach ($translation as $fieldKey => $fieldValue) {
                         $translationModel->setAttribute($fieldKey, $fieldValue);
                     }
+                    $translationModel->save();
                 }
-                $translationModel->save();
             }
         }
     }
