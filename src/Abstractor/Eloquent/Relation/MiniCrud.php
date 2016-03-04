@@ -57,6 +57,7 @@ class MiniCrud extends Relation
         /** @var Collection $results */
         $results = $this->getResults();
 
+
         $results->put('emptyResult', '');
         if (!empty($fieldsBase)) {
             foreach ($results as $key => $result) {
@@ -69,12 +70,16 @@ class MiniCrud extends Relation
                         continue;
                     }
 
-                    if ($key !== 'emptyResult') {
-                        $field->setValue($result->getAttribute($columnName));
+                    if ($columnName != '__delete') {
+                        if ($key !== 'emptyResult') {
+                            $field->setValue($result->getAttribute($columnName));
+                        }
+                    } elseif ($key === 'emptyResult') {
+                        continue;
                     }
                     $tempFields[$columnName] = $field;
-
                 }
+
 
                 $relationModel = $this->eloquentRelation->getRelated()->newInstance();
                 if (!empty($result)) {
@@ -110,6 +115,24 @@ class MiniCrud extends Relation
 
         if (!empty($columns)) {
             $readOnly = [Model::CREATED_AT, Model::UPDATED_AT];
+
+            //Add field for model deletion
+            $config = [
+                'name' => '__delete',
+                'presentation' => 'Delete',
+                'form_type' => 'checkbox',
+                'no_validate' => true,
+                'validation' => null,
+                'functions' => null
+            ];
+
+            /** @var Field $field */
+            $field = $this->fieldFactory
+                ->setConfig($config)
+                ->get();
+            $fields['__delete'] = $field;
+
+
             foreach ($columns as $columnName => $column) {
                 if (in_array($columnName, $readOnly, true)) {
                     continue;

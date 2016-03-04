@@ -80,7 +80,7 @@ class MiniCrudTest extends TestBase
 
     public function test_get_edit_fields_returns_array()
     {
-        $this->modelAbstractorMock->shouldReceive('getColumns')->times(1)->andReturn([$columnMock = $this->mock('Doctrine\DBAL\Schema\Column')]);
+        $this->modelAbstractorMock->shouldReceive('getColumns')->times(1)->andReturn(['columname' => $columnMock = $this->mock('Doctrine\DBAL\Schema\Column'), '__delete' => $columnMock = $this->mock('Doctrine\DBAL\Schema\Column')]);
 
         $this->relationMock->shouldReceive('getResults')->andReturn(collect([$postMock = $this->mock('Anavel\Crud\Tests\Models\Post')]));
 
@@ -100,8 +100,7 @@ class MiniCrudTest extends TestBase
         $secondaryRelationMock->shouldReceive('getEditFields')->andReturn([]);
 
 
-        $postMock->shouldReceive('getAttribute')->andReturn('chompy');
-
+        $postMock->shouldReceive('getAttribute')->andReturn('idValue');
 
         $fieldMock->shouldReceive('setOptions');
 
@@ -115,8 +114,18 @@ class MiniCrudTest extends TestBase
         $this->assertCount(1, $fields);
         $this->assertArrayHasKey('group', $fields);
         $this->assertInternalType('array', $fields['group']);
+        $this->assertCount(2, $fields['group']); //One for the old result, one for the new one
         $this->assertInternalType('array', $fields['group'][0]);
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['group'][0][0]);
+        $this->assertCount(1, $fields['group'][0]); // Only the mocked field
+        $this->assertArrayHasKey('columname', $fields['group'][0]);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['group'][0]['columname']);
+
+        $this->assertArrayHasKey('idValue', $fields['group']);
+        $this->assertInternalType('array', $fields['group']['idValue']);
+        $this->assertCount(2, $fields['group']['idValue']); // Mocked field, plus delete checkbox
+        $this->assertArrayHasKey('columname', $fields['group']['idValue']);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['group']['idValue']['columname']);
+
     }
 
     public function test_persist_with_no_old_results()
@@ -129,8 +138,6 @@ class MiniCrudTest extends TestBase
                 'relationName' => []
             ]
         ];
-
-
 
         $this->relationMock->shouldReceive('getForeignKey');
         $this->relationMock->shouldReceive('getKeyName')->andReturn('id');
