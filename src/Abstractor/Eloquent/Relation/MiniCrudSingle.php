@@ -49,6 +49,22 @@ class MiniCrudSingle extends Relation
         $this->readConfig('edit');
 
         if (! empty($columns)) {
+            //Add field for model deletion
+            $config = [
+                'name' => '__delete',
+                'presentation' => 'Delete',
+                'form_type' => 'checkbox',
+                'no_validate' => true,
+                'validation' => null,
+                'functions' => null
+            ];
+
+            /** @var Field $field */
+            $field = $this->fieldFactory
+                ->setConfig($config)
+                ->get();
+            $fields[$arrayKey]['__delete'] = $field;
+
             foreach ($columns as $columnName => $column) {
                 if (in_array($columnName, $readOnly, true)) {
                     continue;
@@ -77,7 +93,7 @@ class MiniCrudSingle extends Relation
                     $field->setValue($result->getAttribute($columnName));
                 }
 
-                $fields[$arrayKey][] = $field;
+                $fields[$arrayKey][$columnName] = $field;
             }
         }
 
@@ -105,6 +121,12 @@ class MiniCrudSingle extends Relation
 
             $shouldBeSkipped = true;
             foreach ($relationArray as $fieldKey => $fieldValue) {
+                // This field can only come from existing models
+                if ($fieldKey === '__delete') {
+                    $relationModel->delete();
+                    $shouldBeSkipped = true;
+                    break;
+                }
                 if ($shouldBeSkipped) {
                     $shouldBeSkipped = ($shouldBeSkipped === ($fieldValue === ''));
                 }

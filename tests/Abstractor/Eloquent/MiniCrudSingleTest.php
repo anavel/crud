@@ -41,7 +41,8 @@ class MiniCrudSingleTest extends TestBase
         $this->getClassMock = PHPMockery::mock('Anavel\Crud\Abstractor\Eloquent\Relation\Traits',
             'get_class');
 
-        \App::instance('Anavel\Crud\Contracts\Abstractor\ModelFactory', $modelFactoryMock = $this->mock('Anavel\Crud\Contracts\Abstractor\ModelFactory'));
+        \App::instance('Anavel\Crud\Contracts\Abstractor\ModelFactory',
+            $modelFactoryMock = $this->mock('Anavel\Crud\Contracts\Abstractor\ModelFactory'));
         $modelFactoryMock->shouldReceive('getByClassName')->andReturn($this->modelAbstractorMock = $this->mock('Anavel\Crud\Contracts\Abstractor\Model'));
         $this->relationMock->shouldReceive('getRelated')->andReturn($this->relationMock);
     }
@@ -82,10 +83,12 @@ class MiniCrudSingleTest extends TestBase
             'getKeyName')->andReturn($this->relationMock);
         $this->relationMock->shouldReceive('getResults')->andReturn($postMock = $this->mock('Anavel\Crud\Tests\Models\Post'));
         $this->modelManagerMock->shouldReceive('getAbstractionLayer')->andReturn($dbalMock = $this->mock('\ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
-        $this->modelAbstractorMock->shouldReceive('getColumns')->times(1)->andReturn([
-            $columnMock = $this->mock('Doctrine\DBAL\Schema\Column'),
-            $columnMock = $this->mock('Doctrine\DBAL\Schema\Column')
-        ]);
+        $this->modelAbstractorMock->shouldReceive('getColumns')->times(1)->andReturn(
+            [
+                'columname' => $columnMock = $this->mock('Doctrine\DBAL\Schema\Column'),
+                '__delete'  => $columnMock = $this->mock('Doctrine\DBAL\Schema\Column')
+            ]
+        );
 
         $postMock->shouldReceive('hasGetMutator')->andReturn('false');
         $postMock->shouldReceive('getAttributeValue')->andReturn('1');
@@ -108,7 +111,12 @@ class MiniCrudSingleTest extends TestBase
 
         $this->assertInternalType('array', $fields, 'getEditFields should return an array');
         $this->assertCount(1, $fields);
-        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['group'][0]);
+        $this->assertArrayHasKey('group', $fields);
+        $this->assertInternalType('array', $fields['group']);
+        $this->assertCount(2, $fields['group']); // Mocked field, plus delete checkbox
+        $this->assertArrayHasKey('columname', $fields['group']);
+        $this->assertArrayHasKey('__delete', $fields['group']);
+        $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['group']['columname']);
     }
 
     public function test_persist_with_no_old_results()

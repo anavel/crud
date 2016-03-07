@@ -228,7 +228,7 @@ class MiniCrud extends Relation
                         }
                     }
 
-                    if ($fieldName != $skip && (get_class($field->getFormField()) === \FormManager\Fields\Checkbox::class)) {
+                    if ($fieldName !== '__delete' && ($fieldName != $skip && (get_class($field->getFormField()) === \FormManager\Fields\Checkbox::class))) {
                         if (empty($relationArray[$relationIndex][$fieldName])) {
                             // Unchecked checkboxes are not sent, so we force setting them to false
                             $relationModel->setAttribute($fieldName, null);
@@ -243,6 +243,13 @@ class MiniCrud extends Relation
                     if ($secondaryRelations->has($fieldKey)) {
                         $delayedRelations->put($fieldKey, $fieldValue);
                         continue;
+                    }
+
+                    // This field can only come from existing models
+                    if ($fieldKey === '__delete') {
+                        $relationModel->delete();
+                        $shouldBeSkipped = true;
+                        break;
                     }
 
                     if ($shouldBeSkipped) {
