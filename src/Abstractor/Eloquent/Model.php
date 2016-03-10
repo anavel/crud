@@ -189,8 +189,10 @@ class Model implements ModelAbstractorContract
 
 
                 if (! $secondaryRelations->isEmpty()) {
-                    $relations->put($relationName,
-                        collect(['relation' => $relation, 'secondaryRelations' => $secondaryRelations]));
+                    $relations->put(
+                        $relationName,
+                        collect(['relation' => $relation, 'secondaryRelations' => $secondaryRelations])
+                    );
                 } else {
                     $relations->put($relationName, $relation);
                 }
@@ -410,7 +412,7 @@ class Model implements ModelAbstractorContract
                     continue;
                 }
 
-                if (! empty($requestValue)) {
+                if (! empty($requestValue) || (empty($requestValue) && ! empty($item->getAttribute($fieldName)))) {
                     $item->setAttribute(
                         $fieldName,
                         $field->applyFunctions($requestValue)
