@@ -53,6 +53,11 @@ trait HandleFiles
             throw new \Exception($request->file($groupName .'.'.$fieldName)->getErrorMessage());
         }
 
+        //Avoid losing the existing filename if the user doesn't change it:
+        if (empty($requestValue) && (! empty($item->$fieldName))) {
+            $requestValue = $item->$fieldName;
+        }
+
         return [
             'requestValue' => $requestValue,
             'skip' => $skip
