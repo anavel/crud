@@ -5,7 +5,7 @@ use Anavel\Crud\Contracts\Abstractor\RelationFactory as RelationAbstractorFactor
 use Anavel\Crud\Abstractor\Exceptions\FactoryException;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
-use Anavel\Crud\Contracts\Abstractor\FieldFactory;
+use Anavel\Crud\Contracts\Abstractor\FieldFactory as FieldFactoryContract;
 
 class RelationFactory implements RelationAbstractorFactoryContract
 {
@@ -49,7 +49,7 @@ class RelationFactory implements RelationAbstractorFactoryContract
     protected $model;
     protected $config;
 
-    public function __construct(ModelManager $modelManager, FieldFactory $fieldFactory)
+    public function __construct(ModelManager $modelManager, FieldFactoryContract $fieldFactory)
     {
         $this->modelManager = $modelManager;
         $this->fieldFactory = $fieldFactory;

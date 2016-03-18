@@ -9,7 +9,7 @@ use Anavel\Crud\Contracts\Abstractor\Relation as RelationAbstractorContract;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
-use Anavel\Crud\Contracts\Abstractor\FieldFactory;
+use Anavel\Crud\Contracts\Abstractor\FieldFactory as FieldFactoryContract;
 use Illuminate\Support\Collection;
 
 abstract class Relation implements RelationAbstractorContract
@@ -34,7 +34,7 @@ abstract class Relation implements RelationAbstractorContract
      */
     protected $eloquentRelation;
     /**
-     * @var FieldFactory
+     * @var FieldFactoryContract
      */
     protected $fieldFactory;
     protected $modelManager;
@@ -45,7 +45,7 @@ abstract class Relation implements RelationAbstractorContract
      */
     protected $config;
 
-    public function __construct(array $config, ModelManager $modelManager, Model $model, EloquentRelation $eloquentRelation, FieldFactory $fieldFactory)
+    public function __construct(array $config, ModelManager $modelManager, Model $model, EloquentRelation $eloquentRelation, FieldFactoryContract $fieldFactory)
     {
         $this->checkNameConfig($config);
         $this->name = $config['name'];
