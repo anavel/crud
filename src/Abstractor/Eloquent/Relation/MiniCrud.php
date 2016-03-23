@@ -128,6 +128,7 @@ class MiniCrud extends Relation
 
             /** @var Field $field */
             $field = $this->fieldFactory
+                ->setColumn($columns[key($columns)]) //Set any column, we are not really using it
                 ->setConfig($config)
                 ->get();
             $fields['__delete'] = $field;
