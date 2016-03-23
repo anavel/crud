@@ -2,7 +2,7 @@
 namespace Anavel\Crud\View\Composers;
 
 use Anavel\Crud\Contracts\Abstractor\ModelFactory as ModelAbstractorFactory;
-use Request;
+use Route;
 
 class SidebarComposer
 {
@@ -17,15 +17,13 @@ class SidebarComposer
     {
         $models = config('anavel-crud.models');
 
-        $url = Request::url();
-
         $items = [];
 
         foreach ($models as $modelName => $model) {
             $modelAbstractor = $this->modelFactory->getByName($modelName);
 
             $isActive = false;
-            if (strpos($url, $modelAbstractor->getSlug()) !== false) {
+            if (Route::current()->getParameter('model') === $modelAbstractor->getSlug()) {
                 $isActive = true;
             }
 
