@@ -70,7 +70,7 @@
                 @forelse ($items as $item)
                 <tr>
                     @foreach ($abstractor->getListFields()['main'] as $field)
-                    <td>{!! $item->getAttribute($field->getName()) !!}</td>
+                    <td>{!! $abstractor->getFieldValue($item, $field->getName()) !!}</td>
                     @endforeach
                     <td>
                         {{--<a href="{{ route('anavel-crud.model.show', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('anavel-crud::messages.show_button') }}</a>--}}
