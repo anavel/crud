@@ -22,6 +22,11 @@ interface Model
     public function getInstance();
 
     /**
+     * @return array
+     */
+    public function getConfig();
+
+    /**
      * @return boolean
      */
     public function isSoftDeletes();

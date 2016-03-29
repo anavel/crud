@@ -100,6 +100,14 @@ class Model implements ModelAbstractorContract
         return $this->instance;
     }
 
+    /**
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
     public function isSoftDeletes()
     {
         return $this->getConfigValue('soft_deletes') ? true : false;

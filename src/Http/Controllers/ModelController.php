@@ -22,6 +22,13 @@ class ModelController extends Controller
         $this->modelManager = $modelManager;
         $this->formGenerator = $formGenerator;
     }
+    
+    protected function shouldAuthorizeMethod(Model $modelAbstractor, $methodName)
+    {
+        if (array_key_exists('authorize', $config = $modelAbstractor->getConfig()) && $config['authorize'] === true) {
+            $this->authorize($methodName, $modelAbstractor->getInstance());
+        }
+    }
 
     /**
      * Display a listing of the resource.
@@ -33,6 +40,8 @@ class ModelController extends Controller
     public function index(Request $request, $model)
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model);
+
+        $this->shouldAuthorizeMethod($modelAbstractor, 'adminIndex');
 
         $repository = $this->modelManager->getRepository($modelAbstractor->getModel());
 
@@ -68,8 +77,9 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model);
 
-        $form = $modelAbstractor->getForm(route('anavel-crud.model.store', $modelAbstractor->getSlug()));
+        $this->shouldAuthorizeMethod($modelAbstractor, 'adminCreate');
 
+        $form = $modelAbstractor->getForm(route('anavel-crud.model.store', $modelAbstractor->getSlug()));
 
         return view('anavel-crud::pages.create', [
             'abstractor' => $modelAbstractor,
@@ -89,6 +99,7 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model);
 
+        $this->shouldAuthorizeMethod($modelAbstractor, 'adminStore');
 
         // Sets the validation rules
         $modelAbstractor->getForm(route('anavel-crud.model.store', $modelAbstractor->getSlug()));
@@ -118,6 +129,8 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model);
 
+        $this->shouldAuthorizeMethod($modelAbstractor, 'adminShow');
+
         $repository = $this->modelManager->getRepository($modelAbstractor->getModel());
         $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
 
@@ -139,6 +152,8 @@ class ModelController extends Controller
         /** @var Model $modelAbstractor */
         $modelAbstractor = $this->modelFactory->getBySlug($model, $id);
 
+        $this->shouldAuthorizeMethod($modelAbstractor, 'adminEdit');
+
         $form = $modelAbstractor->getForm(route('anavel-crud.model.update', [$modelAbstractor->getSlug(), $id]));
 
         return view('anavel-crud::pages.edit', [
@@ -159,6 +174,8 @@ class ModelController extends Controller
     public function update(Request $request, $model, $id)
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model, $id);
+
+        $this->shouldAuthorizeMethod($modelAbstractor, 'adminUpdate');
 
         // Sets the validation rules
         $modelAbstractor->getForm(route('anavel-crud.model.update', [$modelAbstractor->getSlug(), $id]));
@@ -188,6 +205,8 @@ class ModelController extends Controller
     public function destroy(Request $request, $model, $id)
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model);
+
+        $this->shouldAuthorizeMethod($modelAbstractor, 'adminDestroy');
 
         $repository = $this->modelManager->getRepository($modelAbstractor->getModel());
         $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
