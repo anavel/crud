@@ -5,10 +5,12 @@ use Anavel\Crud\Contracts\Abstractor\Model;
 use Anavel\Foundation\Http\Controllers\Controller;
 use Anavel\Crud\Contracts\Abstractor\ModelFactory as ModelAbstractorFactory;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
+use Anavel\Crud\Contracts\Controllers\CustomController;
 use Anavel\Crud\Contracts\Form\Generator as FormGenerator;
 use Anavel\Crud\Repository\Criteria\OrderByCriteria;
 use Anavel\Crud\Repository\Criteria\SearchCriteria;
 use Illuminate\Http\Request;
+use App;
 
 class ModelController extends Controller
 {
@@ -23,11 +25,28 @@ class ModelController extends Controller
         $this->formGenerator = $formGenerator;
     }
     
-    protected function shouldAuthorizeMethod(Model $modelAbstractor, $methodName)
+    private function authorizeMethod(Model $modelAbstractor, $methodName)
     {
         if (array_key_exists('authorize', $config = $modelAbstractor->getConfig()) && $config['authorize'] === true) {
             $this->authorize($methodName, $modelAbstractor->getInstance());
         }
+    }
+
+    /**
+     * @param Model $modelAbstractor
+     * @return null|CustomController
+     */
+    private function customController(Model $modelAbstractor)
+    {
+        if (! $this instanceof CustomController) { //Avoid infinite recursion
+            if (array_key_exists('controller', $config = $modelAbstractor->getConfig()) && (! empty($config['controller']))) {
+                /** @var CustomController $controller */
+                $controller = App::make($config['controller']);
+                $controller->setAbstractor($modelAbstractor);
+                return $controller;
+            }
+        }
+        return null;
     }
 
     /**
@@ -41,7 +60,11 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model);
 
-        $this->shouldAuthorizeMethod($modelAbstractor, 'adminIndex');
+        $this->authorizeMethod($modelAbstractor, 'adminIndex');
+
+        if (! empty($customController = $this->customController($modelAbstractor))) {
+            return $customController->index($request, $model);
+        }
 
         $repository = $this->modelManager->getRepository($modelAbstractor->getModel());
 
@@ -77,7 +100,11 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model);
 
-        $this->shouldAuthorizeMethod($modelAbstractor, 'adminCreate');
+        $this->authorizeMethod($modelAbstractor, 'adminCreate');
+
+        if (! empty($customController = $this->customController($modelAbstractor))) {
+            return $customController->create($model);
+        }
 
         $form = $modelAbstractor->getForm(route('anavel-crud.model.store', $modelAbstractor->getSlug()));
 
@@ -99,7 +126,11 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model);
 
-        $this->shouldAuthorizeMethod($modelAbstractor, 'adminStore');
+        $this->authorizeMethod($modelAbstractor, 'adminStore');
+
+        if (! empty($customController = $this->customController($modelAbstractor))) {
+            return $customController->store($request, $model);
+        }
 
         // Sets the validation rules
         $modelAbstractor->getForm(route('anavel-crud.model.store', $modelAbstractor->getSlug()));
@@ -129,7 +160,11 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model);
 
-        $this->shouldAuthorizeMethod($modelAbstractor, 'adminShow');
+        $this->authorizeMethod($modelAbstractor, 'adminShow');
+
+        if (! empty($customController = $this->customController($modelAbstractor))) {
+            return $customController->show($model, $id);
+        }
 
         $repository = $this->modelManager->getRepository($modelAbstractor->getModel());
         $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
@@ -152,7 +187,11 @@ class ModelController extends Controller
         /** @var Model $modelAbstractor */
         $modelAbstractor = $this->modelFactory->getBySlug($model, $id);
 
-        $this->shouldAuthorizeMethod($modelAbstractor, 'adminEdit');
+        $this->authorizeMethod($modelAbstractor, 'adminEdit');
+
+        if (! empty($customController = $this->customController($modelAbstractor))) {
+            return $customController->edit($model, $id);
+        }
 
         $form = $modelAbstractor->getForm(route('anavel-crud.model.update', [$modelAbstractor->getSlug(), $id]));
 
@@ -175,7 +214,11 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model, $id);
 
-        $this->shouldAuthorizeMethod($modelAbstractor, 'adminUpdate');
+        $this->authorizeMethod($modelAbstractor, 'adminUpdate');
+
+        if (! empty($customController = $this->customController($modelAbstractor))) {
+            return $customController->update($request, $model, $id);
+        }
 
         // Sets the validation rules
         $modelAbstractor->getForm(route('anavel-crud.model.update', [$modelAbstractor->getSlug(), $id]));
@@ -206,7 +249,11 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model);
 
-        $this->shouldAuthorizeMethod($modelAbstractor, 'adminDestroy');
+        $this->authorizeMethod($modelAbstractor, 'adminDestroy');
+
+        if (! empty($customController = $this->customController($modelAbstractor))) {
+            return $customController->destroy($request, $model, $id);
+        }
 
         $repository = $this->modelManager->getRepository($modelAbstractor->getModel());
         $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
