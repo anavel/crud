@@ -194,10 +194,13 @@ class ModelController extends Controller
         }
 
         $form = $modelAbstractor->getForm(route('anavel-crud.model.update', [$modelAbstractor->getSlug(), $id]));
+        $repository = $this->modelManager->getRepository($modelAbstractor->getModel());
+        $item = $repository->findByOrFail($repository->getModel()->getKeyName(), $id);
 
         return view('anavel-crud::pages.edit', [
             'abstractor' => $modelAbstractor,
             'form' => $form,
+            'item' => $item,
             'relations' => $modelAbstractor->getRelations()
         ]);
     }

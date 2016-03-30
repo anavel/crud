@@ -138,14 +138,34 @@ class Model implements ModelAbstractorContract
         $customDisplayedColumns = $this->getConfigValue($action, 'display');
         $customHiddenColumns = $this->getConfigValue($action, 'hide') ? : [];
 
+        $relations = $this->getRelations();
+
         $columns = array();
         if (! empty($customDisplayedColumns) && is_array($customDisplayedColumns)) {
             foreach ($customDisplayedColumns as $customColumn) {
-                if (! array_key_exists($customColumn, $tableColumns)) {
-                    throw new AbstractorException("Column " . $customColumn . " does not exist on " . $this->getModel());
-                }
+                if (strpos($customColumn, '.')) {
+                    $customColumnRelation = explode('.', $customColumn);
 
-                $columns[$customColumn] = $tableColumns[$customColumn];
+                    if (! $relations->has($customColumnRelation[0])) {
+                        throw new AbstractorException("Relation " . $customColumnRelation[0] . " not configured on " . $this->getModel());
+                    }
+
+                    $relation = $relations->get($customColumnRelation[0]);
+
+                    $relationColumns = $relation->getModelAbstractor()->getColumns($action);
+
+                    if (! array_key_exists($customColumnRelation[1], $relationColumns)) {
+                        throw new AbstractorException("Column " . $customColumnRelation[1] . " does not exist on relation ".$customColumnRelation[0]. " of model " . $this->getModel());
+                    }
+
+                    $columns[$customColumn] = $relationColumns[$customColumnRelation[1]];
+                } else {
+                    if (! array_key_exists($customColumn, $tableColumns)) {
+                        throw new AbstractorException("Column " . $customColumn . " does not exist on " . $this->getModel());
+                    }
+
+                    $columns[$customColumn] = $tableColumns[$customColumn];
+                }
             }
         } else {
             foreach ($tableColumns as $name => $column) {
@@ -454,5 +474,37 @@ class Model implements ModelAbstractorContract
     public function getValidationRules()
     {
         return $this->generator->getValidationRules();
+    }
+
+    public function getFieldValue($item, $fieldName)
+    {
+        $value = null;
+
+        if (strpos($fieldName, '.')) {
+            $customColumnRelation = explode('.', $fieldName);
+
+            $relation = $item->$customColumnRelation[0];
+            if (empty($relation)) {
+                return null;
+            }
+
+            if ($relation instanceof \Illuminate\Support\Collection) {
+                $relations = $this->getRelations();
+
+                $relationAbstractor = $relations->get($customColumnRelation[0]);
+
+                if ($relationAbstractor instanceof \Anavel\Crud\Abstractor\Eloquent\Relation\Translation) {
+                    $value = $item->getAttribute($customColumnRelation[1]);
+                } else {
+                    $value = $relation->implode($customColumnRelation[1], ', ');
+                }
+            } else {
+                $value = $relation->getAttribute($customColumnRelation[1]);
+            }
+        } else {
+            $value = $item->getAttribute($fieldName);
+        }
+
+        return $value;
     }
 }

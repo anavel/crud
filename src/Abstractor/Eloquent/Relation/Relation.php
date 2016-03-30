@@ -88,6 +88,11 @@ abstract class Relation implements RelationAbstractorContract
         return get_class($this);
     }
 
+    public function getModelAbstractor()
+    {
+        return $this->modelAbstractor;
+    }
+
     /**
      * @return Collection
      */

@@ -70,12 +70,12 @@
                 @forelse ($items as $item)
                 <tr>
                     @foreach ($abstractor->getListFields()['main'] as $field)
-                    <td>{!! $item->getAttribute($field->getName()) !!}</td>
+                    <td>{!! $abstractor->getFieldValue($item, $field->getName()) !!}</td>
                     @endforeach
                     <td>
-                        <a href="{{ route('anavel-crud.model.show', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('anavel-crud::messages.show_button') }}</a>
+                        {{--<a href="{{ route('anavel-crud.model.show', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('anavel-crud::messages.show_button') }}</a>--}}
                         <a href="{{ route('anavel-crud.model.edit', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i> {{ trans('anavel-crud::messages.edit_button') }}</a>
-                        <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete-modal"><i class="fa fa-trash-o"></i> {{ trans('anavel-crud::messages.delete_button') }}</a>
+                        {{--<a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete-modal"><i class="fa fa-trash-o"></i> {{ trans('anavel-crud::messages.delete_button') }}</a>--}}
                     </td>
                 </tr>
                 @empty

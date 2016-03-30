@@ -18,6 +18,12 @@
 @stop
 
 @section('content')
+
+@include('anavel-crud::atoms.delete', [
+    'modelSlug' => $abstractor->getSlug(),
+    'modelId'   => $item->getKey()
+])
+
     <div class="box">
         {!! $form->openHtml() !!}
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -28,8 +34,12 @@
                             class="fa fa-arrow-left"></i> {{ trans('anavel-crud::messages.back_button') }}</a>
             </div>
             <div class="box-tools">
-                <button type="submit" class="btn btn-primary pull-right"><i
-                            class="fa fa-save"></i> {{ trans('anavel-crud::messages.save_button') }}</button>
+                <div class="btn-group">
+                    <a href="#" class="btn btn-danger"  data-toggle="modal" data-target="#delete-modal"><i class="fa fa-trash-o"></i> {{ trans('anavel-crud::messages.delete_button') }}</a>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> {{ trans('anavel-crud::messages.save_button') }}</button>
+                </div>
             </div>
         </div>
 

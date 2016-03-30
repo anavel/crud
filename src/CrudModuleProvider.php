@@ -8,6 +8,7 @@ use Anavel\Crud\Abstractor\Eloquent\FieldFactory as FieldAbstractorFactory;
 use Anavel\Crud\Http\Form\Generator as FormGenerator;
 use FormManager\Factory as FormFactory;
 use Request;
+use Schema;
 
 class CrudModuleProvider extends ModuleProvider
 {
@@ -83,6 +84,8 @@ class CrudModuleProvider extends ModuleProvider
         );
 
         $this->app->register('Anavel\Crud\Providers\ViewComposersServiceProvider');
+
+        $this->registerDoctrineTypeMappings();
     }
 
     /**
@@ -129,5 +132,16 @@ class CrudModuleProvider extends ModuleProvider
         }
 
         return false;
+    }
+
+    /**
+     * Registers types that Doctrine doesn's support by default
+     */
+    protected function registerDoctrineTypeMappings()
+    {
+        $connection = Schema::getConnection();
+        $platform = $connection->getDoctrineConnection()->getDatabasePlatform();
+
+        $platform->registerDoctrineTypeMapping('enum', 'string');
     }
 }
