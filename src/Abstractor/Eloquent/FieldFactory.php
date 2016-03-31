@@ -152,6 +152,10 @@ class FieldFactory implements FieldAbstractorFactoryContract
             $formElement->class('form-control ' . config('anavel-crud.text_editor'));
         }
 
+        if ($formElementType === 'checkbox') {
+            $formElement->class('checkbox');
+        }
+
         if (isset($this->config['defaults'])) {
             if (! is_array($this->config['defaults'])) {
                 $formElement->val(transcrud($this->config['defaults']));
