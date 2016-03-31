@@ -3,6 +3,7 @@ namespace Anavel\Crud\View\Composers;
 
 use Anavel\Crud\Contracts\Abstractor\ModelFactory as ModelAbstractorFactory;
 use Route;
+use Gate;
 
 class SidebarComposer
 {
@@ -21,6 +22,12 @@ class SidebarComposer
 
         foreach ($models as $modelName => $model) {
             $modelAbstractor = $this->modelFactory->getByName($modelName);
+
+            if (array_key_exists('authorize', $config = $modelAbstractor->getConfig()) && $config['authorize'] === true) {
+                if (Gate::denies('adminIndex', $modelAbstractor->getInstance())) {
+                    continue;
+                }
+            }
 
             $isActive = false;
             if (Route::current()->getParameter('model') === $modelAbstractor->getSlug()) {
