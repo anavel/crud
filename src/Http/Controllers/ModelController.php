@@ -126,7 +126,7 @@ class ModelController extends Controller
     {
         $modelAbstractor = $this->modelFactory->getBySlug($model);
 
-        $this->authorizeMethod($modelAbstractor, 'adminStore');
+        $this->authorizeMethod($modelAbstractor, 'adminCreate');
 
         if (! empty($customController = $this->customController($modelAbstractor))) {
             return $customController->store($request, $model);
@@ -187,7 +187,7 @@ class ModelController extends Controller
         /** @var Model $modelAbstractor */
         $modelAbstractor = $this->modelFactory->getBySlug($model, $id);
 
-        $this->authorizeMethod($modelAbstractor, 'adminEdit');
+        $this->authorizeMethod($modelAbstractor, 'adminUpdate');
 
         if (! empty($customController = $this->customController($modelAbstractor))) {
             return $customController->edit($model, $id);
