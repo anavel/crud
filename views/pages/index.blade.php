@@ -36,7 +36,13 @@
                 </form>
             </div>
             <div class="btn-group">
-                <a href="{{ route('anavel-crud.model.create', $abstractor->getSlug()) }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('anavel-crud::messages.create_button') }}</a>
+                @if (array_key_exists('authorize', $config = $abstractor->getConfig()) && $config['authorize'] === true)
+                    @can('adminCreate', $abstractor->getInstance())
+                    <a href="{{ route('anavel-crud.model.create', $abstractor->getSlug()) }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('anavel-crud::messages.create_button') }}</a>
+                    @endcan
+                @else
+                    <a href="{{ route('anavel-crud.model.create', $abstractor->getSlug()) }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('anavel-crud::messages.create_button') }}</a>
+                @endif
             </div>
         </div>
     </div>
@@ -74,7 +80,13 @@
                     @endforeach
                     <td>
                         {{--<a href="{{ route('anavel-crud.model.show', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('anavel-crud::messages.show_button') }}</a>--}}
+                        @if (array_key_exists('authorize', $config = $abstractor->getConfig()) && $config['authorize'] === true)
+                            @can('adminUpdate', $item)
+                            <a href="{{ route('anavel-crud.model.edit', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i> {{ trans('anavel-crud::messages.edit_button') }}</a>
+                            @endcan
+                        @else
                         <a href="{{ route('anavel-crud.model.edit', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i> {{ trans('anavel-crud::messages.edit_button') }}</a>
+                        @endif
                         {{--<a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete-modal"><i class="fa fa-trash-o"></i> {{ trans('anavel-crud::messages.delete_button') }}</a>--}}
                     </td>
                 </tr>
