@@ -23,7 +23,6 @@
         "illuminate/translation": "5.1.*",
         "anavel/foundation": "dev-master",
         "ablunier/laravel-database": "1.2.*",
-        "javiereguiluz/easyslugger": "1.0.*",
         "form-manager/form-manager": "4.7.*"
     },
     "require-dev": {
