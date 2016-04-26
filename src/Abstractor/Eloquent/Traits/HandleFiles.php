@@ -40,7 +40,7 @@ trait HandleFiles
             }
         }
         if ($request->hasFile($groupName .'.'.$fieldName)) {
-            $fileName = uniqid() . '.' . $request->file($groupName .'.'.$fieldName)->getClientOriginalExtension();
+            $fileName = uniqid() . '_' .$request->file($groupName .'.'.$fieldName)->getClientOriginalName() . '.' . $request->file($groupName .'.'.$fieldName)->getClientOriginalExtension();
 
 
             $request->file($groupName .'.'.$fieldName)->move(
