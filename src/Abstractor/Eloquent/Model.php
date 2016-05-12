@@ -483,7 +483,7 @@ class Model implements ModelAbstractorContract
         if (strpos($fieldName, '.')) {
             $customColumnRelation = explode('.', $fieldName);
 
-            $relation = $item->$customColumnRelation[0];
+            $relation = $item->{$customColumnRelation[0]};
             if (empty($relation)) {
                 return null;
             }
