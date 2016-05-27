@@ -24,7 +24,7 @@ class ModelController extends Controller
         $this->modelManager = $modelManager;
         $this->formGenerator = $formGenerator;
     }
-    
+
     private function authorizeMethod(Model $modelAbstractor, $methodName)
     {
         if (array_key_exists('authorize', $config = $modelAbstractor->getConfig()) && $config['authorize'] === true) {
@@ -71,7 +71,7 @@ class ModelController extends Controller
         if ($request->has('search')) {
             $searchByColumns = array();
 
-            foreach ($modelAbstractor->getListFields() as $field) {
+            foreach ($modelAbstractor->getListFields()['main'] as $field) {
                 $searchByColumns[] = $field->getName();
             }
 
