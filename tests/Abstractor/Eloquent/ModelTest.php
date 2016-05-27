@@ -62,6 +62,14 @@ class ModelTest extends TestBase
         $this->dbalMock->shouldReceive('getTableForeignKeys')
             ->andReturn([]);
 
+        $this->relationFactoryMock->shouldReceive('setModel')
+            ->andReturn($this->relationFactoryMock)
+            ->shouldReceive('setConfig')
+            ->andReturn($this->relationFactoryMock)
+            ->shouldReceive('get')
+            ->andReturn($relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
+        $relationMock->shouldReceive('getSecondaryRelations')->andReturn(collect());
+
         $this->fieldFactoryMock->shouldReceive('setColumn', 'setConfig')
             ->andReturn($this->fieldFactoryMock);
         $this->fieldFactoryMock->shouldReceive('get')
@@ -86,6 +94,14 @@ class ModelTest extends TestBase
             ]);
         $this->dbalMock->shouldReceive('getTableForeignKeys')
             ->andReturn([]);
+
+        $this->relationFactoryMock->shouldReceive('setModel')
+            ->andReturn($this->relationFactoryMock)
+            ->shouldReceive('setConfig')
+            ->andReturn($this->relationFactoryMock)
+            ->shouldReceive('get')
+            ->andReturn($relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
+        $relationMock->shouldReceive('getSecondaryRelations')->andReturn(collect());
 
         $this->fieldFactoryMock->shouldReceive('setColumn', 'setConfig')
             ->andReturn($this->fieldFactoryMock);
@@ -113,6 +129,14 @@ class ModelTest extends TestBase
             ]);
         $this->dbalMock->shouldReceive('getTableForeignKeys')
             ->andReturn([]);
+
+        $this->relationFactoryMock->shouldReceive('setModel')
+            ->andReturn($this->relationFactoryMock)
+            ->shouldReceive('setConfig')
+            ->andReturn($this->relationFactoryMock)
+            ->shouldReceive('get')
+            ->andReturn($relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
+        $relationMock->shouldReceive('getSecondaryRelations')->andReturn(collect());
 
         $this->fieldFactoryMock->shouldReceive('setColumn', 'setConfig')
             ->andReturn($this->fieldFactoryMock);
@@ -142,6 +166,14 @@ class ModelTest extends TestBase
             ]);
         $this->dbalMock->shouldReceive('getTableForeignKeys')
             ->andReturn([]);
+
+        $this->relationFactoryMock->shouldReceive('setModel')
+            ->andReturn($this->relationFactoryMock)
+            ->shouldReceive('setConfig')
+            ->andReturn($this->relationFactoryMock)
+            ->shouldReceive('get')
+            ->andReturn($relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
+        $relationMock->shouldReceive('getSecondaryRelations')->andReturn(collect());
 
         $this->fieldFactoryMock->shouldReceive('setColumn', 'setConfig')
             ->andReturn($this->fieldFactoryMock);
@@ -175,6 +207,14 @@ class ModelTest extends TestBase
 
         $this->dbalMock->shouldReceive('getKeyName')
             ->andReturn(LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT);
+
+        $this->relationFactoryMock->shouldReceive('setModel')
+            ->andReturn($this->relationFactoryMock)
+            ->shouldReceive('setConfig')
+            ->andReturn($this->relationFactoryMock)
+            ->shouldReceive('get')
+            ->andReturn($relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
+        $relationMock->shouldReceive('getSecondaryRelations')->andReturn(collect());
 
         // Don't know of a better way to test ->with() (in the next block) without doing this in the andReturn()
         $this->fieldFactoryMock->shouldReceive('setColumn')
@@ -275,6 +315,14 @@ class ModelTest extends TestBase
 
         $this->dbalMock->shouldReceive('getKeyName')
             ->andReturn(LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT);
+
+        $this->relationFactoryMock->shouldReceive('setModel')
+            ->andReturn($this->relationFactoryMock)
+            ->shouldReceive('setConfig')
+            ->andReturn($this->relationFactoryMock)
+            ->shouldReceive('get')
+            ->andReturn($relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation'));
+        $relationMock->shouldReceive('getSecondaryRelations')->andReturn(collect());
 
         $this->fieldFactoryMock->shouldReceive('setColumn', 'setConfig')
             ->andReturn($this->fieldFactoryMock);
