@@ -27,7 +27,7 @@ class CrudModuleProvider extends ModuleProvider
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'anavel-crud');
 
         $this->publishes([
-            __DIR__.'/../public/js' => public_path('vendor/anavel-crud/js'),
+            __DIR__.'/../public/' => public_path('vendor/anavel-crud/'),
         ], 'assets');
 
         $this->publishes([
