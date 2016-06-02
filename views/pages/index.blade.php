@@ -80,6 +80,7 @@
                     @endforeach
                     <td>
                         {{--<a href="{{ route('anavel-crud.model.show', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('anavel-crud::messages.show_button') }}</a>--}}
+                        {{-- Edit if the model has authorization and the user has permissions or if the model does not require authorization --}}
                         @if (array_key_exists('authorize', $config = $abstractor->getConfig()) && $config['authorize'] === true)
                             @can('adminUpdate', $item)
                             <a href="{{ route('anavel-crud.model.edit', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i> {{ trans('anavel-crud::messages.edit_button') }}</a>
@@ -87,7 +88,14 @@
                         @else
                         <a href="{{ route('anavel-crud.model.edit', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i> {{ trans('anavel-crud::messages.edit_button') }}</a>
                         @endif
-                        <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete-modal" data-action="{{ route('anavel-crud.model.destroy', [$abstractor->getSlug(), $item->getKey()]) }}"><i class="fa fa-trash-o"></i> {{ trans('anavel-crud::messages.delete_button') }}</a>
+                        {{-- Delete if the model has authorization and the user has permissions or if the model does not require authorization --}}
+                        @if (array_key_exists('authorize', $config = $abstractor->getConfig()) && $config['authorize'] === true)
+                            @can('adminDestroy', $item)
+                                <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete-modal" data-action="{{ route('anavel-crud.model.destroy', [$abstractor->getSlug(), $item->getKey()]) }}"><i class="fa fa-trash-o"></i> {{ trans('anavel-crud::messages.delete_button') }}</a>
+                            @endcan
+                        @else
+                           <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete-modal" data-action="{{ route('anavel-crud.model.destroy', [$abstractor->getSlug(), $item->getKey()]) }}"><i class="fa fa-trash-o"></i> {{ trans('anavel-crud::messages.delete_button') }}</a>
+                        @endif
                     </td>
                 </tr>
                 @empty
