@@ -5,4 +5,5 @@ $(function () {
 
     //bootstrap WYSIHTML5 - text editor
     $(".bootstrap-wysihtml5").wysihtml5();
+    $('select').selectize();
 });
