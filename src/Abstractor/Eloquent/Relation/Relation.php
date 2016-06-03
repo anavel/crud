@@ -78,6 +78,17 @@ abstract class Relation implements RelationAbstractorContract
         return $this->name;
     }
 
+    /**
+     * return null|string
+     */
+    public function getDisplay()
+    {
+        if (! empty($this->config['display'])) {
+            return $this->config['display'];
+        }
+        return null;
+    }
+
     public function getPresentation()
     {
         return $this->presentation ? : ucfirst(str_replace('_', ' ', $this->name));

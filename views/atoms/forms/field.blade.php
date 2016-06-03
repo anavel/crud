@@ -9,7 +9,7 @@
                 <h4 class="panel-title">
                     <a role="button" data-toggle="collapse" href="#{{ $relation->getName() . $key }}"
                        aria-expanded="true" aria-controls="{{ $relation->getName() . $key }}" id="label-{{ $relation->getName() . $key }}">
-                        {{ ucfirst($relation->getName()) . ' ' . $key }} {{ $relation->getName() }}
+                        {{ ! empty($relation->getDisplay()) && ! empty($field[$relation->getDisplay()]) ? $field[$relation->getDisplay()]->val() : ucfirst($relation->getName()) . ' ' . $key }}
                     </a>
                 </h4>
             </div>

@@ -50,6 +50,11 @@ interface Relation
     public function getDisplayType();
 
     /**
+     * @return string
+     */
+    public function getDisplay();
+
+    /**
      * @return Collection
      */
     public function getSecondaryRelations();
