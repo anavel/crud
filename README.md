@@ -16,7 +16,7 @@ Anavel CRUD automates the Create, Read, Update and Delete tasks over your Larave
 
 ## Instalation
 
-To use this package you must first install [Anavel foundation](https://github.com/anavel/crud). This package was conceived as an Anavel module.
+To use this package you must first install [Anavel foundation](https://github.com/anavel/fundation). This package was conceived as an Anavel module.
 
 With Anavel installed and working, require this package with composer:
 
