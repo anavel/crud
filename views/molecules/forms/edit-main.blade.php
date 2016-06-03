@@ -43,17 +43,16 @@
         @if ($relation instanceof \Illuminate\Support\Collection)
             @if($relation->get('relation')->getDisplayType() === Anavel\Crud\Abstractor\Eloquent\Relation\Relation::DISPLAY_TYPE_TAB && ! empty($form[$relationKey]))
                 <div role="tabpanel" class="tab-pane" id="{{ $relationKey }}">
-                    @foreach($form[$relationKey] as $field)
-                        @include('anavel-crud::atoms.forms.field', ['field' => $field])
+                    @foreach($form[$relationKey] as $key => $field)
+                        @include('anavel-crud::atoms.forms.field', ['field' => $field, 'panel' => true, 'key' => $key, 'relation' => $relation->get('relation')])
                     @endforeach
                 </div>
             @endif
-            {{--                @if(! $relation->get('secondaryRelations')->isEmpty())--}}
         @else
             @if($relation->getDisplayType() === Anavel\Crud\Abstractor\Eloquent\Relation\Relation::DISPLAY_TYPE_TAB && ! empty($form[$relationKey]))
                 <div role="tabpanel" class="tab-pane" id="{{ $relationKey }}">
-                    @foreach($form[$relationKey] as $field)
-                        @include('anavel-crud::atoms.forms.field', ['field' => $field])
+                    @foreach($form[$relationKey] as $key => $field)
+                        @include('anavel-crud::atoms.forms.field', ['field' => $field, 'relation' => $relation, 'panel' => true, 'key' => $key])
                     @endforeach
                 </div>
             @endif
