@@ -36,7 +36,7 @@
 
         @if($field instanceof FormManager\Fields\File && ! empty($field->val()))
 
-            <span class="input-group-btn"><a href="{{  url(config('anavel-crud.uploads_path')) . '/' . $field->val() }}"
+            <span class="input-group-btn"><a href="{{  url(config('anavel-crud.uploads_path')) . DIRECTORY_SEPARATOR .  $field->val() }}"
                                              target="_blank" class="btn btn-primary"><i
                             class="glyphicon glyphicon-eye-open"></i></a></span>
 

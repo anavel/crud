@@ -50,6 +50,9 @@
 
     <link href="{{ asset('vendor/anavel/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}" rel="stylesheet"
           type="text/css"/>
+    <link href="{{ asset('vendor/anavel-crud/plugins/selectizejs/css/selectize.bootstrap3.css') }}" rel="stylesheet"
+          type="text/css" />
+
 @stop
 
 @section('footer-scripts')
@@ -57,6 +60,7 @@
 
     <script src="{{ asset('vendor/anavel/plugins/ckeditor/ckeditor.js') }}"></script>
     <script src="{{ asset('vendor/anavel/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') }}"></script>
-
     <script src="{{ asset('vendor/anavel-crud/js/app.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('vendor/anavel-crud/plugins/selectizejs/js/standalone/selectize.min.js') }}"
+            type="text/javascript"></script>
 @stop

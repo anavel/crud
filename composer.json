@@ -15,6 +15,10 @@
         {
             "name": "Carlos Morales",
             "email": "carlos@anavallasuiza.com"
+        },
+        {
+            "name": "Eduardo Salguero",
+            "email": "eduardo@anavallasuiza.com"
         }
     ],
     "require": {

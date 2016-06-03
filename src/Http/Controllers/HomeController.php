@@ -23,7 +23,7 @@ class HomeController extends Controller
             $modelAbstractor = $modelFactory->getByName($modelSlug);
             $config = $modelAbstractor->getConfig();
 
-            if (! array_key_exists('authorize', $config) || ( $config['authorize'] === true && Gate::allows('adminIndex', $modelAbstractor->getInstance()))) {
+            if (! array_key_exists('authorize', $config) || ( $config['authorize'] === true && Gate::allows('adminIndex', $modelAbstractor->getInstance()) ||  $config['authorize'] === false )) {
                 return new RedirectResponse(route('anavel-crud.model.index', $modelSlug));
             }
 

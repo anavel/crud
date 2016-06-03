@@ -17,10 +17,37 @@ class SearchCriteria implements Criteria
 
     public function apply($model, Repository $repository)
     {
-        $query = $model->where(array_shift($this->columns), 'LIKE', '%'.$this->queryString.'%');
+        $firstColumn = array_shift($this->columns);
+
+        if (strpos($firstColumn, '.')) {
+            $query = $this->setRelationFieldCondition($model, $firstColumn, false);
+        } else {
+            $query = $model->where($firstColumn, 'LIKE', '%'.$this->queryString.'%');
+        }
 
         foreach ($this->columns as $column) {
-            $query->orWhere($column, 'LIKE', '%'.$this->queryString.'%');
+            if (strpos($column, '.')) {
+                $query = $this->setRelationFieldCondition($query, $column);
+            } else {
+                $query->orWhere($column, 'LIKE', '%'.$this->queryString.'%');
+            }
+        }
+
+        return $query;
+    }
+
+    private function setRelationFieldCondition($query, $column, $or = true)
+    {
+        $columnRelation = explode('.', $column);
+
+        if ($or) {
+            $query->orWhereHas($columnRelation[0], function ($subquery) use ($columnRelation) {
+                $subquery->where($columnRelation[1], 'LIKE', '%'.$this->queryString.'%');
+            });
+        } else {
+            $query->whereHas($columnRelation[0], function ($subquery) use ($columnRelation) {
+                $subquery->where($columnRelation[1], 'LIKE', '%'.$this->queryString.'%');
+            });
         }
 
         return $query;
