@@ -112,7 +112,38 @@ return [
                 ]
             ]
         ]
+
+        // And much more
+          'Blog Posts'      => [
+            'model'      => '\App\Database\Models\Post',
+            'controller' => '\App\Http\Controllers\Admin\BlogPostController',
+            'authorize'  => false,
+            'list'       => [
+                'display' => ['id', 'slug', 'title', 'publication_date'],
+            ],
+            'edit'       => [
+                'form_types' => [
+                    'image' => 'file',
+                ]
+            ],
+            'relations'  => [
+                'tags'   => [
+                    'name'    => 'tags',
+                    'display' => 'name'
+                ],
+                'author' => [
+                    'name'    => 'author',
+                    'display' => 'name'
+                ],
+            ]
+        ],
+        'Blog Tags'       => [
+            'model'     => '\App\Database\Models\PostTag',
+            'authorize' => false,
+        ]
         */
     ],
+    'modelsGroups' =>
+        [/*'Blog' => ['Blog Posts', 'Blog Tags']*/]
 
 ];

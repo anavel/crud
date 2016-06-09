@@ -63,6 +63,8 @@
           type="text/css"/>
     <link href="{{ asset('vendor/anavel-crud/plugins/selectizejs/css/selectize.bootstrap3.css') }}" rel="stylesheet"
           type="text/css" />
+    <link href="{{ asset('vendor/anavel-crud/plugins/pikaday/css/pikaday.css') }}" rel="stylesheet"
+          type="text/css" />
 
 @stop
 
@@ -74,4 +76,11 @@
     <script src="{{ asset('vendor/anavel-crud/js/app.js') }}" type="text/javascript"></script>
     <script src="{{ asset('vendor/anavel-crud/plugins/selectizejs/js/standalone/selectize.min.js') }}"
             type="text/javascript"></script>
+    <script src="{{ asset('vendor/anavel-crud/plugins/momentjs/moment.min.js') }}"
+            type="text/javascript"></script>
+    <script src="{{ asset('vendor/anavel-crud/plugins/pikaday/pikaday.js') }}"
+            type="text/javascript"></script>
+    <script src="{{ asset('vendor/anavel-crud/plugins/pikaday/plugins/pikaday.jquery.js') }}"
+            type="text/javascript"></script>
+
 @stop
