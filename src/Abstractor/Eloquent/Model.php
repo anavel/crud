@@ -224,7 +224,6 @@ class Model implements ModelAbstractorContract
                 } else {
                     $relations->put($relationName, $relation);
                 }
-
             }
         }
 

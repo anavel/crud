@@ -326,4 +326,3 @@ class MiniCrud extends Relation
         return $fields;
     }
 }
-

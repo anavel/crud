@@ -12,7 +12,6 @@ class ViewComposersServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
     }
 
     /**

@@ -89,7 +89,6 @@ class ModelFactory implements ModelAbstractorFactoryContract
 
     public function getByClassName($classname, array $config, $id = null)
     {
-
         $model = new Model(array_merge(['model' => $classname], $config), $this->modelManager->getAbstractionLayer($classname), $this->relationFactory, $this->fieldFactory, $this->generator);
         $model->setSlug($this->slugger->slugify((new ReflectionClass($classname))->getShortName()));
 

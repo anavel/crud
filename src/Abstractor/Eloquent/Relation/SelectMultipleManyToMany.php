@@ -45,5 +45,4 @@ class SelectMultipleManyToMany extends SelectMultiple
     {
         return $dbal->getTableColumn($this->eloquentRelation->getRelated()->getKeyName());
     }
-
 }

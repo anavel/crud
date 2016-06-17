@@ -40,4 +40,3 @@ class MiniCrudPolymorphic extends MiniCrud
         return self::DISPLAY_TYPE_TAB;
     }
 }
-

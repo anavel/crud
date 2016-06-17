@@ -26,7 +26,7 @@ class MiniCrudSingle extends Relation
      */
     public function getEditFields($arrayKey = null)
     {
-        if(empty($arrayKey)) {
+        if (empty($arrayKey)) {
             $arrayKey = $this->name;
         }
 
@@ -154,4 +154,3 @@ class MiniCrudSingle extends Relation
         return self::DISPLAY_TYPE_TAB;
     }
 }
-
