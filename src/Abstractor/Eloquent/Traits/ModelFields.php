@@ -3,7 +3,6 @@
 
 namespace Anavel\Crud\Abstractor\Eloquent\Traits;
 
-
 use Anavel\Crud\Contracts\Abstractor\Field;
 
 trait ModelFields

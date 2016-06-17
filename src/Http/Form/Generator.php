@@ -133,14 +133,14 @@ class Generator implements GeneratorContract
         $formFields = array();
         $tempFields = array();
 
-            foreach ($fields as $fieldKey => $field) {
-                if (is_array($field)) {
-                    $group = $this->addFormFields($field, $fieldKey);
-                    $tempFields[key($group)] = $this->factory->get('group', [$group[key($group)]]);
-                } else {
-                    $tempFields[$field->getName()] = $field->getFormField();
-                }
+        foreach ($fields as $fieldKey => $field) {
+            if (is_array($field)) {
+                $group = $this->addFormFields($field, $fieldKey);
+                $tempFields[key($group)] = $this->factory->get('group', [$group[key($group)]]);
+            } else {
+                $tempFields[$field->getName()] = $field->getFormField();
             }
+        }
         $formFields[$key] = $tempFields;
         return $formFields;
     }

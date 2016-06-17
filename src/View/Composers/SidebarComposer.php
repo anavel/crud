@@ -28,7 +28,6 @@ class SidebarComposer
      */
     private function getSidebarItems()
     {
-
         $modelsGroups = config('anavel-crud.modelsGroups');
         $models = config('anavel-crud.models');
         $menuItems = [];
@@ -67,9 +66,8 @@ class SidebarComposer
         }
 
         //Sort alphabetically de menu items
-        usort($menuItems, function($itemA, $itemB)
-        {
-            return strcmp($itemA['name'],$itemB['name']);
+        usort($menuItems, function ($itemA, $itemB) {
+            return strcmp($itemA['name'], $itemB['name']);
         });
         return $menuItems;
     }
