@@ -64,7 +64,15 @@ class Field implements FieldAbstractorContract
 
     public function presentation()
     {
-        return transcrud($this->presentation) ? : ucfirst(str_replace('_', ' ', transcrud($this->name)));
+        if ($this->presentation) {
+            return transcrud($this->presentation);
+        }
+
+        $nameWithSpaces = str_replace('_', ' ', $this->name);
+        $namePieces = explode(' ', $nameWithSpaces);
+        $namePieces = array_map('trim', $namePieces);
+
+        return ucfirst(transcrud(implode(' ', $namePieces)));
     }
 
     public function type()

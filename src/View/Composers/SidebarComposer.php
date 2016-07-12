@@ -35,7 +35,7 @@ class SidebarComposer
         if (!is_null($modelsGroups)) {
             foreach ($modelsGroups as $group => $items) {
                 $menuItems[$group]['isActive'] = false;
-                $menuItems[$group]['name'] = $group;
+                $menuItems[$group]['name'] = transcrud($group);
                 $menuItems[$group]['items'] = [];
                 foreach ($items as $itemName) {
                     try {
