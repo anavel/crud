@@ -173,7 +173,14 @@ class FieldFactory implements FieldAbstractorFactoryContract
 
     public function getPresentation()
     {
-        return transcrud($this->config['presentation']) ? : ucfirst(str_replace('_', ' ',
-            transcrud($this->config['name'])));
+        if ($this->config['presentation']) {
+            return transcrud($this->config['presentation']);
+        }
+
+        $nameWithSpaces = str_replace('_', ' ', $this->config['name']);
+        $namePieces = explode(' ', $nameWithSpaces);
+        $namePieces = array_filter(array_map('trim', $namePieces));
+
+        return ucfirst(transcrud(implode(' ', $namePieces)));
     }
 }
