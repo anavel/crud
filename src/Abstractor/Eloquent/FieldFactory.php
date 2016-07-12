@@ -181,6 +181,6 @@ class FieldFactory implements FieldAbstractorFactoryContract
         $namePieces = explode(' ', $nameWithSpaces);
         $namePieces = array_filter(array_map('trim', $namePieces));
 
-        return ucfirst(transcrud(implode(' ', $namePieces)));
+        return transcrud(ucfirst(implode(' ', $namePieces)));
     }
 }

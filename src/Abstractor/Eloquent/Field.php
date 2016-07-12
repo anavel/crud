@@ -72,7 +72,7 @@ class Field implements FieldAbstractorContract
         $namePieces = explode(' ', $nameWithSpaces);
         $namePieces = array_filter(array_map('trim', $namePieces));
 
-        return ucfirst(transcrud(implode(' ', $namePieces)));
+        return transcrud(ucfirst(implode(' ', $namePieces)));
     }
 
     public function type()

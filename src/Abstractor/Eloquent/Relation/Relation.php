@@ -91,7 +91,15 @@ abstract class Relation implements RelationAbstractorContract
 
     public function getPresentation()
     {
-        return $this->presentation ? : ucfirst(str_replace('_', ' ', $this->name));
+        if ($this->presentation) {
+            return transcrud($this->presentation);
+        }
+
+        $nameWithSpaces = str_replace('_', ' ', $this->name);
+        $namePieces = explode(' ', $nameWithSpaces);
+        $namePieces = array_filter(array_map('trim', $namePieces));
+
+        return transcrud(ucfirst(implode(' ', $namePieces)));
     }
 
     public function getType()
