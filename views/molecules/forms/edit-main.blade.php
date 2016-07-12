@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#main" aria-controls="main" role="tab"
-                                              data-toggle="tab">Main</a></li>
+                                              data-toggle="tab">{{ transcrud('Main') }}</a></li>
     @forelse($relations as $relation)
         @if ($relation instanceof \Illuminate\Support\Collection)
             <?php $relation = $relation->get('relation') ?>
