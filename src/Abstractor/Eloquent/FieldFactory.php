@@ -43,7 +43,8 @@ class FieldFactory implements FieldAbstractorFactoryContract
         'password',
         'hidden',
         'select',
-        'file'
+        'file',
+        'money'
     );
 
     public function __construct(FormManagerFactory $factory)
