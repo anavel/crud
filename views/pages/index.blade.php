@@ -79,7 +79,12 @@
                     <td>{!! $abstractor->getFieldValue($item, $field->getName()) !!}</td>
                     @endforeach
                     <td>
-                        {{--<a href="{{ route('anavel-crud.model.show', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('anavel-crud::messages.show_button') }}</a>--}}
+                        {{-- Show if the model can be shown. It must be an explicit config value--}}
+                        @if (array_key_exists('show', $config = $abstractor->getConfig()) && $config['show'] === true)
+                            @can('adminView', $item)
+                            <a href="{{ route('anavel-crud.model.show', [$abstractor->getSlug(), $item->getKey()]) }}" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> {{ trans('anavel-crud::messages.show_button') }}</a>
+                            @endcan
+                        @endif
                         {{-- Edit if the model has authorization and the user has permissions or if the model does not require authorization --}}
                         @if (array_key_exists('authorize', $config = $abstractor->getConfig()) && $config['authorize'] === true)
                             @can('adminUpdate', $item)
