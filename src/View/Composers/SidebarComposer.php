@@ -52,7 +52,7 @@ class SidebarComposer
                     }
                 }
                 // Remove empty groups (resulting, most probably, of different permissions)
-                if(count($menuItems[$group]['items']) < 1) {
+                if (count($menuItems[$group]['items']) < 1) {
                     unset($menuItems[$group]);
                 }
             }
