@@ -40,7 +40,13 @@ trait HandleFiles
             }
         }
         if ($request->hasFile($groupName .'.'.$fieldName)) {
-            $fileName = uniqid() . '_' . slugify($request->file($groupName .'.'.$fieldName)->getClientOriginalName());
+            $fileName = pathinfo($request->file($groupName .'.'.$fieldName)->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = pathinfo($request->file($groupName .'.'.$fieldName)->getClientOriginalName(), PATHINFO_EXTENSION);
+
+            $fileName = uniqid() . '_' . slugify($fileName);
+            if (! empty($extension)) {
+                $fileName .= '.' . $extension;
+            }
 
 
             $request->file($groupName .'.'.$fieldName)->move(
