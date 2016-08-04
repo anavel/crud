@@ -40,7 +40,7 @@ trait HandleFiles
             }
         }
         if ($request->hasFile($groupName .'.'.$fieldName)) {
-            $fileName = uniqid() . '_' .$request->file($groupName .'.'.$fieldName)->getClientOriginalName();
+            $fileName = uniqid() . '_' . slugify($request->file($groupName .'.'.$fieldName)->getClientOriginalName());
 
 
             $request->file($groupName .'.'.$fieldName)->move(
