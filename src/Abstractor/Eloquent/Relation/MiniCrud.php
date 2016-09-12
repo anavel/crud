@@ -88,11 +88,12 @@ class MiniCrud extends Relation
 
                 $this->modelAbstractor->setInstance($relationModel);
                 $secondaryRelations = $this->getSecondaryRelations();
+
                 if (!empty($secondaryRelations)) {
                     foreach ($secondaryRelations as $secondaryRelationKey => $secondaryRelation) {
                         foreach ($secondaryRelation->getEditFields($secondaryRelationKey) as $editGroupName => $editGroup) {
                             if ($secondaryRelation->getType() === 'Anavel\Crud\Abstractor\Eloquent\Relation\Select') {
-                                $tempFields[key($editGroup)] = $editGroup[key($editGroup)];
+                                $tempFields[$editGroup[key($editGroup)]->getName()] = $editGroup[key($editGroup)];
                             } else {
                                 $tempFields[$editGroupName] = $editGroup;
                             }
