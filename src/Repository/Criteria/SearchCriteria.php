@@ -17,21 +17,23 @@ class SearchCriteria implements Criteria
 
     public function apply($model, Repository $repository)
     {
-        $firstColumn = array_shift($this->columns);
+        $query = $model->where(function ($query) use ($repository) {
+            $firstColumn = array_shift($this->columns);
 
-        if (strpos($firstColumn, '.')) {
-            $query = $this->setRelationFieldCondition($model, $firstColumn, false);
-        } else {
-            $query = $model->where($firstColumn, 'LIKE', '%'.$this->queryString.'%');
-        }
-
-        foreach ($this->columns as $column) {
-            if (strpos($column, '.')) {
-                $query = $this->setRelationFieldCondition($query, $column);
+            if (strpos($firstColumn, '.')) {
+                $query = $this->setRelationFieldCondition($query, $firstColumn, false);
             } else {
-                $query->orWhere($column, 'LIKE', '%'.$this->queryString.'%');
+                $query = $query->where($firstColumn, 'LIKE', '%'.$this->queryString.'%');
             }
-        }
+
+            foreach ($this->columns as $column) {
+                if (strpos($column, '.')) {
+                    $query = $this->setRelationFieldCondition($query, $column);
+                } else {
+                    $query->orWhere($column, 'LIKE', '%'.$this->queryString.'%');
+                }
+            }
+        });
 
         return $query;
     }
