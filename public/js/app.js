@@ -5,6 +5,6 @@ $(function () {
 
     //bootstrap WYSIHTML5 - text editor
     $(".bootstrap-wysihtml5").wysihtml5();
-    $('select').selectize();
+    $('select[multiple]').selectize();
     $("input[type=date]").pikaday({  format: 'YYYY-MM-DD'});
 });
