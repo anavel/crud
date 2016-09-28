@@ -59,7 +59,18 @@ abstract class Relation implements RelationAbstractorContract
         $this->config = $config;
         $this->setup();
 
-        $this->modelAbstractor = \App::make('Anavel\Crud\Contracts\Abstractor\ModelFactory')->getByClassName(get_class($this->eloquentRelation->getRelated()), $this->config);
+        $relatedModelClassName = get_class($this->eloquentRelation->getRelated());
+        $relatedmodelRelationsConfig = array();
+
+        foreach (config('anavel-crud.models') as $modelConfig) {
+            if (is_array($modelConfig) && array_key_exists('model', $modelConfig) && $relatedModelClassName == $modelConfig['model']) {
+                if (array_key_exists('relations', $modelConfig)) {
+                    $relatedmodelRelationsConfig['relations'] = $modelConfig['relations'];
+                }
+            }
+        }
+
+        $this->modelAbstractor = \App::make('Anavel\Crud\Contracts\Abstractor\ModelFactory')->getByClassName(get_class($this->eloquentRelation->getRelated()), $relatedmodelRelationsConfig);
     }
 
     public function addSecondaryRelationFields(array $fields)

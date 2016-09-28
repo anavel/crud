@@ -138,27 +138,27 @@ class Model implements ModelAbstractorContract
         $customDisplayedColumns = $this->getConfigValue($action, 'display');
         $customHiddenColumns = $this->getConfigValue($action, 'hide') ? : [];
 
-        $relations = $this->getRelations();
-
         $columns = array();
         if (! empty($customDisplayedColumns) && is_array($customDisplayedColumns)) {
             foreach ($customDisplayedColumns as $customColumn) {
                 if (strpos($customColumn, '.')) {
                     $customColumnRelation = explode('.', $customColumn);
 
-                    if (! $relations->has($customColumnRelation[0])) {
-                        throw new AbstractorException("Relation " . $customColumnRelation[0] . " not configured on " . $this->getModel());
+                    $customColumnRelationFieldName = array_pop($customColumnRelation);
+
+                    $modelAbstractor = $this;
+                    foreach ($customColumnRelation as $relationName) {
+                        $nestedRelation = $this->getNestedRelation($modelAbstractor, $relationName);
+                        $modelAbstractor = $nestedRelation->getModelAbstractor();
                     }
 
-                    $relation = $relations->get($customColumnRelation[0]);
+                    $relationColumns = $nestedRelation->getModelAbstractor()->getColumns($action);
 
-                    $relationColumns = $relation->getModelAbstractor()->getColumns($action);
-
-                    if (! array_key_exists($customColumnRelation[1], $relationColumns)) {
-                        throw new AbstractorException("Column " . $customColumnRelation[1] . " does not exist on relation ".$customColumnRelation[0]. " of model " . $this->getModel());
+                    if (! array_key_exists($customColumnRelationFieldName, $relationColumns)) {
+                        throw new AbstractorException("Column " . $customColumnRelationFieldName . " does not exist on relation " . implode('.', $customColumnRelation) . " of model " . $this->getModel());
                     }
 
-                    $columns[$customColumn] = $relationColumns[$customColumnRelation[1]];
+                    $columns[$customColumn] = $relationColumns[$customColumnRelationFieldName];
                 } else {
                     if (! array_key_exists($customColumn, $tableColumns)) {
                         throw new AbstractorException("Column " . $customColumn . " does not exist on " . $this->getModel());
@@ -182,6 +182,23 @@ class Model implements ModelAbstractorContract
         }
 
         return $columns;
+    }
+
+    protected function getNestedRelation(Model $modelAbstractor, $relationName)
+    {
+        $relations = $modelAbstractor->getRelations();
+
+        if (! $relations->has($relationName)) {
+            throw new AbstractorException("Relation " . $relationName . " not configured on " . $modelAbstractor->getModel());
+        }
+
+        $relation = $relations->get($relationName);
+
+        if ($relation instanceof Relation) {
+            return $relation;
+        } else {
+            return $relation['relation'];
+        }
     }
 
     /**
@@ -482,23 +499,46 @@ class Model implements ModelAbstractorContract
         if (strpos($fieldName, '.')) {
             $customColumnRelation = explode('.', $fieldName);
 
-            $relation = $item->{$customColumnRelation[0]};
+            $customColumnRelationFieldName = array_pop($customColumnRelation);
+
+            $entity = $item;
+            $relation = null;
+            $relationName = '';
+            foreach ($customColumnRelation as $relationName) {
+                $relation = $entity->{$relationName};
+                if ($relation instanceof Collection) {
+                    $entity = $relation->first();
+                } else {
+                    $entity = $relation;
+                }
+            }
+
+            $lastRelationName = $relationName;
+
+            array_pop($customColumnRelation);
+
+            $prevModelAbtractor = $this;
+            foreach ($customColumnRelation as $relationName) {
+                $nestedRelation = $this->getNestedRelation($prevModelAbtractor, $relationName);
+                $prevModelAbtractor = $nestedRelation->getModelAbstractor();
+            }
+
             if (empty($relation)) {
                 return null;
             }
 
-            if ($relation instanceof \Illuminate\Support\Collection) {
-                $relations = $this->getRelations();
+            if ($relation instanceof Collection) {
+                $relations = $prevModelAbtractor->getRelations();
 
-                $relationAbstractor = $relations->get($customColumnRelation[0]);
+                $relationAbstractor = $relations->get($lastRelationName);
 
                 if ($relationAbstractor instanceof \Anavel\Crud\Abstractor\Eloquent\Relation\Translation) {
-                    $value = $item->getAttribute($customColumnRelation[1]);
+                    $value = $entity->getAttribute($customColumnRelationFieldName);
                 } else {
-                    $value = $relation->implode($customColumnRelation[1], ', ');
+                    $value = $relation->implode($customColumnRelationFieldName, ', ');
                 }
             } else {
-                $value = $relation->getAttribute($customColumnRelation[1]);
+                $value = $relation->getAttribute($customColumnRelationFieldName);
             }
         } else {
             $value = $item->getAttribute($fieldName);
