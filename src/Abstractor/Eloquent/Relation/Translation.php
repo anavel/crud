@@ -1,9 +1,9 @@
 <?php
+
 namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
 use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
 use Anavel\Crud\Contracts\Abstractor\Field;
-use App;
 use Illuminate\Http\Request;
 
 class Translation extends Relation
@@ -12,9 +12,9 @@ class Translation extends Relation
 
     protected $langs = [];
 
-    protected $compatibleEloquentRelations = array(
-        'Illuminate\Database\Eloquent\Relations\HasMany'
-    );
+    protected $compatibleEloquentRelations = [
+        'Illuminate\Database\Eloquent\Relations\HasMany',
+    ];
 
     public function setup()
     {
@@ -46,7 +46,7 @@ class Translation extends Relation
         }
 
         $translationFields = [];
-        if (! empty($columns)) {
+        if (!empty($columns)) {
             foreach ($this->langs as $key => $lang) {
                 $tempFields = [];
                 foreach ($columns as $columnName => $column) {
@@ -66,11 +66,11 @@ class Translation extends Relation
 
                     $config = [
                         'name'         => $columnName,
-                        'presentation' => ucfirst(transcrud($columnName)) . ' [' . $lang . ']',
+                        'presentation' => ucfirst(transcrud($columnName)).' ['.$lang.']',
                         'form_type'    => $formType,
                         'no_validate'  => true,
                         'validation'   => null,
-                        'functions'    => null
+                        'functions'    => null,
                     ];
 
                     $config = $this->setConfig($config, $columnName);
@@ -102,11 +102,12 @@ class Translation extends Relation
 
     /**
      * @param array|null $relationArray
+     *
      * @return mixed
      */
     public function persist(array $relationArray = null, Request $request)
     {
-        if (! empty($relationArray)) {
+        if (!empty($relationArray)) {
             $currentTranslations = $this->eloquentRelation->getResults();
             $currentTranslations = $currentTranslations->keyBy('locale');
 

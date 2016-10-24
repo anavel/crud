@@ -1,15 +1,16 @@
 <?php
+
 namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
+use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use Anavel\Crud\Abstractor\ConfigurationReader;
 use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationConfig;
 use Anavel\Crud\Abstractor\Eloquent\Traits\ModelFields;
+use Anavel\Crud\Contracts\Abstractor\FieldFactory as FieldFactoryContract;
 use Anavel\Crud\Contracts\Abstractor\Model as ModelAbstractor;
 use Anavel\Crud\Contracts\Abstractor\Relation as RelationAbstractorContract;
-use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
-use Anavel\Crud\Contracts\Abstractor\FieldFactory as FieldFactoryContract;
 use Illuminate\Support\Collection;
 
 abstract class Relation implements RelationAbstractorContract
@@ -38,7 +39,7 @@ abstract class Relation implements RelationAbstractorContract
      */
     protected $fieldFactory;
     protected $modelManager;
-    /** @var  ModelAbstractor */
+    /** @var ModelAbstractor */
     protected $modelAbstractor;
     /**
      * @var array
@@ -60,7 +61,7 @@ abstract class Relation implements RelationAbstractorContract
         $this->setup();
 
         $relatedModelClassName = get_class($this->eloquentRelation->getRelated());
-        $relatedmodelRelationsConfig = array();
+        $relatedmodelRelationsConfig = [];
 
         foreach (config('anavel-crud.models') as $modelConfig) {
             if (is_array($modelConfig) && array_key_exists('model', $modelConfig) && $relatedModelClassName == $modelConfig['model']) {
@@ -79,8 +80,9 @@ abstract class Relation implements RelationAbstractorContract
             /** @var RelationAbstractorContract $relation */
             foreach ($relation->getEditFields($relationKey) as $editGroupName => $editGroup) {
                 $fields[$this->name][$editGroupName] = $editGroup;
-            };
+            }
         }
+
         return $fields;
     }
 
@@ -90,14 +92,13 @@ abstract class Relation implements RelationAbstractorContract
     }
 
     /**
-     * return null|string
+     * return null|string.
      */
     public function getDisplay()
     {
-        if (! empty($this->config['display'])) {
+        if (!empty($this->config['display'])) {
             return $this->config['display'];
         }
-        return null;
     }
 
     public function getPresentation()
@@ -133,6 +134,7 @@ abstract class Relation implements RelationAbstractorContract
 
     /**
      * @param Model $relatedModel
+     *
      * @return Relation
      */
     public function setRelatedModel(Model $relatedModel)

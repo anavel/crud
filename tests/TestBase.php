@@ -1,9 +1,9 @@
 <?php
+
 namespace Anavel\Crud\Tests;
 
-use Orchestra\Testbench\TestCase;
-use DB;
 use Mockery;
+use Orchestra\Testbench\TestCase;
 
 abstract class TestBase extends TestCase
 {
@@ -22,7 +22,7 @@ abstract class TestBase extends TestCase
     /**
      * Define environment setup.
      *
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param \Illuminate\Foundation\Application $app
      *
      * @return void
      */
@@ -31,9 +31,9 @@ abstract class TestBase extends TestCase
         $app['path.base'] = __DIR__.'/..';
         $app['config']->set('database.default', 'sqlite');
         $app['config']->set('database.connections.sqlite', [
-            'driver'   => 'sqlite',
-            'database' => ':memory:',
-            'prefix'    => ''
+            'driver'    => 'sqlite',
+            'database'  => ':memory:',
+            'prefix'    => '',
         ]);
 
         $app['config']->set('anavel.translation_languages', ['gl', 'en', 'es']);
@@ -63,7 +63,6 @@ abstract class TestBase extends TestCase
         return [];
     }
 
-
     public function mock($className)
     {
         return Mockery::mock($className);
@@ -78,7 +77,7 @@ abstract class TestBase extends TestCase
     {
         $migrations = \DB::select('SELECT * FROM migrations');
 
-        $fi = new \FilesystemIterator(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .self::MIGRATIONS_PATH, \FilesystemIterator::SKIP_DOTS);
+        $fi = new \FilesystemIterator(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.self::MIGRATIONS_PATH, \FilesystemIterator::SKIP_DOTS);
 
         $this->assertCount(iterator_count($fi), $migrations);
     }
