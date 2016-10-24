@@ -1,4 +1,5 @@
 <?php
+
 namespace Anavel\Crud\Contracts\Abstractor;
 
 use FormManager\ElementInterface;
@@ -27,7 +28,7 @@ interface Model
     public function getConfig();
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isSoftDeletes();
 
@@ -42,8 +43,9 @@ interface Model
     public function getDetailFields();
 
     /**
-     * @param bool $withForeignKeys
+     * @param bool   $withForeignKeys
      * @param string $arrayKey
+     *
      * @return array
      */
     public function getEditFields($withForeignKeys = false, $arrayKey = 'main');
@@ -55,12 +57,14 @@ interface Model
 
     /**
      * @param string $action
+     *
      * @return ElementInterface
      */
     public function getForm($action);
 
     /**
      * @param Request $request
+     *
      * @return mixed
      */
     public function persist(Request $request);
@@ -71,8 +75,9 @@ interface Model
     public function getValidationRules();
 
     /**
-     * @param string $action
+     * @param string     $action
      * @param bool|false $withForeignKeys
+     *
      * @return array
      */
     public function getColumns($action, $withForeignKeys = false);
