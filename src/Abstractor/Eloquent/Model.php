@@ -384,7 +384,7 @@ class Model implements ModelAbstractorContract
 
     protected function getReadOnlyColumns()
     {
-        $columns = [LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT];
+        $columns = [LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT, 'deleted_at'];
 
         $columns[] = $this->dbal->getModel()->getKeyName();
 
