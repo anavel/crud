@@ -116,7 +116,7 @@ class MiniCrud extends Relation
         $this->readConfig('edit');
 
         if (!empty($columns)) {
-            $readOnly = [Model::CREATED_AT, Model::UPDATED_AT];
+            $readOnly = [Model::CREATED_AT, Model::UPDATED_AT, 'deleted_at'];
 
             //Add field for model deletion
             $config = [
