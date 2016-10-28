@@ -1,4 +1,5 @@
 <?php
+
 namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
 use Anavel\Crud\Abstractor\Eloquent\Relation\MiniCrudSingle;
@@ -8,20 +9,19 @@ use Mockery;
 use Mockery\Mock;
 use phpmock\mockery\PHPMockery;
 
-
 class MiniCrudSingleTest extends TestBase
 {
-    /** @var  MiniCrudSingle */
+    /** @var MiniCrudSingle */
     protected $sut;
-    /** @var  Mock */
+    /** @var Mock */
     protected $relationMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $modelManagerMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $fieldFactoryMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $modelAbstractorMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $requestMock;
 
     protected $wrongConfig;
@@ -31,7 +31,7 @@ class MiniCrudSingleTest extends TestBase
     {
         parent::setUp();
 
-        $this->wrongConfig = require __DIR__ . '/../../wrong-config.php';
+        $this->wrongConfig = require __DIR__.'/../../wrong-config.php';
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
         $this->fieldFactoryMock = $this->mock('Anavel\Crud\Contracts\Abstractor\FieldFactory');
@@ -50,7 +50,7 @@ class MiniCrudSingleTest extends TestBase
     //We can not do the construct in the setup because get_class needs to be mocked differently each time
     public function buildRelation()
     {
-        $config = require __DIR__ . '/../../config.php';
+        $config = require __DIR__.'/../../config.php';
         $this->sut = new MiniCrudSingle(
             $config['Users']['relations']['group'],
             $this->modelManagerMock,
@@ -76,7 +76,6 @@ class MiniCrudSingleTest extends TestBase
         $this->buildRelation();
     }
 
-
     public function test_get_edit_fields_returns_array()
     {
         $this->relationMock->shouldReceive('getRelated', 'getPlainForeignKey', 'getPlainMorphType', 'getParent',
@@ -86,7 +85,7 @@ class MiniCrudSingleTest extends TestBase
         $this->modelAbstractorMock->shouldReceive('getColumns')->times(1)->andReturn(
             [
                 'columname' => $columnMock = $this->mock('Doctrine\DBAL\Schema\Column'),
-                '__delete'  => $columnMock = $this->mock('Doctrine\DBAL\Schema\Column')
+                '__delete'  => $columnMock = $this->mock('Doctrine\DBAL\Schema\Column'),
             ]
         );
 

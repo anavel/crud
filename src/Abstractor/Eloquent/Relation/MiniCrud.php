@@ -1,11 +1,11 @@
 <?php
+
 namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
 use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
 use Anavel\Crud\Abstractor\Eloquent\Traits\HandleFiles;
 use Anavel\Crud\Contracts\Abstractor\Field;
 use Anavel\Crud\Contracts\Abstractor\Relation as RelationContract;
-use App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -18,12 +18,12 @@ class MiniCrud extends Relation
     /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
     protected $dbal;
 
-    /** @var  Collection */
+    /** @var Collection */
     protected $results;
 
-    protected $compatibleEloquentRelations = array(
-        'Illuminate\Database\Eloquent\Relations\HasMany'
-    );
+    protected $compatibleEloquentRelations = [
+        'Illuminate\Database\Eloquent\Relations\HasMany',
+    ];
 
     /**
      * @return Collection
@@ -33,6 +33,7 @@ class MiniCrud extends Relation
         if (empty($this->results)) {
             return $this->results = $this->eloquentRelation->getResults();
         }
+
         return $this->results;
     }
 
@@ -97,7 +98,7 @@ class MiniCrud extends Relation
                             } else {
                                 $tempFields[$editGroupName] = $editGroup;
                             }
-                        };
+                        }
                     }
                 }
 
@@ -119,12 +120,12 @@ class MiniCrud extends Relation
 
             //Add field for model deletion
             $config = [
-                'name' => '__delete',
+                'name'         => '__delete',
                 'presentation' => 'Delete',
-                'form_type' => 'checkbox',
-                'no_validate' => true,
-                'validation' => null,
-                'functions' => null
+                'form_type'    => 'checkbox',
+                'no_validate'  => true,
+                'validation'   => null,
+                'functions'    => null,
             ];
 
             /** @var Field $field */
@@ -146,12 +147,12 @@ class MiniCrud extends Relation
                 }
 
                 $config = [
-                    'name' => $columnName,
-                    'presentation' => $this->name . ' ' . ucfirst(transcrud($columnName)),
-                    'form_type' => $formType,
-                    'no_validate' => true,
-                    'validation' => null,
-                    'functions' => null
+                    'name'         => $columnName,
+                    'presentation' => $this->name.' '.ucfirst(transcrud($columnName)),
+                    'form_type'    => $formType,
+                    'no_validate'  => true,
+                    'validation'   => null,
+                    'functions'    => null,
                 ];
 
                 $config = $this->setConfig($config, $columnName);
@@ -168,15 +169,15 @@ class MiniCrud extends Relation
                     $field = $this->fieldFactory
                         ->setColumn($column)
                         ->setConfig([
-                            'name' => $columnName . '__delete',
+                            'name'         => $columnName.'__delete',
                             'presentation' => null,
-                            'form_type' => 'checkbox',
-                            'no_validate' => true,
-                            'validation' => null,
-                            'functions' => null
+                            'form_type'    => 'checkbox',
+                            'no_validate'  => true,
+                            'validation'   => null,
+                            'functions'    => null,
                         ])
                         ->get();
-                    $fields[$columnName . '__delete'] = $field;
+                    $fields[$columnName.'__delete'] = $field;
                 }
             }
         }
@@ -186,6 +187,7 @@ class MiniCrud extends Relation
 
     /**
      * @param array|null $relationArray
+     *
      * @return mixed
      */
     public function persist(array $relationArray = null, Request $request)
@@ -220,12 +222,12 @@ class MiniCrud extends Relation
                     $fieldName = $field->getName();
 
                     if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
-                        $handleResult = $this->handleField($request, $relationModel, $fieldsBase, $this->name . ".$relationIndex", $fieldName);
-                        if (! empty($handleResult['skip'])) {
+                        $handleResult = $this->handleField($request, $relationModel, $fieldsBase, $this->name.".$relationIndex", $fieldName);
+                        if (!empty($handleResult['skip'])) {
                             $skip = $handleResult['skip'];
                             unset($relationArray[$relationIndex][$skip]);
                         }
-                        if (! empty($handleResult['requestValue'])) {
+                        if (!empty($handleResult['requestValue'])) {
                             $relationArray[$relationIndex][$fieldName] = $handleResult['requestValue'];
                         }
                     }
@@ -305,6 +307,7 @@ class MiniCrud extends Relation
 
     /**
      * @param array $fields
+     *
      * @return array
      */
     public function addSecondaryRelationFields(array $fields)
@@ -317,7 +320,7 @@ class MiniCrud extends Relation
                 } else {
                     $tempFields[$editGroupName] = $editGroup;
                 }
-            };
+            }
         }
         foreach ($fields[$this->name] as $groupKey => $mainFields) {
             $combinedFields = array_merge($mainFields, $tempFields);

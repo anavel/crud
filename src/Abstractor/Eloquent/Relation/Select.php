@@ -1,8 +1,8 @@
 <?php
+
 namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
 use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
-use App;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -11,9 +11,9 @@ class Select extends Relation
 {
     use CheckRelationCompatibility;
 
-    protected $compatibleEloquentRelations = array(
-        'Illuminate\Database\Eloquent\Relations\BelongsTo'
-    );
+    protected $compatibleEloquentRelations = [
+        'Illuminate\Database\Eloquent\Relations\BelongsTo',
+    ];
 
     public function setup()
     {
@@ -23,6 +23,7 @@ class Select extends Relation
 
     /**
      * @param string|null $arrayKey
+     *
      * @return array
      */
     public function getEditFields($arrayKey = 'main')
@@ -66,11 +67,13 @@ class Select extends Relation
     {
         $select = [];
         $select[$arrayKey][] = $field;
+
         return $select;
     }
 
     /**
      * @param array|null $relationArray
+     *
      * @return mixed
      */
     public function persist(array $relationArray = null, Request $request)
@@ -80,6 +83,7 @@ class Select extends Relation
 
     /**
      * @param Model $result
+     *
      * @return string
      */
     protected function setDisplay($result)
@@ -92,8 +96,10 @@ class Select extends Relation
                 }
                 $displayString .= $result->getAttribute($display);
             }
+
             return $displayString;
         }
+
         return $result->getAttribute($this->config['display']);
     }
 
@@ -103,11 +109,11 @@ class Select extends Relation
     protected function getConfig()
     {
         return [
-            'name' => $this->eloquentRelation->getForeignKey(),
+            'name'         => $this->eloquentRelation->getForeignKey(),
             'presentation' => $this->getPresentation(),
-            'form_type' => 'select',
-            'validation' => null,
-            'functions' => null
+            'form_type'    => 'select',
+            'validation'   => null,
+            'functions'    => null,
         ];
     }
 
@@ -115,14 +121,16 @@ class Select extends Relation
     {
         $results = $this->eloquentRelation->getResults();
 
-        if (! empty($results)) {
+        if (!empty($results)) {
             $field->setValue($results->getKey());
         }
+
         return $field;
     }
 
     /**
      * @param \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal
+     *
      * @return Column
      */
     protected function getColumn($dbal)

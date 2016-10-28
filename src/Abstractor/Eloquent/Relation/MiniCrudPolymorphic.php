@@ -1,14 +1,14 @@
 <?php
+
 namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
-use App;
 use Illuminate\Database\Eloquent\Model;
 
 class MiniCrudPolymorphic extends MiniCrud
 {
-    protected $compatibleEloquentRelations = array(
-        'Illuminate\Database\Eloquent\Relations\MorphMany'
-    );
+    protected $compatibleEloquentRelations = [
+        'Illuminate\Database\Eloquent\Relations\MorphMany',
+    ];
 
     protected function skipField($columnName, $key)
     {
@@ -23,6 +23,7 @@ class MiniCrudPolymorphic extends MiniCrud
         if ($key === 'emptyResult' && ($columnName === $this->eloquentRelation->getParent()->getKeyName())) {
             return true;
         }
+
         return false;
     }
 
