@@ -34,12 +34,24 @@
             {!! $field->input !!}
         </div>
 
-        @if($field instanceof FormManager\Fields\File && ! empty($field->val()))
+        @if($field instanceof FormManager\Fields\File)
 
-            <span class="input-group-btn"><a href="{{  url(config('anavel-crud.uploads_path')) . DIRECTORY_SEPARATOR .  $field->val() }}"
-                                             target="_blank" class="btn btn-primary"><i
-                            class="glyphicon glyphicon-eye-open"></i></a></span>
-
+            <span class="input-group-btn">
+            @if (empty($field->val()) && $canTakeFileFromUploads)
+                <a href="#" class="btn btn-primary">
+                    <i class="glyphicon glyphicon-folder-open"></i>
+                </a>
+            @else
+                @if ($canTakeFileFromUploads)
+                <a href="#" class="btn btn-primary">
+                    <i class="glyphicon glyphicon-folder-open"></i>
+                </a>
+                @endif
+                <a href="{{  url(config('anavel-crud.uploads_path')) . DIRECTORY_SEPARATOR .  $field->val() }}" target="_blank" class="btn btn-primary">
+                    <i class="glyphicon glyphicon-eye-open"></i>
+                </a>
+            @endif
+            </span>
         @endif
     </div>
 @endif

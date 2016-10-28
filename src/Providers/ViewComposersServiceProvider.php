@@ -22,5 +22,6 @@ class ViewComposersServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->view->composer('anavel-crud::molecules.sidebar.default', 'Anavel\Crud\View\Composers\SidebarComposer');
+        $this->app->view->composer('anavel-crud::atoms.forms.field', 'Anavel\Crud\View\Composers\FormFieldComposer');
     }
 }
