@@ -1,29 +1,27 @@
 <?php
+
 namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
 use Anavel\Crud\Abstractor\Eloquent\Relation\SelectMultiple;
-use Anavel\Crud\Repository\Criteria\InArrayCriteria;
 use Anavel\Crud\Tests\Models\User;
 use Anavel\Crud\Tests\TestBase;
 use Illuminate\Database\Eloquent\Collection;
 use Mockery;
 use Mockery\Mock;
-use Illuminate\Database\Eloquent\Model as LaravelModel;
-
 
 class SelectMultipleTest extends TestBase
 {
-    /** @var  SelectMultiple */
+    /** @var SelectMultiple */
     protected $sut;
-    /** @var  Mock */
+    /** @var Mock */
     protected $relationMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $modelManagerMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $fieldMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $modelAbstractorMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $requestMock;
 
     protected $wrongConfig;
@@ -32,8 +30,8 @@ class SelectMultipleTest extends TestBase
     {
         parent::setUp();
 
-        $config = require __DIR__ . '/../../config.php';
-        $this->wrongConfig = require __DIR__ . '/../../wrong-config.php';
+        $config = require __DIR__.'/../../config.php';
+        $this->wrongConfig = require __DIR__.'/../../wrong-config.php';
 
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
@@ -118,8 +116,6 @@ class SelectMultipleTest extends TestBase
             $this->fieldMock
         );
     }
-
-
 
     public function test_throws_exception_if_name_is_not_set_in_config()
     {

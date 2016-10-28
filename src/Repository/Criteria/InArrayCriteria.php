@@ -1,4 +1,5 @@
 <?php
+
 namespace Anavel\Crud\Repository\Criteria;
 
 use ANavallaSuiza\Laravel\Database\Contracts\Repository\Criteria;
@@ -6,7 +7,6 @@ use ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository;
 
 class InArrayCriteria implements Criteria
 {
-
     /**
      * @var string
      */
