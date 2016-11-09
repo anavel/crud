@@ -1,8 +1,9 @@
 <?php
+
 namespace Anavel\Crud\Abstractor\Eloquent;
 
-use Anavel\Crud\Contracts\Abstractor\FieldFactory as FieldAbstractorFactoryContract;
 use Anavel\Crud\Abstractor\Exceptions\FactoryException;
+use Anavel\Crud\Contracts\Abstractor\FieldFactory as FieldAbstractorFactoryContract;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\Type as DbalType;
 use FormManager\FactoryInterface as FormManagerFactory;
@@ -27,7 +28,7 @@ class FieldFactory implements FieldAbstractorFactoryContract
     /**
      * @var array
      */
-    protected $databaseTypeToFormType = array(
+    protected $databaseTypeToFormType = [
         DbalType::INTEGER  => 'number',
         DbalType::SMALLINT => 'number',
         DbalType::BIGINT   => 'number',
@@ -44,17 +45,15 @@ class FieldFactory implements FieldAbstractorFactoryContract
         'hidden',
         'select',
         'file',
-        'money'
-    );
+        'money',
+    ];
 
     public function __construct(FormManagerFactory $factory)
     {
         $this->factory = $factory;
     }
 
-    /**
-     *
-     */
+
     public function setColumn(Column $column)
     {
         $this->column = $column;
@@ -62,9 +61,7 @@ class FieldFactory implements FieldAbstractorFactoryContract
         return $this;
     }
 
-    /**
-     *
-     */
+
     public function setConfig(array $config)
     {
         $this->config = $config;
@@ -72,16 +69,14 @@ class FieldFactory implements FieldAbstractorFactoryContract
         return $this;
     }
 
-    /**
-     *
-     */
+
     public function get()
     {
         $formElement = $this->getFormElement();
 
         $field = new Field($this->column, $formElement, $this->config['name'], $this->config['presentation']);
 
-        if (! empty($this->config['validation'])) {
+        if (!empty($this->config['validation'])) {
             if ($this->config['validation'] === 'no_validate') {
                 $this->config['no_validate'] = true;
             } else {
@@ -89,11 +84,11 @@ class FieldFactory implements FieldAbstractorFactoryContract
             }
         }
 
-        if (! empty($this->config['functions'])) {
+        if (!empty($this->config['functions'])) {
             $field->setFunctions($this->config['functions']);
         }
 
-        if (! empty($this->config['no_validate']) && $this->config['no_validate'] === true) {
+        if (!empty($this->config['no_validate']) && $this->config['no_validate'] === true) {
             $field->noValidate(true);
         }
 
@@ -107,7 +102,7 @@ class FieldFactory implements FieldAbstractorFactoryContract
             if (in_array('required', $rules)) {
                 $field->setFormElementAttributes(
                     [
-                        'required' => true
+                        'required' => true,
                     ]
                 );
             }
@@ -118,15 +113,15 @@ class FieldFactory implements FieldAbstractorFactoryContract
 
     protected function getFormElement()
     {
-        if (! empty($this->config['form_type'])) {
-            if (! in_array($this->config['form_type'], $this->databaseTypeToFormType)) {
-                throw new FactoryException("Unknown form type " . $this->config['form_type']);
+        if (!empty($this->config['form_type'])) {
+            if (!in_array($this->config['form_type'], $this->databaseTypeToFormType)) {
+                throw new FactoryException('Unknown form type '.$this->config['form_type']);
             }
 
             $formElementType = $this->config['form_type'];
         } else {
-            if (! array_key_exists($this->column->getType()->getName(), $this->databaseTypeToFormType)) {
-                throw new FactoryException("No form type found for database type " . $this->column->getType()->getName());
+            if (!array_key_exists($this->column->getType()->getName(), $this->databaseTypeToFormType)) {
+                throw new FactoryException('No form type found for database type '.$this->column->getType()->getName());
             }
 
             $formElementType = $this->databaseTypeToFormType[$this->column->getType()->getName()];
@@ -139,7 +134,7 @@ class FieldFactory implements FieldAbstractorFactoryContract
 
         $formElement = $this->factory->get($formElementType, []);
 
-        if (! empty($this->config['attr']) && is_array($this->config['attr'])) {
+        if (!empty($this->config['attr']) && is_array($this->config['attr'])) {
             $formElement->attr($this->config['attr']);
         }
 
@@ -150,7 +145,7 @@ class FieldFactory implements FieldAbstractorFactoryContract
         }
 
         if ($formElementType === 'textarea') {
-            $formElement->class('form-control ' . config('anavel-crud.text_editor'));
+            $formElement->class('form-control '.config('anavel-crud.text_editor'));
         }
 
         if ($formElementType === 'checkbox') {
@@ -158,7 +153,7 @@ class FieldFactory implements FieldAbstractorFactoryContract
         }
 
         if (isset($this->config['defaults'])) {
-            if (! is_array($this->config['defaults'])) {
+            if (!is_array($this->config['defaults'])) {
                 $formElement->val(transcrud($this->config['defaults']));
             } else {
                 $defaults = [];

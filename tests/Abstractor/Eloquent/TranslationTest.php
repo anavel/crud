@@ -1,4 +1,5 @@
 <?php
+
 namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
 use Anavel\Crud\Abstractor\Eloquent\Relation\Translation;
@@ -7,30 +8,28 @@ use Anavel\Crud\Tests\Models\UserTranslations;
 use Anavel\Crud\Tests\TestBase;
 use Mockery;
 use Mockery\Mock;
-use Illuminate\Database\Eloquent\Model as LaravelModel;
 use phpmock\mockery\PHPMockery;
-
 
 class TranslationTest extends TestBase
 {
-    /** @var  Translation */
+    /** @var Translation */
     protected $sut;
-    /** @var  Mock */
+    /** @var Mock */
     protected $relationMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $modelManagerMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $fieldFactoryMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $modelAbstractorMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $requestMock;
 
     public function setUp()
     {
         parent::setUp();
 
-        $config = require __DIR__ . '/../../config.php';
+        $config = require __DIR__.'/../../config.php';
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
         $this->fieldFactoryMock = $this->mock('Anavel\Crud\Contracts\Abstractor\FieldFactory');
@@ -86,7 +85,7 @@ class TranslationTest extends TestBase
                 'id'      => $columnMock,
                 'user_id' => $columnMock,
                 'locale'  => $columnMock,
-                'bio'     => $columnMock
+                'bio'     => $columnMock,
             ]);
 
         $fields = $this->sut->getEditFields();
@@ -99,7 +98,7 @@ class TranslationTest extends TestBase
         $this->assertArrayHasKey('en', $fields['translations']);
 
         $this->assertInternalType('array', $fields['translations']['gl']);
-        foreach($fields['translations']['gl'] as $element) {
+        foreach ($fields['translations']['gl'] as $element) {
             $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $element);
         }
     }
@@ -108,13 +107,13 @@ class TranslationTest extends TestBase
     {
         $inputArray = [
             'es' => [
-                'locale' => 'es',
+                'locale'     => 'es',
                 'otherField' => 'something',
             ],
             'en' => [
-                'locale' => 'en',
+                'locale'     => 'en',
                 'otherField' => '',
-            ]
+            ],
         ];
 
         $this->relationMock->shouldReceive('getResults')->andReturn(collect());
@@ -132,13 +131,13 @@ class TranslationTest extends TestBase
     {
         $inputArray = [
             'es' => [
-                'locale' => 'es',
+                'locale'     => 'es',
                 'otherField' => 'something',
             ],
             'en' => [
-                'locale' => 'en',
+                'locale'     => 'en',
                 'otherField' => '',
-            ]
+            ],
         ];
 
         $modelMock = $this->mock(UserTranslations::class);
