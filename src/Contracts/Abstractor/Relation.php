@@ -1,4 +1,5 @@
 <?php
+
 namespace Anavel\Crud\Contracts\Abstractor;
 
 use Anavel\Crud\Abstractor\Exceptions\RelationException;
@@ -34,12 +35,14 @@ interface Relation
 
     /**
      * @param array $fields
+     *
      * @return array
      */
     public function addSecondaryRelationFields(array $fields);
 
     /**
      * @param array|null $relationArray
+     *
      * @return mixed
      */
     public function persist(array $relationArray = null, Request $request);
@@ -61,6 +64,7 @@ interface Relation
 
     /**
      * @param Model $relatedModel
+     *
      * @return Relation
      */
     public function setRelatedModel(\Illuminate\Database\Eloquent\Model $model);

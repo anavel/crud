@@ -1,20 +1,14 @@
 <?php
+
 namespace Anavel\Crud\Http\Form;
 
 use Anavel\Crud\Contracts\Form\Generator as GeneratorContract;
-use Anavel\Crud\Abstractor\Eloquent\Field;
 use Doctrine\DBAL\Types\Type as DbalType;
 use FormManager\FactoryInterface;
 use Illuminate\Support\Collection;
-use RecursiveArrayIterator;
-use RecursiveIteratorIterator;
-use Request;
 
 class Generator implements GeneratorContract
 {
-    /**
-     *
-     */
     protected $factory;
 
     /**
@@ -30,7 +24,7 @@ class Generator implements GeneratorContract
     /**
      * @var array
      */
-    protected $databaseTypeToFormType = array(
+    protected $databaseTypeToFormType = [
         DbalType::INTEGER  => 'number',
         DbalType::STRING   => 'text',
         DbalType::TEXT     => 'textarea',
@@ -43,13 +37,13 @@ class Generator implements GeneratorContract
         'email',
         'password',
         'hidden',
-        'select'
-    );
+        'select',
+    ];
 
     public function __construct(FactoryInterface $factory)
     {
         $this->factory = $factory;
-        $this->fields = array();
+        $this->fields = [];
     }
 
     public function setModelFields(array $fields)
@@ -90,11 +84,11 @@ class Generator implements GeneratorContract
             'action'  => $action,
             'enctype' => 'multipart/form-data',
             'method'  => 'post',
-            'class'   => 'form-horizontal'
+            'class'   => 'form-horizontal',
         ]);
 
 
-        $formFields = array();
+        $formFields = [];
         foreach ($this->fields as $fieldGroupName => $fieldGroup) {
             $tempFields = $this->addFormFields($fieldGroup, $fieldGroupName);
             $formFields[key($tempFields)] = $this->factory->get('group', [$tempFields[key($tempFields)]]);
@@ -108,7 +102,7 @@ class Generator implements GeneratorContract
 
     public function getValidationRules()
     {
-        $rules = array();
+        $rules = [];
 
         foreach ($this->fields as $fieldGroupName => $fieldGroup) {
             foreach ($fieldGroup as $fieldKey => $field) {
@@ -126,12 +120,13 @@ class Generator implements GeneratorContract
     /**
      * @param array $fields
      * @param $key
+     *
      * @return array
      */
     protected function addFormFields(array $fields, $key)
     {
-        $formFields = array();
-        $tempFields = array();
+        $formFields = [];
+        $tempFields = [];
 
         foreach ($fields as $fieldKey => $field) {
             if (is_array($field)) {
@@ -142,13 +137,14 @@ class Generator implements GeneratorContract
             }
         }
         $formFields[$key] = $tempFields;
+
         return $formFields;
     }
 
     protected function addValidationRules(array $fields, $key)
     {
-        $rules = array();
-        $tempFields = array();
+        $rules = [];
+        $tempFields = [];
         foreach ($fields as $fieldKey => $field) {
             if (is_array($field)) {
                 $group = $this->addValidationRules($field, $fieldKey);
@@ -158,6 +154,7 @@ class Generator implements GeneratorContract
             }
         }
         $rules[$key] = $tempFields;
+
         return $rules;
     }
 }
