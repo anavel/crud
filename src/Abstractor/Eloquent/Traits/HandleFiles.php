@@ -3,19 +3,37 @@
 
 namespace Anavel\Crud\Abstractor\Eloquent\Traits;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use Illuminate\Http\Request;
 
 trait HandleFiles
 {
-    protected function handleField(Request $request, $item, array $fields, $groupName, $fieldName)
+    /**
+     * @param Request $request
+     * @param Model $item
+     * @param array $fields
+     * @param $groupName
+     * @param $fieldName
+     * @param bool $mustDeleteFilesInFilesystem
+     * @return array
+     * @throws \Exception
+     */
+    protected function handleField(Request $request, $item, array $fields, $groupName, $fieldName, $mustDeleteFilesInFilesystem=false)
     {
+
+
+        $normalizeGroupName = str_replace('.','#',$groupName);
+        $contentFromUploadedField="uploaded-content.{$normalizeGroupName}#{$fieldName}#";
         $modelFolder = $this->slug . DIRECTORY_SEPARATOR;
         $basePath = base_path(DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR .config('anavel-crud.uploads_path'));
         $modelPath = $basePath . $modelFolder;
         $skip = null;
         $requestValue = null;
+
+
         if (! empty($fields["{$fieldName}__delete"])) {
             //We never want to save this field, it doesn't exist in the DB
             $skip = "{$fieldName}__delete";
@@ -25,7 +43,7 @@ trait HandleFiles
             if (! empty($request->input("{$groupName}.{$fieldName}__delete"))) {
                 $adapter = new Local($basePath);
                 $filesystem = new Filesystem($adapter);
-                if ($filesystem->has($item->$fieldName)) {
+                if ($filesystem->has($item->$fieldName) && $mustDeleteFilesInFilesystem) {
                     $filesystem->delete($item->$fieldName);
                 }
 
@@ -39,7 +57,12 @@ trait HandleFiles
                 ];
             }
         }
-        if ($request->hasFile($groupName .'.'.$fieldName)) {
+
+        if($request->has($contentFromUploadedField))
+        {
+            $requestValue = $request->input($contentFromUploadedField);
+
+        }elseif ($request->hasFile($groupName .'.'.$fieldName)) {
             $fileName = pathinfo($request->file($groupName .'.'.$fieldName)->getClientOriginalName(), PATHINFO_FILENAME);
             $extension = pathinfo($request->file($groupName .'.'.$fieldName)->getClientOriginalName(), PATHINFO_EXTENSION);
 

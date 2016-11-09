@@ -5,6 +5,7 @@ use Anavel\Crud\Contracts\Abstractor\ModelFactory as ModelAbstractorFactoryContr
 use Anavel\Crud\Contracts\Abstractor\RelationFactory as RelationAbstractorFactoryContract;
 use Anavel\Crud\Contracts\Abstractor\FieldFactory as FieldAbstractorFactoryContract;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
+use Anavel\Foundation\Contracts\Anavel;
 use EasySlugger\Slugger;
 use Anavel\Crud\Contracts\Form\Generator as FormGenerator;
 use Anavel\Crud\Abstractor\Exceptions\FactoryException;
@@ -18,17 +19,32 @@ class ModelFactory implements ModelAbstractorFactoryContract
     protected $slugger;
 
     protected $allConfiguredModels;
+
+    /**
+     * @var Anavel
+     */
+    protected $anavel;
     /**
      * @var FormGenerator
      */
     private $generator;
 
+    /**
+     * ModelFactory constructor.
+     * @param array $allConfiguredModels
+     * @param ModelManager $modelManager
+     * @param RelationAbstractorFactoryContract $relationFactory
+     * @param FieldAbstractorFactoryContract $fieldFactory
+     * @param FormGenerator $generator
+     * @param Anavel $anavel
+     */
     public function __construct(
         array $allConfiguredModels,
         ModelManager $modelManager,
         RelationAbstractorFactoryContract $relationFactory,
         FieldAbstractorFactoryContract $fieldFactory,
-        FormGenerator $generator
+        FormGenerator $generator,
+        Anavel $anavel
     ) {
         $this->allConfiguredModels = $allConfiguredModels;
         $this->modelManager = $modelManager;
@@ -36,6 +52,7 @@ class ModelFactory implements ModelAbstractorFactoryContract
         $this->fieldFactory = $fieldFactory;
         $this->slugger = new Slugger();
         $this->generator = $generator;
+        $this->anavel  = $anavel;
     }
 
     /**
@@ -58,7 +75,9 @@ class ModelFactory implements ModelAbstractorFactoryContract
                     $modelNamespace = $config;
                 }
 
-                $model = new Model($config, $this->modelManager->getAbstractionLayer($modelNamespace), $this->relationFactory, $this->fieldFactory, $this->generator);
+                $model = new Model($config, $this->modelManager->getAbstractionLayer($modelNamespace),
+                    $this->relationFactory, $this->fieldFactory, $this->generator,
+                    !$this->anavel->hasModule('Anavel\Uploads\UploadsModuleProvider'));
 
                 $model->setSlug($modelSlug)
                     ->setName($modelName);

@@ -220,7 +220,8 @@ class MiniCrud extends Relation
                     $fieldName = $field->getName();
 
                     if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
-                        $handleResult = $this->handleField($request, $relationModel, $fieldsBase, $this->name . ".$relationIndex", $fieldName);
+                        $handleResult = $this->handleField($request, $relationModel, $fieldsBase,
+                            $this->name . ".$relationIndex", $fieldName, $this->modelAbstractor->mustDeleteFilesInFilesystem());
                         if (! empty($handleResult['skip'])) {
                             $skip = $handleResult['skip'];
                             unset($relationArray[$relationIndex][$skip]);

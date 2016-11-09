@@ -38,12 +38,18 @@ class Model implements ModelAbstractorContract
     protected $name;
     protected $instance;
 
+    /**
+     * @var bool
+     */
+    protected $mustDeleteFilesInFilesystem;
+
     public function __construct(
         $config,
         AbstractionLayer $dbal,
         RelationFactoryContract $relationFactory,
         FieldFactoryContract $fieldFactory,
-        FormGenerator $generator
+        FormGenerator $generator,
+        $mustDeleteFilesInFilesystem = false
     ) {
         if (is_array($config)) {
             $this->model = $config['model'];
@@ -57,6 +63,7 @@ class Model implements ModelAbstractorContract
         $this->relationFactory = $relationFactory;
         $this->fieldFactory = $fieldFactory;
         $this->generator = $generator;
+        $this->mustDeleteFilesInFilesystem = $mustDeleteFilesInFilesystem;
     }
 
     public function setSlug($slug)
@@ -442,7 +449,7 @@ class Model implements ModelAbstractorContract
                 }
 
                 if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
-                    $handleResult = $this->handleField($request, $item, $fields['main'], 'main', $fieldName);
+                    $handleResult = $this->handleField($request, $item, $fields['main'], 'main', $fieldName,$this->mustDeleteFilesInFilesystem);
                     if (! empty($handleResult['skip'])) {
                         $skip = $handleResult['skip'];
                     }
@@ -474,8 +481,11 @@ class Model implements ModelAbstractorContract
             foreach ($relations as $relationKey => $relation) {
                 if ($relation instanceof Collection) {
                     $input = $request->input($relationKey);
-                    $relation->get('relation')->persist($input, $request);
+                    /** @var $relationInstance Relation */
+                    $relationInstance = $relation->get('relation');
+                    $relationInstance->persist($input, $request);
                 } else {
+                    /** @var $relation Relation */
                     $relation->persist($request->input($relationKey), $request);
                 }
             }
@@ -545,5 +555,13 @@ class Model implements ModelAbstractorContract
         }
 
         return $value;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function mustDeleteFilesInFilesystem()
+    {
+        return $this->mustDeleteFilesInFilesystem;
     }
 }

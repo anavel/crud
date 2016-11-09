@@ -13,7 +13,7 @@
     @empty
     @endforelse
 </ul>
-<div class="tab-content">
+<div class="tab-content pad">
     <div role="tabpanel" class="tab-pane active" id="main">
         @unless(empty($form['main']))
         @foreach($form['main'] as $field)
@@ -60,3 +60,79 @@
     @empty
     @endforelse
 </div>
+
+    <div id="uploadsModal" class="modal fade " role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Uploads moda</h4>
+                </div>
+                <div class="modal-body">
+                    <iframe style="width: 100%; border: none; height: 500px"> </iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+@section('footer-scripts')
+    @parent
+    <script type="text/javascript">
+
+        var activeSelector = undefined;
+        $(function () {
+
+
+            $('#uploadsModal').on('show.bs.modal', function(event)
+            {
+                var modal = $(this);
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                activeSelector = button;
+                var frameUrl =button.data('frameUrl');
+                modal.find('iframe').attr('src',frameUrl);
+                var inputId = activeSelector.data('inputId');
+                var inputFile  = $('#'+ inputId);
+                inputFile.replaceWith( inputFile.val('').clone(true));
+
+            });
+        });
+
+        window.fileSelector = function(url)
+        {
+            $('#uploadsModal').modal('hide');
+            var inputId = activeSelector.data('inputId');
+
+            var inputFile  = $('#'+ inputId);
+            var inputName = inputFile.attr('name').replace(/[\[\]']+/g,'#');
+            var name = 'uploaded-content['+inputName+']';
+            var filePath = url.replace(/.*\/\/[^\/]*/, '').replace('{{config('anavel-crud.uploads_path')}}','');
+            inputFile.parent().find('.selected-from-uploads').remove();
+            var tpl = '<div class="selected-from-uploads" style="margin-top: 5px">' +
+                    '       <img src="'+url+'" style="width: 100px" /> ' +
+                    '       <br/> ' +
+                    '       <em>{{_('Get from uploads')}} <a href="#" class="delete-upload"><i class="fa fa-trash"/></a></em>' +
+                    '   <input type="hidden" value="'+filePath+'" name="'+name+'" />'
+            '</div>';
+            inputFile.parent().append(tpl);
+
+            inputFile.on('click',function (){
+                $(this).parent().find('.selected-from-uploads').remove();
+
+            } );
+
+            $('.delete-upload').on('click',function (e){
+                e.preventDefault();
+                $(this).parents('.selected-from-uploads').remove();
+                return false;
+            });
+
+        }
+    </script>
+
+@stop

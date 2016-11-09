@@ -76,4 +76,9 @@ interface Model
      * @return array
      */
     public function getColumns($action, $withForeignKeys = false);
+
+    /**
+     * @return bool
+     */
+    public function mustDeleteFilesInFilesystem();
 }
