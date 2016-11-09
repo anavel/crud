@@ -37,6 +37,7 @@ abstract class TestBase extends TestCase
         ]);
 
         $app['config']->set('anavel.translation_languages', ['gl', 'en', 'es']);
+        $app['config']->set('anavel-crud.models', []);
 
         \App::bind('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager', function ($app) {
             return \Mockery::mock('ANavallaSuiza\Laravel\Database\Manager\Eloquent\ModelManager');
