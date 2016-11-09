@@ -1,4 +1,5 @@
 <?php
+
 namespace Anavel\Crud\Repository\Criteria;
 
 use ANavallaSuiza\Laravel\Database\Contracts\Repository\Criteria;

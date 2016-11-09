@@ -22,5 +22,5 @@ return [
     'alert_success_model_destroy_title' => 'Todo ben!',
     'alert_success_model_destroy_text'  => 'Borrouse perfectamente o que querías',
     'modal_delete_title'                => 'Estás seguro/a?',
-    'modal_delete_text'                 => 'Así borrarás este contido para sempre'
+    'modal_delete_text'                 => 'Así borrarás este contido para sempre',
 ];

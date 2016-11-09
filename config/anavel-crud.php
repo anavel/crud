@@ -43,7 +43,7 @@ return [
         'date'     => 'd/m/Y',
         'time'     => 'H:i',
         'datetime' => 'd/m/Y H:i:s',
-        'number'   => '%.2f'
+        'number'   => '%.2f',
     ],
 
     /*
@@ -143,7 +143,6 @@ return [
         ]
         */
     ],
-    'modelsGroups' =>
-        [/*'Blog' => ['Blog Posts', 'Blog Tags']*/]
+    'modelsGroups' => [/*'Blog' => ['Blog Posts', 'Blog Tags']*/],
 
 ];

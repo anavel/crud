@@ -22,5 +22,5 @@ return [
     'alert_success_model_destroy_title' => 'Tot bé!',
     'alert_success_model_destroy_text'  => "L'element fou eliminat correctament",
     'modal_delete_title'                => 'Estàs segur?',
-    'modal_delete_text'                 => 'Aquesta acció esborrarà permanentment aquest contingut'
+    'modal_delete_text'                 => 'Aquesta acció esborrarà permanentment aquest contingut',
 ];
