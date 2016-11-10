@@ -1,16 +1,17 @@
 <?php
+
 namespace Anavel\Crud\Http\Controllers;
 
-use Anavel\Crud\Contracts\Abstractor\Model;
-use Anavel\Foundation\Http\Controllers\Controller;
-use Anavel\Crud\Contracts\Abstractor\ModelFactory as ModelAbstractorFactory;
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
+use Anavel\Crud\Contracts\Abstractor\Model;
+use Anavel\Crud\Contracts\Abstractor\ModelFactory as ModelAbstractorFactory;
 use Anavel\Crud\Contracts\Controllers\CustomController;
 use Anavel\Crud\Contracts\Form\Generator as FormGenerator;
 use Anavel\Crud\Repository\Criteria\OrderByCriteria;
 use Anavel\Crud\Repository\Criteria\SearchCriteria;
-use Illuminate\Http\Request;
+use Anavel\Foundation\Http\Controllers\Controller;
 use App;
+use Illuminate\Http\Request;
 
 class ModelController extends Controller
 {
@@ -34,26 +35,28 @@ class ModelController extends Controller
 
     /**
      * @param Model $modelAbstractor
+     *
      * @return null|CustomController
      */
     private function customController(Model $modelAbstractor)
     {
-        if (! $this instanceof CustomController) { //Avoid infinite recursion
-            if (array_key_exists('controller', $config = $modelAbstractor->getConfig()) && (! empty($config['controller']))) {
+        if (!$this instanceof CustomController) { //Avoid infinite recursion
+            if (array_key_exists('controller', $config = $modelAbstractor->getConfig()) && (!empty($config['controller']))) {
                 /** @var CustomController $controller */
                 $controller = App::make($config['controller']);
                 $controller->setAbstractor($modelAbstractor);
+
                 return $controller;
             }
         }
-        return null;
     }
 
     /**
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @param  string  $model
+     * @param string  $model
+     *
      * @return Response
      */
     public function index(Request $request, $model)
@@ -62,14 +65,14 @@ class ModelController extends Controller
 
         $this->authorizeMethod($modelAbstractor, 'adminIndex');
 
-        if (! empty($customController = $this->customController($modelAbstractor))) {
+        if (!empty($customController = $this->customController($modelAbstractor))) {
             return $customController->index($request, $model);
         }
 
         $repository = $this->modelManager->getRepository($modelAbstractor->getModel());
 
         if ($request->has('search')) {
-            $searchByColumns = array();
+            $searchByColumns = [];
 
             foreach ($modelAbstractor->getListFields()['main'] as $field) {
                 $searchByColumns[] = $field->getName();
@@ -86,14 +89,15 @@ class ModelController extends Controller
 
         return view('anavel-crud::pages.index', [
             'abstractor' => $modelAbstractor,
-            'items' => $items
+            'items'      => $items,
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @param  string  $model
+     * @param string $model
+     *
      * @return Response
      */
     public function create($model)
@@ -102,7 +106,7 @@ class ModelController extends Controller
 
         $this->authorizeMethod($modelAbstractor, 'adminCreate');
 
-        if (! empty($customController = $this->customController($modelAbstractor))) {
+        if (!empty($customController = $this->customController($modelAbstractor))) {
             return $customController->create($model);
         }
 
@@ -110,8 +114,8 @@ class ModelController extends Controller
 
         return view('anavel-crud::pages.create', [
             'abstractor' => $modelAbstractor,
-            'form' => $form,
-            'relations' => $modelAbstractor->getRelations()
+            'form'       => $form,
+            'relations'  => $modelAbstractor->getRelations(),
         ]);
     }
 
@@ -119,7 +123,8 @@ class ModelController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @param  string  $model
+     * @param string  $model
+     *
      * @return Response
      */
     public function store(Request $request, $model)
@@ -128,7 +133,7 @@ class ModelController extends Controller
 
         $this->authorizeMethod($modelAbstractor, 'adminCreate');
 
-        if (! empty($customController = $this->customController($modelAbstractor))) {
+        if (!empty($customController = $this->customController($modelAbstractor))) {
             return $customController->store($request, $model);
         }
 
@@ -143,7 +148,7 @@ class ModelController extends Controller
             'type'  => 'success',
             'icon'  => 'fa-check',
             'title' => trans('anavel-crud::messages.alert_success_model_store_title'),
-            'text'  => trans('anavel-crud::messages.alert_success_model_store_text')
+            'text'  => trans('anavel-crud::messages.alert_success_model_store_text'),
         ]);
 
         return redirect()->route('anavel-crud.model.index', $model);
@@ -152,8 +157,9 @@ class ModelController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  string  $model
-     * @param  int  $id
+     * @param string $model
+     * @param int    $id
+     *
      * @return Response
      */
     public function show($model, $id)
@@ -162,7 +168,7 @@ class ModelController extends Controller
 
         $this->authorizeMethod($modelAbstractor, 'adminShow');
 
-        if (! empty($customController = $this->customController($modelAbstractor))) {
+        if (!empty($customController = $this->customController($modelAbstractor))) {
             return $customController->show($model, $id);
         }
 
@@ -171,15 +177,16 @@ class ModelController extends Controller
 
         return view('anavel-crud::pages.show', [
             'abstractor' => $modelAbstractor,
-            'item' => $item
+            'item'       => $item,
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  string  $model
-     * @param  int  $id
+     * @param string $model
+     * @param int    $id
+     *
      * @return Response
      */
     public function edit($model, $id)
@@ -189,7 +196,7 @@ class ModelController extends Controller
 
         $this->authorizeMethod($modelAbstractor, 'adminUpdate');
 
-        if (! empty($customController = $this->customController($modelAbstractor))) {
+        if (!empty($customController = $this->customController($modelAbstractor))) {
             return $customController->edit($model, $id);
         }
 
@@ -199,9 +206,9 @@ class ModelController extends Controller
 
         return view('anavel-crud::pages.edit', [
             'abstractor' => $modelAbstractor,
-            'form' => $form,
-            'item' => $item,
-            'relations' => $modelAbstractor->getRelations()
+            'form'       => $form,
+            'item'       => $item,
+            'relations'  => $modelAbstractor->getRelations(),
         ]);
     }
 
@@ -209,8 +216,9 @@ class ModelController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  string  $model
-     * @param  int  $id
+     * @param string  $model
+     * @param int     $id
+     *
      * @return Response
      */
     public function update(Request $request, $model, $id)
@@ -219,7 +227,7 @@ class ModelController extends Controller
 
         $this->authorizeMethod($modelAbstractor, 'adminUpdate');
 
-        if (! empty($customController = $this->customController($modelAbstractor))) {
+        if (!empty($customController = $this->customController($modelAbstractor))) {
             return $customController->update($request, $model, $id);
         }
 
@@ -234,7 +242,7 @@ class ModelController extends Controller
             'type'  => 'success',
             'icon'  => 'fa-check',
             'title' => trans('anavel-crud::messages.alert_success_model_update_title'),
-            'text'  => trans('anavel-crud::messages.alert_success_model_update_text')
+            'text'  => trans('anavel-crud::messages.alert_success_model_update_text'),
         ]);
 
         return redirect()->route('anavel-crud.model.edit', [$model, $id]);
@@ -244,8 +252,9 @@ class ModelController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Request $request
-     * @param  string  $model
-     * @param  int  $id
+     * @param string  $model
+     * @param int     $id
+     *
      * @return Response
      */
     public function destroy(Request $request, $model, $id)
@@ -254,7 +263,7 @@ class ModelController extends Controller
 
         $this->authorizeMethod($modelAbstractor, 'adminDestroy');
 
-        if (! empty($customController = $this->customController($modelAbstractor))) {
+        if (!empty($customController = $this->customController($modelAbstractor))) {
             return $customController->destroy($request, $model, $id);
         }
 
@@ -267,7 +276,7 @@ class ModelController extends Controller
             'type'  => 'success',
             'icon'  => 'fa-check',
             'title' => trans('anavel-crud::messages.alert_success_model_destroy_title'),
-            'text'  => trans('anavel-crud::messages.alert_success_model_destroy_text')
+            'text'  => trans('anavel-crud::messages.alert_success_model_destroy_text'),
         ]);
 
         return redirect()->route('anavel-crud.model.index', $model);

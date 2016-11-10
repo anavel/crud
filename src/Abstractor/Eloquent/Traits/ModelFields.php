@@ -1,9 +1,6 @@
 <?php
 
-
 namespace Anavel\Crud\Abstractor\Eloquent\Traits;
-
-use Anavel\Crud\Contracts\Abstractor\Field;
 
 trait ModelFields
 {
@@ -18,16 +15,17 @@ trait ModelFields
      */
     public function readConfig($action)
     {
-        $this->fieldsPresentation = $this->getConfigValue('fields_presentation') ? : [];
-        $this->formTypes = $this->getConfigValue($action, 'form_types') ? : [];
-        $this->validationRules = $this->getConfigValue($action, 'validation') ? : [];
-        $this->functions = $this->getConfigValue($action, 'functions') ? : [];
-        $this->defaults = $this->getConfigValue($action, 'defaults') ? : [];
+        $this->fieldsPresentation = $this->getConfigValue('fields_presentation') ?: [];
+        $this->formTypes = $this->getConfigValue($action, 'form_types') ?: [];
+        $this->validationRules = $this->getConfigValue($action, 'validation') ?: [];
+        $this->functions = $this->getConfigValue($action, 'functions') ?: [];
+        $this->defaults = $this->getConfigValue($action, 'defaults') ?: [];
     }
 
     /**
-     * @param array $config
+     * @param array  $config
      * @param string $columnName
+     *
      * @return array
      */
     public function setConfig(array $config, $columnName)

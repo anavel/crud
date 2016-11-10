@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Anavel\Crud\Contracts\Controllers;
 
 use Anavel\Crud\Contracts\Abstractor\Model;
