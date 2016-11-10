@@ -180,7 +180,6 @@ class Field implements FieldAbstractorContract
         return $this->formField;
     }
 
-
     public function hideValue($value = null)
     {
         if (!is_null($value)) {
@@ -190,7 +189,6 @@ class Field implements FieldAbstractorContract
         return $this->hideValue;
     }
 
-
     public function saveIfEmpty($value = null)
     {
         if (!is_null($value)) {
@@ -199,7 +197,6 @@ class Field implements FieldAbstractorContract
 
         return $this->saveIfEmpty;
     }
-
 
     public function noValidate($value = null)
     {
