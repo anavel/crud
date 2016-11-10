@@ -32,7 +32,7 @@
     "require-dev": {
         "illuminate/database": "^5.1",
         "orchestra/testbench": "~3.1",
-        "phpunit/phpunit": ">=4.0 <=5.6.1",
+        "phpunit/phpunit": "~4.0",
         "mockery/mockery": "0.9.*",
         "whatthejeff/nyancat-phpunit-resultprinter": "~1.2",
         "php-mock/php-mock-mockery": "^1.1"
