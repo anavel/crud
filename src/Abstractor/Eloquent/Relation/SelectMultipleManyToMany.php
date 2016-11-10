@@ -1,10 +1,8 @@
 <?php
+
 namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
 use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
-use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationConfig;
-use Anavel\Crud\Repository\Criteria\InArrayCriteria;
-use App;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Http\Request;
 
@@ -12,9 +10,9 @@ class SelectMultipleManyToMany extends SelectMultiple
 {
     use CheckRelationCompatibility;
 
-    protected $compatibleEloquentRelations = array(
-        'Illuminate\Database\Eloquent\Relations\BelongsToMany'
-    );
+    protected $compatibleEloquentRelations = [
+        'Illuminate\Database\Eloquent\Relations\BelongsToMany',
+    ];
 
     public function setup()
     {
@@ -24,11 +22,12 @@ class SelectMultipleManyToMany extends SelectMultiple
 
     /**
      * @param array|null $relationArray
+     *
      * @return mixed
      */
     public function persist(array $relationArray = null, Request $request)
     {
-        if (! empty($relationArray)) {
+        if (!empty($relationArray)) {
             $array = $relationArray[$this->eloquentRelation->getRelated()->getKeyName()];
             if (in_array('', $array)) {
                 $array = [];
@@ -39,6 +38,7 @@ class SelectMultipleManyToMany extends SelectMultiple
 
     /**
      * @param \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal
+     *
      * @return Column
      */
     protected function getColumn($dbal)

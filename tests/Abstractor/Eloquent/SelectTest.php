@@ -1,4 +1,5 @@
 <?php
+
 namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
 use Anavel\Crud\Abstractor\Eloquent\Relation\Select;
@@ -7,18 +8,17 @@ use Anavel\Crud\Tests\TestBase;
 use Mockery;
 use Mockery\Mock;
 
-
 class SelectTest extends TestBase
 {
-    /** @var  Select */
+    /** @var Select */
     protected $sut;
-    /** @var  Mock */
+    /** @var Mock */
     protected $relationMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $modelManagerMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $fieldMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $modelAbstractorMock;
 
     protected $wrongConfig;
@@ -27,9 +27,9 @@ class SelectTest extends TestBase
     {
         parent::setUp();
 
-        $config = require __DIR__ . '/../../config.php';
+        $config = require __DIR__.'/../../config.php';
 
-        $this->wrongConfig = require __DIR__ . '/../../wrong-config.php';
+        $this->wrongConfig = require __DIR__.'/../../wrong-config.php';
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
         $this->fieldMock = $this->mock('Anavel\Crud\Contracts\Abstractor\FieldFactory');

@@ -1,4 +1,5 @@
 <?php
+
 namespace Anavel\Crud\Contracts\Abstractor;
 
 interface RelationFactory
@@ -6,7 +7,7 @@ interface RelationFactory
     public function setModel($model);
 
     /**
-     * Relation config
+     * Relation config.
      *
      * @param array $config
      */
@@ -17,9 +18,9 @@ interface RelationFactory
      *
      * @param string $name The name of the relation
      *
-     * @return \Anavel\Crud\Abstractor\Eloquent\Relation\Relation
-     *
      * @throws \Exception
+     *
+     * @return \Anavel\Crud\Abstractor\Eloquent\Relation\Relation
      */
     public function get($name);
 }
