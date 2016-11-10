@@ -1,4 +1,5 @@
 <?php
+
 namespace Anavel\Crud\View\Presenters;
 
 use Illuminate\Pagination\BootstrapThreePresenter;
