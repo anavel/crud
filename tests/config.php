@@ -9,45 +9,45 @@ return [
         'soft_deletes'           => true,
         'fields_presentation'    => [
             'active'  => 'Is Active?',
-            'role_id' => 'Role'
+            'role_id' => 'Role',
         ],
         'relations_presentation' => [
             'translations' => 'Translations',
-            'posts'        => 'Published posts'
+            'posts'        => 'Published posts',
         ],
         'relations'              => [
             'translations' => [
                 'type' => 'translation',
-                'name' => 'translations'
+                'name' => 'translations',
             ],
             'group'        => [
                 'type'    => 'select',
                 'name'    => 'group',
-                'display' => 'title'
+                'display' => 'title',
             ],
             'posts'        => [
                 'type'    => 'select-multiple',
                 'name'    => 'posts',
-                'display' => 'title'
+                'display' => 'title',
             ],
             'photos'       => [
                 'type'    => 'select-multiple',
                 'name'    => 'photos',
-                'display' => 'title'
+                'display' => 'title',
             ],
             'roles'        => [
                 'type'    => 'select-multiple-many-to-many',
                 'name'    => 'roles',
-                'display' => 'name'
-            ]
+                'display' => 'name',
+            ],
         ],
         'list'                   => [
             'display' => ['id', 'username', 'fullname', 'active'],
-            'hide'    => []
+            'hide'    => [],
         ],
         'detail'                 => [
             'display' => ['id', 'username', 'password', 'fullname', 'info', 'active'],
-            'hide'    => []
+            'hide'    => [],
         ],
         'edit'                   => [
             'display'    => ['id', 'username', 'password', 'image'],
@@ -56,22 +56,22 @@ return [
                 'username' => 'Chompy',
                 'info'     => [
                     'key'      => 'Value',
-                    'otherKey' => 'Other value'
-                ]
+                    'otherKey' => 'Other value',
+                ],
             ],
             'form_types' => [
                 'username' => 'email',
                 'password' => 'password',
-                'image'    => 'file'
+                'image'    => 'file',
             ],
             'validation' => [
                 'username' => 'required|email',
-                'password' => 'required|min:8'
+                'password' => 'required|min:8',
             ],
             'functions'  => [
                 'fullname' => 'slugify',
-                'password' => 'bcrypt'
-            ]
-        ]
-    ]
+                'password' => 'bcrypt',
+            ],
+        ],
+    ],
 ];
