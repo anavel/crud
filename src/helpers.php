@@ -2,11 +2,12 @@
 
 use EasySlugger\Slugger;
 
-if (! function_exists('slugify')) {
+if (!function_exists('slugify')) {
     /**
-     * Generate slug
+     * Generate slug.
      *
-     * @param  string  $text
+     * @param string $text
+     *
      * @return string
      */
     function slugify($text)
@@ -15,11 +16,12 @@ if (! function_exists('slugify')) {
     }
 }
 
-if (! function_exists('uniqueSlugify')) {
+if (!function_exists('uniqueSlugify')) {
     /**
-     * Generate unique slug
+     * Generate unique slug.
      *
-     * @param  string  $text
+     * @param string $text
+     *
      * @return string
      */
     function uniqueSlugify($text)
@@ -28,16 +30,17 @@ if (! function_exists('uniqueSlugify')) {
     }
 }
 
-if (! function_exists('transcrud')) {
+if (!function_exists('transcrud')) {
     /**
-     * Translate string but remove file key if translation not found
+     * Translate string but remove file key if translation not found.
      *
-     * @param  string  $text
+     * @param string $text
+     *
      * @return string
      */
     function transcrud($text)
     {
-        $translation = trans('anavel-crud::models.' . $text);
+        $translation = trans('anavel-crud::models.'.$text);
 
         return str_replace('anavel-crud::models.', '', $translation);
     }

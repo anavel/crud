@@ -1,4 +1,5 @@
 <?php
+
 namespace Anavel\Crud\Abstractor\Eloquent\Relation\Traits;
 
 use Anavel\Crud\Abstractor\Exceptions\RelationException;
