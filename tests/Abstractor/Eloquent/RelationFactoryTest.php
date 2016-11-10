@@ -1,15 +1,15 @@
 <?php
+
 namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
+use Anavel\Crud\Abstractor\Eloquent\RelationFactory;
 use Anavel\Crud\Tests\Models\User;
 use Anavel\Crud\Tests\TestBase;
-use Anavel\Crud\Abstractor\Eloquent\RelationFactory;
 use Mockery\Mock;
-
 
 class RelationFactoryTest extends TestBase
 {
-    /** @var  RelationFactory */
+    /** @var RelationFactory */
     protected $sut;
 
     /** @var Mock */
@@ -38,7 +38,7 @@ class RelationFactoryTest extends TestBase
 
     public function test_throws_exception_when_relation_not_supported()
     {
-        $config = require __DIR__ . '/../../wrong-config.php';
+        $config = require __DIR__.'/../../wrong-config.php';
         $this->sut->setConfig($config['Users']['relations']['translations']);
         $this->setExpectedException('Anavel\Crud\Abstractor\Exceptions\FactoryException', 'Unexpected relation type: fake');
 

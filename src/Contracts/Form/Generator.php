@@ -1,4 +1,5 @@
 <?php
+
 namespace Anavel\Crud\Contracts\Form;
 
 use Illuminate\Support\Collection;
@@ -15,12 +16,14 @@ interface Generator
 
     /**
      * @param Collection $relations collection of Anavel\Crud\Contracts\Abstractor\Relation
+     *
      * @return void
      */
     public function setModelRelations(Collection $relations);
 
     /**
      * @param Collection $relations collection of Anavel\Crud\Contracts\Abstractor\Relation
+     *
      * @return void
      */
     public function setRelatedModelFields(Collection $relations);
