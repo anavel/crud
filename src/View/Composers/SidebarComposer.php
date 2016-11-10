@@ -1,9 +1,10 @@
 <?php
+
 namespace Anavel\Crud\View\Composers;
 
 use Anavel\Crud\Contracts\Abstractor\ModelFactory as ModelAbstractorFactory;
-use Route;
 use Gate;
+use Route;
 
 class SidebarComposer
 {
@@ -18,8 +19,8 @@ class SidebarComposer
     {
         $menuItems = $this->getSidebarItems();
         $view->with([
-            'menuItems' => $menuItems,
-            'headerName' => config('anavel-crud.name')
+            'menuItems'  => $menuItems,
+            'headerName' => config('anavel-crud.name'),
         ]);
     }
 
@@ -64,7 +65,7 @@ class SidebarComposer
             } catch (\Exception $e) {
                 continue;
             }
-            $menuItems[$modelName]['isActive'] =  $item['isActive'];
+            $menuItems[$modelName]['isActive'] = $item['isActive'];
             $menuItems[$modelName]['name'] = $item['name'];
             $menuItems[$modelName]['items'][] = $item;
         }
@@ -73,13 +74,16 @@ class SidebarComposer
         usort($menuItems, function ($itemA, $itemB) {
             return strcmp($itemA['name'], $itemB['name']);
         });
+
         return $menuItems;
     }
 
     /**
      * @param $modelName
-     * @return array
+     *
      * @throws \Exception
+     *
+     * @return array
      */
     private function getModelItem($modelName)
     {
@@ -96,9 +100,9 @@ class SidebarComposer
         }
 
         $item = [
-            'route' => route('anavel-crud.model.index', $modelAbstractor->getSlug()),
-            'name' => $modelAbstractor->getName(),
-            'isActive' => $isActive
+            'route'    => route('anavel-crud.model.index', $modelAbstractor->getSlug()),
+            'name'     => $modelAbstractor->getName(),
+            'isActive' => $isActive,
         ];
 
         return $item;
