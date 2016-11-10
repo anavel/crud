@@ -1,9 +1,10 @@
 <?php
+
 namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
+use Anavel\Crud\Http\Form\Generator;
 use Anavel\Crud\Tests\TestBase;
 use Mockery;
-use Anavel\Crud\Http\Form\Generator;
 use Mockery\Mock;
 
 class GeneratorTest extends TestBase

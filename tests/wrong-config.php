@@ -4,16 +4,16 @@ return [
     'Blog Posts' => 'App\Post',
 
     'Users' => [
-            'model' => 'App\User',
-            'icon' => 'fa-database',
-            'soft_deletes' => true,
+            'model'               => 'App\User',
+            'icon'                => 'fa-database',
+            'soft_deletes'        => true,
             'fields_presentation' => [
-                'active' => 'Is Active?',
-                'role_id' => 'Role'
+                'active'  => 'Is Active?',
+                'role_id' => 'Role',
             ],
             'relations_presentation' => [
                 'translations' => 'Translations',
-                'posts' => 'Published posts'
+                'posts'        => 'Published posts',
             ],
             'relations' => [
                 'translations' => [
@@ -33,32 +33,32 @@ return [
                 ],
                 'roles'        => [
                     'type'    => 'select-multiple-many-to-many',
-                    'name'    => 'roles'
-                ]
+                    'name'    => 'roles',
+                ],
             ],
             'list' => [
                 'display' => ['id', 'username', 'fullname', 'active'],
-                'hide'    => []
+                'hide'    => [],
             ],
             'detail' => [
                 'display' => ['id', 'username', 'password', 'fullname', 'info', 'active'],
-                'hide'    => []
+                'hide'    => [],
             ],
             'edit' => [
-                'display' => ['id', 'username', 'password'],
-                'hide'    => [],
+                'display'    => ['id', 'username', 'password'],
+                'hide'       => [],
                 'form_types' => [
                     'username' => 'email',
-                    'password' => 'password'
+                    'password' => 'password',
                 ],
                 'validation' => [
                     'username' => 'required|email',
-                    'password' => 'required|min:8'
+                    'password' => 'required|min:8',
                 ],
                 'functions' => [
                     'fullname' => 'slugify',
-                    'password' => 'bcrypt'
-                ]
-            ]
-        ]
+                    'password' => 'bcrypt',
+                ],
+            ],
+        ],
 ];
