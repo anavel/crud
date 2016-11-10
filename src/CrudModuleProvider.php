@@ -1,18 +1,18 @@
 <?php
+
 namespace Anavel\Crud;
 
-use Anavel\Foundation\Support\ModuleProvider;
+use Anavel\Crud\Abstractor\Eloquent\FieldFactory as FieldAbstractorFactory;
 use Anavel\Crud\Abstractor\Eloquent\ModelFactory as ModelAbstractorFactory;
 use Anavel\Crud\Abstractor\Eloquent\RelationFactory as RelationAbstractorFactory;
-use Anavel\Crud\Abstractor\Eloquent\FieldFactory as FieldAbstractorFactory;
 use Anavel\Crud\Http\Form\Generator as FormGenerator;
+use Anavel\Foundation\Support\ModuleProvider;
 use FormManager\Factory as FormFactory;
 use Request;
 use Schema;
 
 class CrudModuleProvider extends ModuleProvider
 {
-
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -49,7 +49,7 @@ class CrudModuleProvider extends ModuleProvider
         $this->app->bind(
             'Anavel\Crud\Contracts\Abstractor\FieldFactory',
             function () {
-                return new FieldAbstractorFactory(new FormFactory);
+                return new FieldAbstractorFactory(new FormFactory());
             }
         );
 
@@ -80,7 +80,7 @@ class CrudModuleProvider extends ModuleProvider
         $this->app->bind(
             'Anavel\Crud\Contracts\Form\Generator',
             function () {
-                return new FormGenerator(new FormFactory);
+                return new FormGenerator(new FormFactory());
             }
         );
 
@@ -136,7 +136,7 @@ class CrudModuleProvider extends ModuleProvider
     }
 
     /**
-     * Registers types that Doctrine doesn's support by default
+     * Registers types that Doctrine doesn's support by default.
      */
     protected function registerDoctrineTypeMappings()
     {
