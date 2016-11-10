@@ -1,4 +1,5 @@
 <?php
+
 namespace Anavel\Crud\Contracts\Abstractor;
 
 interface Field
@@ -24,6 +25,7 @@ interface Field
 
     /**
      * @param string $value
+     *
      * @return void
      */
     public function setValue($value);
@@ -32,6 +34,7 @@ interface Field
 
     /**
      * @param array $options
+     *
      * @return void
      */
     public function setOptions(array $options);
@@ -47,22 +50,23 @@ interface Field
     public function getFormField();
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function hideValue($value = null);
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function saveIfEmpty($value = null);
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function noValidate($value = null);
 
     /**
      * @param array $attributes
+     *
      * @return void
      */
     public function setFormElementAttributes(array $attributes);
