@@ -19,7 +19,7 @@ class ModelFactoryTest extends TestBase
     protected $fieldMock;
     /** @var Mock */
     protected $generatorMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $anavelMock;
 
     public function setUp()
