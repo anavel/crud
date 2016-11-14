@@ -53,7 +53,6 @@ class FieldFactory implements FieldAbstractorFactoryContract
         $this->factory = $factory;
     }
 
-
     public function setColumn(Column $column)
     {
         $this->column = $column;
@@ -61,14 +60,12 @@ class FieldFactory implements FieldAbstractorFactoryContract
         return $this;
     }
 
-
     public function setConfig(array $config)
     {
         $this->config = $config;
 
         return $this;
     }
-
 
     public function get()
     {
