@@ -97,7 +97,7 @@ class MiniCrud extends Relation
                             } else {
                                 $tempFields[$editGroupName] = $editGroup;
                             }
-                        };
+                        }
                     }
                 }
 

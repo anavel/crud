@@ -22,5 +22,5 @@ return [
     'alert_success_model_destroy_title' => 'Everything OK!',
     'alert_success_model_destroy_text'  => 'The item was deleted successfully',
     'modal_delete_title'                => 'Are you sure?',
-    'modal_delete_text'                 => 'This will permanently delete this content'
+    'modal_delete_text'                 => 'This will permanently delete this content',
 ];
