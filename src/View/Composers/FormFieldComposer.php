@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Anavel\Crud\View\Composers;
 
 use Anavel\Foundation\Contracts\Anavel;
@@ -22,7 +21,7 @@ class FormFieldComposer
         $uploadsModuleIsInstalled = $this->anavel->hasModule('Anavel\Uploads\UploadsModuleProvider');
 
         $view->with([
-            'canTakeFileFromUploads' => $uploadsModuleIsInstalled
+            'canTakeFileFromUploads' => $uploadsModuleIsInstalled,
         ]);
     }
 }
