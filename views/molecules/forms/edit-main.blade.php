@@ -111,7 +111,9 @@
             var inputFile  = $('#'+ inputId);
             var inputName = inputFile.attr('name').replace(/[\[\]']+/g,'#');
             var name = 'uploaded-content['+inputName+']';
-            var filePath = url.replace(/.*\/\/[^\/]*/, '').replace('{{config('anavel-crud.uploads_path')}}','');
+            var filePath = url;
+            var n = filePath.indexOf('{{config('anavel-crud.uploads_path')}}') + '{{config('anavel-crud.uploads_path')}}'.length;
+            filePath = filePath.substr(n);
             inputFile.parent().find('.selected-from-uploads').remove();
             var tpl = '<div class="selected-from-uploads" style="margin-top: 5px">' +
                     '       <img src="'+url+'" style="width: 100px" /> ' +
