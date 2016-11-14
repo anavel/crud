@@ -36,7 +36,10 @@ abstract class TestBase extends TestCase
             'prefix'    => '',
         ]);
 
+        $app['aliases'] = ['Route' => \Illuminate\Support\Facades\Route::class];
+
         $app['config']->set('anavel.translation_languages', ['gl', 'en', 'es']);
+        $app['config']->set('anavel-crud.models', []);
 
         \App::bind('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager', function ($app) {
             return \Mockery::mock('ANavallaSuiza\Laravel\Database\Manager\Eloquent\ModelManager');

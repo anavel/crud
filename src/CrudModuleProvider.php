@@ -71,7 +71,8 @@ class CrudModuleProvider extends ModuleProvider
                     $this->app['ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'],
                     $this->app['Anavel\Crud\Contracts\Abstractor\RelationFactory'],
                     $this->app['Anavel\Crud\Contracts\Abstractor\FieldFactory'],
-                    $this->app['Anavel\Crud\Contracts\Form\Generator']
+                    $this->app['Anavel\Crud\Contracts\Form\Generator'],
+                    $this->app['Anavel\Foundation\Contracts\Anavel']
                 );
             }
         );

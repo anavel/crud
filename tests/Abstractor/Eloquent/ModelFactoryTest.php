@@ -19,6 +19,8 @@ class ModelFactoryTest extends TestBase
     protected $fieldMock;
     /** @var Mock */
     protected $generatorMock;
+    /** @var  Mock */
+    protected $anavelMock;
 
     public function setUp()
     {
@@ -30,8 +32,9 @@ class ModelFactoryTest extends TestBase
         $this->relationMock = $this->mock('Anavel\Crud\Contracts\Abstractor\RelationFactory');
         $this->fieldMock = $this->mock('Anavel\Crud\Contracts\Abstractor\FieldFactory');
         $this->generatorMock = $this->mock('Anavel\Crud\Contracts\Form\Generator');
-
-        $this->sut = new ModelFactory($config, $this->modelManagerMock, $this->relationMock, $this->fieldMock, $this->generatorMock);
+        $this->anavelMock = $this->mock('Anavel\Foundation\Contracts\Anavel');
+        $this->anavelMock->shouldReceive('hasModule')->andReturn(false);
+        $this->sut = new ModelFactory($config, $this->modelManagerMock, $this->relationMock, $this->fieldMock, $this->generatorMock, $this->anavelMock);
     }
 
     public function test_implements_model__factory_interface()

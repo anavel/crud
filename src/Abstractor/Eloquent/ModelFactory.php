@@ -1,14 +1,14 @@
 <?php
-
 namespace Anavel\Crud\Abstractor\Eloquent;
 
-use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
-use Anavel\Crud\Abstractor\Exceptions\FactoryException;
-use Anavel\Crud\Contracts\Abstractor\FieldFactory as FieldAbstractorFactoryContract;
 use Anavel\Crud\Contracts\Abstractor\ModelFactory as ModelAbstractorFactoryContract;
 use Anavel\Crud\Contracts\Abstractor\RelationFactory as RelationAbstractorFactoryContract;
-use Anavel\Crud\Contracts\Form\Generator as FormGenerator;
+use Anavel\Crud\Contracts\Abstractor\FieldFactory as FieldAbstractorFactoryContract;
+use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
+use Anavel\Foundation\Contracts\Anavel;
 use EasySlugger\Slugger;
+use Anavel\Crud\Contracts\Form\Generator as FormGenerator;
+use Anavel\Crud\Abstractor\Exceptions\FactoryException;
 use ReflectionClass;
 
 class ModelFactory implements ModelAbstractorFactoryContract
@@ -19,17 +19,32 @@ class ModelFactory implements ModelAbstractorFactoryContract
     protected $slugger;
 
     protected $allConfiguredModels;
+
+    /**
+     * @var Anavel
+     */
+    protected $anavel;
     /**
      * @var FormGenerator
      */
     private $generator;
 
+    /**
+     * ModelFactory constructor.
+     * @param array $allConfiguredModels
+     * @param ModelManager $modelManager
+     * @param RelationAbstractorFactoryContract $relationFactory
+     * @param FieldAbstractorFactoryContract $fieldFactory
+     * @param FormGenerator $generator
+     * @param Anavel $anavel
+     */
     public function __construct(
         array $allConfiguredModels,
         ModelManager $modelManager,
         RelationAbstractorFactoryContract $relationFactory,
         FieldAbstractorFactoryContract $fieldFactory,
-        FormGenerator $generator
+        FormGenerator $generator,
+        Anavel $anavel
     ) {
         $this->allConfiguredModels = $allConfiguredModels;
         $this->modelManager = $modelManager;
@@ -37,15 +52,14 @@ class ModelFactory implements ModelAbstractorFactoryContract
         $this->fieldFactory = $fieldFactory;
         $this->slugger = new Slugger();
         $this->generator = $generator;
+        $this->anavel  = $anavel;
     }
 
     /**
      * @param $slug
      * @param null $id
-     *
-     * @throws \Exception
-     *
      * @return Model|null
+     * @throws \Exception
      */
     public function getBySlug($slug, $id = null)
     {
@@ -61,7 +75,9 @@ class ModelFactory implements ModelAbstractorFactoryContract
                     $modelNamespace = $config;
                 }
 
-                $model = new Model($config, $this->modelManager->getAbstractionLayer($modelNamespace), $this->relationFactory, $this->fieldFactory, $this->generator);
+                $model = new Model($config, $this->modelManager->getAbstractionLayer($modelNamespace),
+                    $this->relationFactory, $this->fieldFactory, $this->generator,
+                    !$this->anavel->hasModule('Anavel\Uploads\UploadsModuleProvider'));
 
                 $model->setSlug($modelSlug)
                     ->setName($modelName);
@@ -78,7 +94,7 @@ class ModelFactory implements ModelAbstractorFactoryContract
         }
 
         if (is_null($model)) {
-            throw new FactoryException('Model '.$slug.' not found on configuration');
+            throw new FactoryException("Model ".$slug." not found on configuration");
         }
 
         return $model;
@@ -88,6 +104,7 @@ class ModelFactory implements ModelAbstractorFactoryContract
     {
         return $this->getBySlug($this->slugger->slugify($name));
     }
+
 
     public function getByClassName($classname, array $config, $id = null)
     {
