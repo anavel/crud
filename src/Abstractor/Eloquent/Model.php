@@ -530,9 +530,8 @@ class Model implements ModelAbstractorContract
                 }
             }
 
-            if(is_null($entity))
-            {
-                return null;
+            if (is_null($entity)) {
+                return;
             }
             $lastRelationName = $relationName;
 
