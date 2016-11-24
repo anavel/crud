@@ -530,6 +530,10 @@ class Model implements ModelAbstractorContract
                 }
             }
 
+            if(is_null($entity))
+            {
+                return null;
+            }
             $lastRelationName = $relationName;
 
             array_pop($customColumnRelation);
