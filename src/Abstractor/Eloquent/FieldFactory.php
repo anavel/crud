@@ -128,7 +128,6 @@ class FieldFactory implements FieldAbstractorFactoryContract
             $formElementType = 'select';
         }
 
-
         $formElement = $this->factory->get($formElementType, []);
 
         if (!empty($this->config['attr']) && is_array($this->config['attr'])) {

@@ -71,7 +71,7 @@ abstract class Relation implements RelationAbstractorContract
             }
         }
 
-        $config = array_merge($this->config,$relatedmodelRelationsConfig);
+        $config = array_merge($this->config, $relatedmodelRelationsConfig);
 
         $this->modelAbstractor = \App::make('Anavel\Crud\Contracts\Abstractor\ModelFactory')->getByClassName(get_class($this->eloquentRelation->getRelated()), $config);
     }

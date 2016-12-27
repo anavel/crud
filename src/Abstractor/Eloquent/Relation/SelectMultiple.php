@@ -46,7 +46,6 @@ class SelectMultiple extends Select
 
             $missing = $alreadyAssociated->diff($results);
 
-
             $keyName = $this->eloquentRelation->getPlainForeignKey();
             foreach ($results as $result) {
                 $result->$keyName = $this->relatedModel->getKey();
