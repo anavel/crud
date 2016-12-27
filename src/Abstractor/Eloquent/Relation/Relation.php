@@ -71,7 +71,9 @@ abstract class Relation implements RelationAbstractorContract
             }
         }
 
-        $this->modelAbstractor = \App::make('Anavel\Crud\Contracts\Abstractor\ModelFactory')->getByClassName(get_class($this->eloquentRelation->getRelated()), $relatedmodelRelationsConfig);
+        $config = array_merge($this->config,$relatedmodelRelationsConfig);
+
+        $this->modelAbstractor = \App::make('Anavel\Crud\Contracts\Abstractor\ModelFactory')->getByClassName(get_class($this->eloquentRelation->getRelated()), $config);
     }
 
     public function addSecondaryRelationFields(array $fields)
