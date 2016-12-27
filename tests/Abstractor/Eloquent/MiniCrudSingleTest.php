@@ -93,7 +93,6 @@ class MiniCrudSingleTest extends TestBase
         $postMock->shouldReceive('getAttributeValue')->andReturn('1');
         $postMock->shouldReceive('getAttribute')->andReturn('chompy');
 
-
         $this->fieldFactoryMock->shouldReceive('setColumn', 'setConfig')->andReturn($this->fieldFactoryMock);
         $this->fieldFactoryMock->shouldReceive('get')->andReturn($fieldMock = $this->mock('Anavel\Crud\Contracts\Abstractor\Field'));
         $fieldMock->shouldReceive('setOptions');
@@ -102,7 +101,6 @@ class MiniCrudSingleTest extends TestBase
 
         $this->modelAbstractorMock->shouldReceive('getRelations')->times(1)->andReturn([$secondaryRelationMock = $this->mock('Anavel\Crud\Abstractor\Eloquent\Relation\Select')]);
         $secondaryRelationMock->shouldReceive('getEditFields')->andReturn([]);
-
 
         $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphOne');
         $this->buildRelation();

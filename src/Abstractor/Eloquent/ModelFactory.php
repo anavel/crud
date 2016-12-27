@@ -114,7 +114,6 @@ class ModelFactory implements ModelAbstractorFactoryContract
         $model = new Model(array_merge(['model' => $classname], $config), $this->modelManager->getAbstractionLayer($classname), $this->relationFactory, $this->fieldFactory, $this->generator);
         $model->setSlug($this->slugger->slugify((new ReflectionClass($classname))->getShortName()));
 
-
         if (is_null($id)) {
             $model->setInstance($this->modelManager->getModelInstance($classname));
         } else {

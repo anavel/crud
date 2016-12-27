@@ -64,7 +64,6 @@ class SelectTest extends TestBase
 
         $field->shouldReceive('setOptions');
 
-
         $fields = $this->sut->getEditFields();
 
         $this->assertInternalType('array', $fields, 'getEditFields should return an array');
@@ -83,7 +82,6 @@ class SelectTest extends TestBase
         $columnMock->shouldReceive('getName');
 
         $field->shouldReceive('setOptions');
-
 
         $fields = $this->sut->getEditFields('chompy');
 

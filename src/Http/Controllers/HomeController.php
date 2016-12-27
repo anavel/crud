@@ -18,7 +18,6 @@ class HomeController extends Controller
             throw new \Exception('No models configured.');
         }
 
-
         foreach ($models as $modelName => $model) {
             $modelSlug = Slugger::slugify($modelName);
             $modelAbstractor = $modelFactory->getByName($modelSlug);

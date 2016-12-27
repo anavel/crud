@@ -95,15 +95,12 @@ class MiniCrudPolymorphicTest extends TestBase
 
         $postMock->shouldReceive('getAttribute')->andReturn('idValue');
 
-
         $fieldMock->shouldReceive('setOptions');
 
         $fieldMock->shouldReceive('setValue')->times(1);
 
         $this->modelAbstractorMock->shouldReceive('getRelations')->times(2)->andReturn([$this->secondaryRelationMock = $this->mock('Anavel\Crud\Abstractor\Eloquent\Relation\Select')]);
         $this->secondaryRelationMock->shouldReceive('getEditFields')->andReturn([]);
-
-
 
         $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphMany');
         $this->buildRelation();
@@ -190,7 +187,6 @@ class MiniCrudPolymorphicTest extends TestBase
         $this->modelAbstractorMock->shouldReceive('getRelations')->andReturn(collect());
 
         $this->modelAbstractorMock->shouldReceive('setInstance')->with($modelMock);
-
 
         $modelMock->shouldReceive('getKey')->andReturn(1);
         $modelMock->shouldReceive('setAttribute')->times(10);

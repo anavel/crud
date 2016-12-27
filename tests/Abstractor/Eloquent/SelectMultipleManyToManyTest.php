@@ -34,7 +34,6 @@ class SelectMultipleManyToManyTest extends TestBase
         $config = require __DIR__.'/../../config.php';
         $this->wrongConfig = require __DIR__.'/../../wrong-config.php';
 
-
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
         $this->fieldMock = $this->mock('Anavel\Crud\Contracts\Abstractor\FieldFactory');
         $this->requestMock = $this->mock('Illuminate\Http\Request');
