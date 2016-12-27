@@ -89,7 +89,6 @@ class MiniCrudTest extends TestBase
         $this->fieldFactoryMock->shouldReceive('setColumn', 'setConfig')->andReturn($this->fieldFactoryMock);
         $this->fieldFactoryMock->shouldReceive('get')->andReturn($fieldMock = $this->mock('Anavel\Crud\Contracts\Abstractor\Field'));
 
-
         $this->relationMock->shouldReceive('newInstance')->andReturn($postMock);
 
         $this->modelAbstractorMock->shouldReceive('setInstance')->with($postMock);
@@ -97,7 +96,6 @@ class MiniCrudTest extends TestBase
         $this->modelAbstractorMock->shouldReceive('getRelations')->times(2)->andReturn(collect([$secondaryRelationMock = $this->mock('Anavel\Crud\Abstractor\Eloquent\Relation\Select')]));
 
         $secondaryRelationMock->shouldReceive('getEditFields')->andReturn([]);
-
 
         $postMock->shouldReceive('getAttribute')->andReturn('idValue');
 
@@ -154,7 +152,6 @@ class MiniCrudTest extends TestBase
         $this->fieldFactoryMock->shouldReceive('get')->andReturn($fieldMock = $this->mock('Anavel\Crud\Contracts\Abstractor\Field'));
         ////////
 
-
         $fieldMock->shouldReceive('getName');
         $fieldMock->shouldReceive('getFormField');
         $modelMock->shouldReceive('getKey')->andReturn(1);
@@ -190,8 +187,6 @@ class MiniCrudTest extends TestBase
         $this->relationMock->shouldReceive('keyBy')->once()->andReturn();
         $this->relationMock->shouldReceive('getKeyName')->andReturn('id');
         $this->modelAbstractorMock->shouldReceive('getRelations')->andReturn(collect());
-
-
 
         $this->relationMock->shouldReceive('getResults')->andReturn($this->relationMock, collect([1 => $modelMock = $this->mock('Anavel\Crud\Tests\Models\Post')]));
         // This, basically, re-tests getEditFields... It shouldn't be re-tested, but I can't figure out how to partially mock that method

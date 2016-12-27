@@ -43,7 +43,6 @@ class FieldTest extends TestBase
 
         $type = $this->sut->type();
 
-
         $this->assertInstanceOf('Doctrine\DBAL\Types\Type', $type);
     }
 
