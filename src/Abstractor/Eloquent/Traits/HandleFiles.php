@@ -31,11 +31,9 @@ trait HandleFiles
         $skip = null;
         $requestValue = null;
 
-
         if (!empty($fields["{$fieldName}__delete"])) {
             //We never want to save this field, it doesn't exist in the DB
             $skip = "{$fieldName}__delete";
-
 
             //If user wants to delete the existing file
             if (!empty($request->input("{$groupName}.{$fieldName}__delete"))) {
@@ -44,7 +42,6 @@ trait HandleFiles
                 if ($filesystem->has($item->$fieldName) && $mustDeleteFilesInFilesystem) {
                     $filesystem->delete($item->$fieldName);
                 }
-
 
                 $item->setAttribute(
                     $fieldName,
@@ -67,7 +64,6 @@ trait HandleFiles
             if (!empty($extension)) {
                 $fileName .= '.'.$extension;
             }
-
 
             $request->file($groupName.'.'.$fieldName)->move(
                 $modelPath,

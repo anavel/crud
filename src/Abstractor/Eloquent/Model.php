@@ -129,7 +129,6 @@ class Model implements ModelAbstractorContract
         }
         $tableColumns = $filteredColumns;
 
-
         $foreignKeysName = [];
         if ($withForeignKeys === false) {
             $foreignKeys = $this->dbal->getTableForeignKeys();
@@ -237,7 +236,6 @@ class Model implements ModelAbstractorContract
                     ->get($relationName);
 
                 $secondaryRelations = $relation->getSecondaryRelations();
-
 
                 if (!$secondaryRelations->isEmpty()) {
                     $relations->put(
@@ -426,7 +424,6 @@ class Model implements ModelAbstractorContract
             $item = $modelManager->getModelInstance($this->getModel());
         }
 
-
         $fields = $this->getEditFields(true);
         if (empty($fields['main']) && $this->getRelations()->isEmpty()) {
             return;
@@ -465,7 +462,6 @@ class Model implements ModelAbstractorContract
                     }
                 }
 
-
                 if (!$field->saveIfEmpty() && empty($requestValue)) {
                     continue;
                 }
@@ -482,7 +478,6 @@ class Model implements ModelAbstractorContract
         $item->save();
 
         $this->setInstance($item);
-
 
         if (!empty($relations = $this->getRelations())) {
             foreach ($relations as $relationKey => $relation) {

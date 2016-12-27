@@ -44,7 +44,6 @@ class MiniCrudSingle extends Relation
             $this->eloquentRelation->getParent()->getKeyName(),
         ];
 
-
         $this->readConfig('edit');
 
         if (!empty($columns)) {
@@ -97,7 +96,6 @@ class MiniCrudSingle extends Relation
         }
 
         $fields = $this->addSecondaryRelationFields($fields);
-
 
         return $fields;
     }

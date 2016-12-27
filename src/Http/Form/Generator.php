@@ -87,7 +87,6 @@ class Generator implements GeneratorContract
             'class'   => 'form-horizontal',
         ]);
 
-
         $formFields = [];
         foreach ($this->fields as $fieldGroupName => $fieldGroup) {
             $tempFields = $this->addFormFields($fieldGroup, $fieldGroupName);
@@ -95,7 +94,6 @@ class Generator implements GeneratorContract
         }
 
         $form->add($formFields);
-
 
         return $form;
     }

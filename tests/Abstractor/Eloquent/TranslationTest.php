@@ -123,7 +123,6 @@ class TranslationTest extends TestBase
         $modelMock->shouldReceive('setAttribute')->times(3); // Should pass the language with only locale
         $modelMock->shouldReceive('save')->once();
 
-
         $this->sut->persist($inputArray, $this->requestMock);
     }
 
@@ -150,7 +149,6 @@ class TranslationTest extends TestBase
         $modelMock->shouldReceive('setAttribute')->times(3); // Should pass the language with only locale
         $modelMock->shouldReceive('delete')->once(); // Should delete the already existing language, since it's empty
         $modelMock->shouldReceive('save')->once();
-
 
         $this->sut->persist($inputArray, $this->requestMock);
     }
