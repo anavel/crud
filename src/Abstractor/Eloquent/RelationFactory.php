@@ -83,7 +83,6 @@ class RelationFactory implements RelationAbstractorFactoryContract
         $relationInstance = $this->model->$name();
         $relationEloquentType = get_class($relationInstance);
 
-
         if (empty($this->config['type'])) {
             if (!array_key_exists($relationEloquentType, $this->eloquentTypeToRelationType)) {
                 throw new FactoryException($relationEloquentType.' relation not supported');

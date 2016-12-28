@@ -38,7 +38,6 @@ class ModelTest extends TestBase
         $this->columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
         $this->generatorMock = $this->mock('Anavel\Crud\Contracts\Form\Generator');
 
-
         $this->getClassMock = PHPMockery::mock('Anavel\Crud\Abstractor\Eloquent', 'get_class');
 
         $this->sut = \Mockery::mock(Model::class, [$config['Users'], $this->dbalMock, $this->relationFactoryMock, $this->fieldFactoryMock, $this->generatorMock])->makePartial();
@@ -458,7 +457,6 @@ class ModelTest extends TestBase
 
         $this->sut->setInstance($modelMock);
 
-
         $form = $this->sut->getForm('crudoado.model.store', 'users');
 
         $this->assertInstanceOf('FormManager\ElementInterface', $form);
@@ -507,8 +505,6 @@ class ModelTest extends TestBase
         $fieldMock->shouldReceive('getFormField')->andReturn($fieldMock);
 
         $this->getClassMock->andReturn('nomatch');
-
-
 
         $result = $this->sut->persist($requestMock);
 
