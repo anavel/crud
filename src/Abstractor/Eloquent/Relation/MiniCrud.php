@@ -54,10 +54,8 @@ class MiniCrud extends Relation
 
         $fieldsBase = $this->getEditFieldsBase();
 
-
         /** @var Collection $results */
         $results = $this->getResults();
-
 
         $results->put('emptyResult', '');
         if (!empty($fieldsBase)) {
@@ -80,7 +78,6 @@ class MiniCrud extends Relation
                     }
                     $tempFields[$columnName] = $field;
                 }
-
 
                 $relationModel = $this->eloquentRelation->getRelated()->newInstance();
                 if (!empty($result)) {
@@ -134,7 +131,6 @@ class MiniCrud extends Relation
                 ->setConfig($config)
                 ->get();
             $fields['__delete'] = $field;
-
 
             foreach ($columns as $columnName => $column) {
                 if (in_array($columnName, $readOnly, true)) {
@@ -211,7 +207,6 @@ class MiniCrud extends Relation
                 $this->modelAbstractor->setInstance($relationModel);
                 $secondaryRelations = $this->getSecondaryRelations();
 
-
                 $this->setKeys($relationModel);
 
                 $shouldBeSkipped = true;
@@ -242,7 +237,6 @@ class MiniCrud extends Relation
                         }
                     }
                 }
-
 
                 foreach ($relation as $fieldKey => $fieldValue) {
                     if ($secondaryRelations->has($fieldKey)) {
