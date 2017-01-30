@@ -1,4 +1,5 @@
 <?php
+
 namespace Anavel\Crud\Abstractor\Eloquent;
 
 use Anavel\Crud\Contracts\Abstractor\Field as FieldAbstractorContract;
@@ -32,8 +33,8 @@ class Field implements FieldAbstractorContract
         $this->formField = $formField;
         $this->name = $name;
         $this->presentation = $presentation;
-        $this->validationRules = array();
-        $this->functions = array();
+        $this->validationRules = [];
+        $this->functions = [];
         $this->options = [];
         $this->hideValue = false;
         $this->saveIfEmpty = true;
@@ -44,7 +45,7 @@ class Field implements FieldAbstractorContract
     {
         $formField = clone $this->formField;
         $this->formField = $formField;
-        $field = new Field($this->dbal, $formField, $this->name, $this->presentation);
+        $field = new self($this->dbal, $formField, $this->name, $this->presentation);
 
         return $field;
     }
@@ -106,8 +107,8 @@ class Field implements FieldAbstractorContract
 
     public function setFunctions($functions)
     {
-        if (! is_array($functions)) {
-            $functions = array($functions);
+        if (!is_array($functions)) {
+            $functions = [$functions];
         }
 
         $this->functions = $functions;
@@ -116,8 +117,8 @@ class Field implements FieldAbstractorContract
     public function applyFunctions($value)
     {
         foreach ($this->functions as $function) {
-            if (! function_exists($function)) {
-                throw new \Exception("Function ".$function." does not exist");
+            if (!function_exists($function)) {
+                throw new \Exception('Function '.$function.' does not exist');
             }
 
             $value = call_user_func($function, $value);
@@ -128,13 +129,14 @@ class Field implements FieldAbstractorContract
 
     /**
      * @param string $value
+     *
      * @return void
      */
     public function setValue($value)
     {
         $this->value = $value;
 
-        if (! $this->hideValue()) {
+        if (!$this->hideValue()) {
             $this->formField->val($this->value);
         }
     }
@@ -149,6 +151,7 @@ class Field implements FieldAbstractorContract
 
     /**
      * @param array $options
+     *
      * @return void
      */
     public function setOptions(array $options)
@@ -168,7 +171,7 @@ class Field implements FieldAbstractorContract
 
     public function getFormField()
     {
-        if (! $this->hideValue()) {
+        if (!$this->hideValue()) {
             if (Request::old($this->name)) {
                 $this->formField->val(Request::old($this->name));
             }
@@ -177,36 +180,27 @@ class Field implements FieldAbstractorContract
         return $this->formField;
     }
 
-    /**
-     *
-     */
     public function hideValue($value = null)
     {
-        if (! is_null($value)) {
+        if (!is_null($value)) {
             $this->hideValue = $value;
         }
 
         return $this->hideValue;
     }
 
-    /**
-     *
-     */
     public function saveIfEmpty($value = null)
     {
-        if (! is_null($value)) {
+        if (!is_null($value)) {
             $this->saveIfEmpty = $value;
         }
 
         return $this->saveIfEmpty;
     }
 
-    /**
-     *
-     */
     public function noValidate($value = null)
     {
-        if (! is_null($value)) {
+        if (!is_null($value)) {
             $this->noValidate = $value;
         }
 
@@ -215,6 +209,7 @@ class Field implements FieldAbstractorContract
 
     /**
      * @param array $attributes
+     *
      * @return void
      */
     public function setFormElementAttributes(array $attributes)

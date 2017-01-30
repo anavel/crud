@@ -1,30 +1,28 @@
 <?php
+
 namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
 use Anavel\Crud\Abstractor\Eloquent\Relation\SelectMultipleManyToMany;
-use Anavel\Crud\Repository\Criteria\InArrayCriteria;
 use Anavel\Crud\Tests\Models\User;
 use Anavel\Crud\Tests\TestBase;
 use Illuminate\Database\Eloquent\Collection;
 use Mockery;
 use Mockery\Mock;
-use Illuminate\Database\Eloquent\Model as LaravelModel;
 use phpmock\mockery\PHPMockery;
-
 
 class SelectMultipleManyToManyTest extends TestBase
 {
-    /** @var  SelectMultipleManyToMany */
+    /** @var SelectMultipleManyToMany */
     protected $sut;
-    /** @var  Mock */
+    /** @var Mock */
     protected $relationMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $modelManagerMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $fieldMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $modelAbstractorMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $requestMock;
 
     protected $wrongConfig;
@@ -33,9 +31,8 @@ class SelectMultipleManyToManyTest extends TestBase
     {
         parent::setUp();
 
-        $config = require __DIR__ . '/../../config.php';
-        $this->wrongConfig = require __DIR__ . '/../../wrong-config.php';
-
+        $config = require __DIR__.'/../../config.php';
+        $this->wrongConfig = require __DIR__.'/../../wrong-config.php';
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
         $this->fieldMock = $this->mock('Anavel\Crud\Contracts\Abstractor\FieldFactory');
@@ -96,7 +93,7 @@ class SelectMultipleManyToManyTest extends TestBase
     public function test_persist()
     {
         $inputArray = ['id' => [1, 3, 4]];
-        $config = require __DIR__ . '/../../config.php';
+        $config = require __DIR__.'/../../config.php';
 
         $relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
         $relationMock->shouldReceive('getRelated')->andReturn($relationMock);
@@ -126,8 +123,6 @@ class SelectMultipleManyToManyTest extends TestBase
             $this->fieldMock
         );
     }
-
-
 
     public function test_throws_exception_if_name_is_not_set_in_config()
     {

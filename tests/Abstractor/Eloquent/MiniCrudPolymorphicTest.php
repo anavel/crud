@@ -1,31 +1,29 @@
 <?php
+
 namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
-use Anavel\Crud\Abstractor\Eloquent\Relation\MiniCrud;
 use Anavel\Crud\Abstractor\Eloquent\Relation\MiniCrudPolymorphic;
-use Anavel\Crud\Abstractor\Eloquent\Relation\Select;
 use Anavel\Crud\Tests\Models\User;
 use Anavel\Crud\Tests\TestBase;
 use Mockery;
 use Mockery\Mock;
 use phpmock\mockery\PHPMockery;
 
-
 class MiniCrudPolymorphicTest extends TestBase
 {
-    /** @var  MiniCrudPolymorphic */
+    /** @var MiniCrudPolymorphic */
     protected $sut;
-    /** @var  Mock */
+    /** @var Mock */
     protected $relationMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $modelManagerMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $fieldFactoryMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $modelAbstractorMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $dbalMock;
-    /** @var  Mock */
+    /** @var Mock */
     protected $requestMock;
 
     protected $wrongConfig;
@@ -35,14 +33,14 @@ class MiniCrudPolymorphicTest extends TestBase
     {
         parent::setUp();
 
-        $this->wrongConfig = require __DIR__ . '/../../wrong-config.php';
+        $this->wrongConfig = require __DIR__.'/../../wrong-config.php';
 
         $this->relationMock = $this->mock('Illuminate\Database\Eloquent\Relations\Relation');
         $this->fieldFactoryMock = $this->mock('Anavel\Crud\Contracts\Abstractor\FieldFactory');
         $this->modelManagerMock = Mockery::mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
         $this->requestMock = $this->mock('Illuminate\Http\Request');
 
-        $this->modelManagerMock->shouldReceive('getAbstractionLayer')->andReturn($this->dbalMock =  $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
+        $this->modelManagerMock->shouldReceive('getAbstractionLayer')->andReturn($this->dbalMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer'));
 
         $this->getClassMock = PHPMockery::mock('Anavel\Crud\Abstractor\Eloquent\Relation\Traits',
             'get_class');
@@ -54,7 +52,7 @@ class MiniCrudPolymorphicTest extends TestBase
 
     public function buildRelation()
     {
-        $config = require __DIR__ . '/../../config.php';
+        $config = require __DIR__.'/../../config.php';
         $this->sut = new MiniCrudPolymorphic(
             $config['Users']['relations']['group'],
             $this->modelManagerMock,
@@ -79,7 +77,6 @@ class MiniCrudPolymorphicTest extends TestBase
         $this->buildRelation();
     }
 
-
     public function test_get_edit_fields_returns_array()
     {
         $this->modelAbstractorMock->shouldReceive('getColumns')->times(1)->andReturn(['columname' => $columnMock = $this->mock('Doctrine\DBAL\Schema\Column'), '__delete' => $columnMock = $this->mock('Doctrine\DBAL\Schema\Column')]);
@@ -98,15 +95,12 @@ class MiniCrudPolymorphicTest extends TestBase
 
         $postMock->shouldReceive('getAttribute')->andReturn('idValue');
 
-
         $fieldMock->shouldReceive('setOptions');
 
         $fieldMock->shouldReceive('setValue')->times(1);
 
         $this->modelAbstractorMock->shouldReceive('getRelations')->times(2)->andReturn([$this->secondaryRelationMock = $this->mock('Anavel\Crud\Abstractor\Eloquent\Relation\Select')]);
         $this->secondaryRelationMock->shouldReceive('getEditFields')->andReturn([]);
-
-
 
         $this->getClassMock->andReturn('Illuminate\Database\Eloquent\Relations\MorphMany');
         $this->buildRelation();
@@ -136,7 +130,7 @@ class MiniCrudPolymorphicTest extends TestBase
                 'field'          => 1,
                 'otherField'     => 3,
                 'someOtherField' => 3,
-            ]
+            ],
         ];
 
         $this->relationMock->shouldReceive('getForeignKey', 'getPlainMorphType', 'getMorphClass');
@@ -182,7 +176,7 @@ class MiniCrudPolymorphicTest extends TestBase
                 'id'             => 1,
                 'otherField'     => 3,
                 'someOtherField' => 3,
-            ]
+            ],
         ];
 
         $this->relationMock->shouldReceive('getForeignKey', 'getPlainMorphType', 'getMorphClass');
@@ -193,7 +187,6 @@ class MiniCrudPolymorphicTest extends TestBase
         $this->modelAbstractorMock->shouldReceive('getRelations')->andReturn(collect());
 
         $this->modelAbstractorMock->shouldReceive('setInstance')->with($modelMock);
-
 
         $modelMock->shouldReceive('getKey')->andReturn(1);
         $modelMock->shouldReceive('setAttribute')->times(10);

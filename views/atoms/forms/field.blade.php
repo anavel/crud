@@ -24,22 +24,41 @@
         </div>
     @endif
 @else
-    <div class="form-group {{ $field instanceof FormManager\Fields\File && ! empty($field->val()) ? 'input-group' : '' }}">
+
+    <div class="form-group">
         @if($field->attr('type') != 'hidden')
+            <div class="col-sm-2 text-right">
             <label for="{{ $field->attr('id') }}"
-                   class="col-sm-2 control-label">{{ $field->label->html() }}{{ $field->attr('required') ? ' *' : '' }}</label>
+                   class="control-label">{{ $field->label->html() }}{{ $field->attr('required') ? ' *' : '' }}</label>
+            </div>
         @endif
+            @if($field instanceof FormManager\Fields\File)
+            <div class="col-sm-8">
+                {!! $field->input !!}
+            </div>
+            <div class="col-sm-2">
 
-        <div class="col-sm-10">
-            {!! $field->input !!}
-        </div>
+                <span class="input-group-btn">
+                    @if ($canTakeFileFromUploads)
+                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadsModal" data-input-id="{{$field->input->attr('id')}}" data-frame-url="{{route('anavel-uploads.modal.file-browser')}}">
+                        <i class="fa fa-upload"></i> {{_('Get from uploads')}}
+                    </a>
 
-        @if($field instanceof FormManager\Fields\File && ! empty($field->val()))
+                    @endif
+                @if (!empty($field->val()))
+                    <a href="{{  url(config('anavel-crud.uploads_path')) . DIRECTORY_SEPARATOR .  $field->val() }}" target="_blank" class="btn btn-primary">
+                        <i class="fa fa-eye"></i> Ver
+                    </a>
+                @endif
+                </span>
+            </div>
+        @else
+                <div class="col-sm-10">
+                    {!! $field->input !!}
+                </div>
 
-            <span class="input-group-btn"><a href="{{  url(config('anavel-crud.uploads_path')) . DIRECTORY_SEPARATOR .  $field->val() }}"
-                                             target="_blank" class="btn btn-primary"><i
-                            class="glyphicon glyphicon-eye-open"></i></a></span>
+            @endif
 
-        @endif
     </div>
 @endif
+

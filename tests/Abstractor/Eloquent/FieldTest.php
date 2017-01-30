@@ -1,14 +1,14 @@
 <?php
+
 namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
-use Anavel\Crud\Tests\TestBase;
-use Mockery;
 use Anavel\Crud\Abstractor\Eloquent\Field;
+use Anavel\Crud\Tests\TestBase;
 use Mockery\Mock;
 
 class FieldTest extends TestBase
 {
-    /** @var  Field */
+    /** @var Field */
     protected $sut;
     /** @var Mock */
     protected $columnMock;
@@ -42,7 +42,6 @@ class FieldTest extends TestBase
         $this->columnMock->shouldReceive('getType')->andReturn($this->mock('Doctrine\DBAL\Types\Type'));
 
         $type = $this->sut->type();
-
 
         $this->assertInstanceOf('Doctrine\DBAL\Types\Type', $type);
     }

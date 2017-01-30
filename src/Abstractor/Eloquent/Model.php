@@ -1,24 +1,23 @@
 <?php
+
 namespace Anavel\Crud\Abstractor\Eloquent;
 
+use ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer;
+use Anavel\Crud\Abstractor\ConfigurationReader;
 use Anavel\Crud\Abstractor\Eloquent\Traits\HandleFiles;
 use Anavel\Crud\Abstractor\Eloquent\Traits\ModelFields;
+use Anavel\Crud\Abstractor\Exceptions\AbstractorException;
 use Anavel\Crud\Contracts\Abstractor\Field as FieldContract;
+use Anavel\Crud\Contracts\Abstractor\FieldFactory as FieldFactoryContract;
 use Anavel\Crud\Contracts\Abstractor\Model as ModelAbstractorContract;
-use Anavel\Crud\Abstractor\ConfigurationReader;
 use Anavel\Crud\Contracts\Abstractor\Relation;
 use Anavel\Crud\Contracts\Abstractor\RelationFactory as RelationFactoryContract;
-use Anavel\Crud\Contracts\Abstractor\FieldFactory as FieldFactoryContract;
-use ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer;
+use Anavel\Crud\Contracts\Form\Generator as FormGenerator;
+use App;
 use FormManager\ElementInterface;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
-use App;
-use Anavel\Crud\Contracts\Form\Generator as FormGenerator;
-use Anavel\Crud\Abstractor\Exceptions\AbstractorException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Filesystem;
 
 class Model implements ModelAbstractorContract
 {
@@ -38,12 +37,18 @@ class Model implements ModelAbstractorContract
     protected $name;
     protected $instance;
 
+    /**
+     * @var bool
+     */
+    protected $mustDeleteFilesInFilesystem;
+
     public function __construct(
         $config,
         AbstractionLayer $dbal,
         RelationFactoryContract $relationFactory,
         FieldFactoryContract $fieldFactory,
-        FormGenerator $generator
+        FormGenerator $generator,
+        $mustDeleteFilesInFilesystem = false
     ) {
         if (is_array($config)) {
             $this->model = $config['model'];
@@ -57,6 +62,7 @@ class Model implements ModelAbstractorContract
         $this->relationFactory = $relationFactory;
         $this->fieldFactory = $fieldFactory;
         $this->generator = $generator;
+        $this->mustDeleteFilesInFilesystem = $mustDeleteFilesInFilesystem;
     }
 
     public function setSlug($slug)
@@ -123,7 +129,6 @@ class Model implements ModelAbstractorContract
         }
         $tableColumns = $filteredColumns;
 
-
         $foreignKeysName = [];
         if ($withForeignKeys === false) {
             $foreignKeys = $this->dbal->getTableForeignKeys();
@@ -136,32 +141,32 @@ class Model implements ModelAbstractorContract
         }
 
         $customDisplayedColumns = $this->getConfigValue($action, 'display');
-        $customHiddenColumns = $this->getConfigValue($action, 'hide') ? : [];
+        $customHiddenColumns = $this->getConfigValue($action, 'hide') ?: [];
 
-        $relations = $this->getRelations();
-
-        $columns = array();
-        if (! empty($customDisplayedColumns) && is_array($customDisplayedColumns)) {
+        $columns = [];
+        if (!empty($customDisplayedColumns) && is_array($customDisplayedColumns)) {
             foreach ($customDisplayedColumns as $customColumn) {
                 if (strpos($customColumn, '.')) {
                     $customColumnRelation = explode('.', $customColumn);
 
-                    if (! $relations->has($customColumnRelation[0])) {
-                        throw new AbstractorException("Relation " . $customColumnRelation[0] . " not configured on " . $this->getModel());
+                    $customColumnRelationFieldName = array_pop($customColumnRelation);
+
+                    $modelAbstractor = $this;
+                    foreach ($customColumnRelation as $relationName) {
+                        $nestedRelation = $this->getNestedRelation($modelAbstractor, $relationName);
+                        $modelAbstractor = $nestedRelation->getModelAbstractor();
                     }
 
-                    $relation = $relations->get($customColumnRelation[0]);
+                    $relationColumns = $nestedRelation->getModelAbstractor()->getColumns($action);
 
-                    $relationColumns = $relation->getModelAbstractor()->getColumns($action);
-
-                    if (! array_key_exists($customColumnRelation[1], $relationColumns)) {
-                        throw new AbstractorException("Column " . $customColumnRelation[1] . " does not exist on relation ".$customColumnRelation[0]. " of model " . $this->getModel());
+                    if (!array_key_exists($customColumnRelationFieldName, $relationColumns)) {
+                        throw new AbstractorException('Column '.$customColumnRelationFieldName.' does not exist on relation '.implode('.', $customColumnRelation).' of model '.$this->getModel());
                     }
 
-                    $columns[$customColumn] = $relationColumns[$customColumnRelation[1]];
+                    $columns[$customColumn] = $relationColumns[$customColumnRelationFieldName];
                 } else {
-                    if (! array_key_exists($customColumn, $tableColumns)) {
-                        throw new AbstractorException("Column " . $customColumn . " does not exist on " . $this->getModel());
+                    if (!array_key_exists($customColumn, $tableColumns)) {
+                        throw new AbstractorException('Column '.$customColumn.' does not exist on '.$this->getModel());
                     }
 
                     $columns[$customColumn] = $tableColumns[$customColumn];
@@ -184,6 +189,23 @@ class Model implements ModelAbstractorContract
         return $columns;
     }
 
+    protected function getNestedRelation(Model $modelAbstractor, $relationName)
+    {
+        $relations = $modelAbstractor->getRelations();
+
+        if (!$relations->has($relationName)) {
+            throw new AbstractorException('Relation '.$relationName.' not configured on '.$modelAbstractor->getModel());
+        }
+
+        $relation = $relations->get($relationName);
+
+        if ($relation instanceof Relation) {
+            return $relation;
+        } else {
+            return $relation['relation'];
+        }
+    }
+
     /**
      * @return \Illuminate\Support\Collection
      */
@@ -193,7 +215,7 @@ class Model implements ModelAbstractorContract
 
         $relations = collect();
 
-        if (! empty($configRelations)) {
+        if (!empty($configRelations)) {
             foreach ($configRelations as $relationName => $configRelation) {
                 if (is_int($relationName)) {
                     $relationName = $configRelation;
@@ -201,7 +223,7 @@ class Model implements ModelAbstractorContract
 
                 $config = [];
                 if ($configRelation !== $relationName) {
-                    if (! is_array($configRelation)) {
+                    if (!is_array($configRelation)) {
                         $config['type'] = $configRelation;
                     } else {
                         $config = $configRelation;
@@ -215,8 +237,7 @@ class Model implements ModelAbstractorContract
 
                 $secondaryRelations = $relation->getSecondaryRelations();
 
-
-                if (! $secondaryRelations->isEmpty()) {
+                if (!$secondaryRelations->isEmpty()) {
                     $relations->put(
                         $relationName,
                         collect(['relation' => $relation, 'secondaryRelations' => $secondaryRelations])
@@ -232,16 +253,18 @@ class Model implements ModelAbstractorContract
 
     /**
      * @param string|null $arrayKey
-     * @return array
+     *
      * @throws AbstractorException
+     *
+     * @return array
      */
     public function getListFields($arrayKey = 'main')
     {
         $columns = $this->getColumns('list');
 
-        $fieldsPresentation = $this->getConfigValue('fields_presentation') ? : [];
+        $fieldsPresentation = $this->getConfigValue('fields_presentation') ?: [];
 
-        $fields = array();
+        $fields = [];
         foreach ($columns as $name => $column) {
             $presentation = null;
             if (array_key_exists($name, $fieldsPresentation)) {
@@ -253,7 +276,7 @@ class Model implements ModelAbstractorContract
                 'presentation' => $presentation,
                 'form_type'    => null,
                 'validation'   => null,
-                'functions'    => null
+                'functions'    => null,
             ];
 
             $fields[$arrayKey][] = $this->fieldFactory
@@ -267,16 +290,18 @@ class Model implements ModelAbstractorContract
 
     /**
      * @param string|null $arrayKey
-     * @return array
+     *
      * @throws AbstractorException
+     *
+     * @return array
      */
     public function getDetailFields($arrayKey = 'main')
     {
         $columns = $this->getColumns('detail');
 
-        $fieldsPresentation = $this->getConfigValue('fields_presentation') ? : [];
+        $fieldsPresentation = $this->getConfigValue('fields_presentation') ?: [];
 
-        $fields = array();
+        $fields = [];
         foreach ($columns as $name => $column) {
             $presentation = null;
             if (array_key_exists($name, $fieldsPresentation)) {
@@ -288,7 +313,7 @@ class Model implements ModelAbstractorContract
                 'presentation' => $presentation,
                 'form_type'    => null,
                 'validation'   => null,
-                'functions'    => null
+                'functions'    => null,
             ];
 
             $fields[$arrayKey][] = $this->fieldFactory
@@ -301,10 +326,12 @@ class Model implements ModelAbstractorContract
     }
 
     /**
-     * @param bool|null $withForeignKeys
+     * @param bool|null   $withForeignKeys
      * @param string|null $arrayKey
-     * @return array
+     *
      * @throws AbstractorException
+     *
+     * @return array
      */
     public function getEditFields($withForeignKeys = false, $arrayKey = 'main')
     {
@@ -312,9 +339,9 @@ class Model implements ModelAbstractorContract
 
         $this->readConfig('edit');
 
-        $fields = array();
+        $fields = [];
         foreach ($columns as $name => $column) {
-            if (! in_array($name, $this->getReadOnlyColumns())) {
+            if (!in_array($name, $this->getReadOnlyColumns())) {
                 $presentation = null;
                 if (array_key_exists($name, $this->fieldsPresentation)) {
                     $presentation = $this->fieldsPresentation[$name];
@@ -325,7 +352,7 @@ class Model implements ModelAbstractorContract
                     'presentation' => $presentation,
                     'form_type'    => null,
                     'validation'   => null,
-                    'functions'    => null
+                    'functions'    => null,
                 ];
 
                 $config = $this->setConfig($config, $name);
@@ -335,24 +362,24 @@ class Model implements ModelAbstractorContract
                     ->setConfig($config)
                     ->get();
 
-                if (! empty($this->instance) && ! empty($this->instance->getAttribute($name))) {
+                if (!empty($this->instance) && !empty($this->instance->getAttribute($name))) {
                     $field->setValue($this->instance->getAttribute($name));
                 }
 
                 $fields[$arrayKey][$name] = $field;
 
-                if (! empty($config['form_type']) && $config['form_type'] === 'file') {
+                if (!empty($config['form_type']) && $config['form_type'] === 'file') {
                     $field = $this->fieldFactory
                         ->setColumn($column)
                         ->setConfig([
-                            'name'         => $name . '__delete',
+                            'name'         => $name.'__delete',
                             'presentation' => null,
                             'form_type'    => 'checkbox',
                             'no_validate'  => true,
-                            'functions'    => null
+                            'functions'    => null,
                         ])
                         ->get();
-                    $fields[$arrayKey][$name . '__delete'] = $field;
+                    $fields[$arrayKey][$name.'__delete'] = $field;
                 }
             }
         }
@@ -362,7 +389,7 @@ class Model implements ModelAbstractorContract
 
     protected function getReadOnlyColumns()
     {
-        $columns = [LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT];
+        $columns = [LaravelModel::CREATED_AT, LaravelModel::UPDATED_AT, 'deleted_at'];
 
         $columns[] = $this->dbal->getModel()->getKeyName();
 
@@ -371,6 +398,7 @@ class Model implements ModelAbstractorContract
 
     /**
      * @param string $action
+     *
      * @return ElementInterface
      */
     public function getForm($action)
@@ -383,18 +411,18 @@ class Model implements ModelAbstractorContract
 
     /**
      * @param array $requestForm
+     *
      * @return mixed
      */
     public function persist(Request $request)
     {
         /** @var \ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager $modelManager */
         $modelManager = App::make('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
-        if (! empty($this->instance)) {
+        if (!empty($this->instance)) {
             $item = $this->instance;
         } else {
             $item = $modelManager->getModelInstance($this->getModel());
         }
-
 
         $fields = $this->getEditFields(true);
         $foreignFields = array_diff_key($fields['main'], $this->getEditFields(false)['main']);
@@ -402,10 +430,10 @@ class Model implements ModelAbstractorContract
             return;
         }
 
-        if (! empty($fields['main'])) {
+        if (!empty($fields['main'])) {
             $skip = null;
             foreach ($fields['main'] as $key => $field) {
-                /** @var FieldContract $field */
+                /* @var FieldContract $field */
                 if ($skip === $key) {
                     $skip = null;
                     continue;
@@ -430,17 +458,16 @@ class Model implements ModelAbstractorContract
                 }
 
                 if (get_class($field->getFormField()) === \FormManager\Fields\File::class) {
-                    $handleResult = $this->handleField($request, $item, $fields['main'], 'main', $fieldName);
-                    if (! empty($handleResult['skip'])) {
+                    $handleResult = $this->handleField($request, $item, $fields['main'], 'main', $fieldName, $this->mustDeleteFilesInFilesystem);
+                    if (!empty($handleResult['skip'])) {
                         $skip = $handleResult['skip'];
                     }
-                    if (! empty($handleResult['requestValue'])) {
+                    if (!empty($handleResult['requestValue'])) {
                         $requestValue = $handleResult['requestValue'];
                     }
                 }
 
-
-                if (! $field->saveIfEmpty() && empty($requestValue)) {
+                if (!$field->saveIfEmpty() && empty($requestValue)) {
                     continue;
                 }
 
@@ -460,13 +487,15 @@ class Model implements ModelAbstractorContract
 
         $this->setInstance($item);
 
-
-        if (! empty($relations = $this->getRelations())) {
+        if (!empty($relations = $this->getRelations())) {
             foreach ($relations as $relationKey => $relation) {
                 if ($relation instanceof Collection) {
                     $input = $request->input($relationKey);
-                    $relation->get('relation')->persist($input, $request);
+                    /** @var $relationInstance Relation */
+                    $relationInstance = $relation->get('relation');
+                    $relationInstance->persist($input, $request);
                 } else {
+                    /* @var $relation Relation */
                     $relation->persist($request->input($relationKey), $request);
                 }
             }
@@ -490,28 +519,62 @@ class Model implements ModelAbstractorContract
         if (strpos($fieldName, '.')) {
             $customColumnRelation = explode('.', $fieldName);
 
-            $relation = $item->{$customColumnRelation[0]};
-            if (empty($relation)) {
-                return null;
+            $customColumnRelationFieldName = array_pop($customColumnRelation);
+
+            $entity = $item;
+            $relation = null;
+            $relationName = '';
+            foreach ($customColumnRelation as $relationName) {
+                $relation = $entity->{$relationName};
+                if ($relation instanceof Collection) {
+                    $entity = $relation->first();
+                } else {
+                    $entity = $relation;
+                }
             }
 
-            if ($relation instanceof \Illuminate\Support\Collection) {
-                $relations = $this->getRelations();
+            if (is_null($entity)) {
+                return;
+            }
+            $lastRelationName = $relationName;
 
-                $relationAbstractor = $relations->get($customColumnRelation[0]);
+            array_pop($customColumnRelation);
+
+            $prevModelAbtractor = $this;
+            foreach ($customColumnRelation as $relationName) {
+                $nestedRelation = $this->getNestedRelation($prevModelAbtractor, $relationName);
+                $prevModelAbtractor = $nestedRelation->getModelAbstractor();
+            }
+
+            if (empty($relation)) {
+                return;
+            }
+
+            if ($relation instanceof Collection) {
+                $relations = $prevModelAbtractor->getRelations();
+
+                $relationAbstractor = $relations->get($lastRelationName);
 
                 if ($relationAbstractor instanceof \Anavel\Crud\Abstractor\Eloquent\Relation\Translation) {
-                    $value = $item->getAttribute($customColumnRelation[1]);
+                    $value = $entity->getAttribute($customColumnRelationFieldName);
                 } else {
-                    $value = $relation->implode($customColumnRelation[1], ', ');
+                    $value = $relation->implode($customColumnRelationFieldName, ', ');
                 }
             } else {
-                $value = $relation->getAttribute($customColumnRelation[1]);
+                $value = $relation->getAttribute($customColumnRelationFieldName);
             }
         } else {
             $value = $item->getAttribute($fieldName);
         }
 
         return $value;
+    }
+
+    /**
+     * @return bool
+     */
+    public function mustDeleteFilesInFilesystem()
+    {
+        return $this->mustDeleteFilesInFilesystem;
     }
 }

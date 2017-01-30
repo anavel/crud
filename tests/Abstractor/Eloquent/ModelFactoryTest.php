@@ -1,14 +1,14 @@
 <?php
+
 namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
-use Anavel\Crud\Tests\TestBase;
 use Anavel\Crud\Abstractor\Eloquent\ModelFactory;
+use Anavel\Crud\Tests\TestBase;
 use Mockery\Mock;
-
 
 class ModelFactoryTest extends TestBase
 {
-    /** @var  ModelFactory */
+    /** @var ModelFactory */
     protected $sut;
 
     /** @var Mock */
@@ -19,19 +19,22 @@ class ModelFactoryTest extends TestBase
     protected $fieldMock;
     /** @var Mock */
     protected $generatorMock;
+    /** @var Mock */
+    protected $anavelMock;
 
     public function setUp()
     {
         parent::setUp();
 
-        $config = require __DIR__ . '/../../config.php';
+        $config = require __DIR__.'/../../config.php';
 
         $this->modelManagerMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager');
         $this->relationMock = $this->mock('Anavel\Crud\Contracts\Abstractor\RelationFactory');
         $this->fieldMock = $this->mock('Anavel\Crud\Contracts\Abstractor\FieldFactory');
         $this->generatorMock = $this->mock('Anavel\Crud\Contracts\Form\Generator');
-
-        $this->sut = new ModelFactory($config, $this->modelManagerMock, $this->relationMock, $this->fieldMock, $this->generatorMock);
+        $this->anavelMock = $this->mock('Anavel\Foundation\Contracts\Anavel');
+        $this->anavelMock->shouldReceive('hasModule')->andReturn(false);
+        $this->sut = new ModelFactory($config, $this->modelManagerMock, $this->relationMock, $this->fieldMock, $this->generatorMock, $this->anavelMock);
     }
 
     public function test_implements_model__factory_interface()
@@ -41,7 +44,7 @@ class ModelFactoryTest extends TestBase
 
     public function test_throws_exception_when_model_not_found()
     {
-        $this->setExpectedException('Exception', "Model chompy not found on configuration" );
+        $this->setExpectedException('Exception', 'Model chompy not found on configuration');
 
         $model = $this->sut->getBySlug('chompy');
     }

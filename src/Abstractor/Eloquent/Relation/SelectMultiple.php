@@ -1,10 +1,9 @@
 <?php
+
 namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
 use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
-use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationConfig;
 use Anavel\Crud\Repository\Criteria\InArrayCriteria;
-use App;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Http\Request;
 
@@ -12,9 +11,9 @@ class SelectMultiple extends Select
 {
     use CheckRelationCompatibility;
 
-    protected $compatibleEloquentRelations = array(
-        'Illuminate\Database\Eloquent\Relations\HasMany'
-    );
+    protected $compatibleEloquentRelations = [
+        'Illuminate\Database\Eloquent\Relations\HasMany',
+    ];
 
     public function setup()
     {
@@ -24,11 +23,12 @@ class SelectMultiple extends Select
 
     /**
      * @param array|null $relationArray
+     *
      * @return mixed
      */
     public function persist(array $relationArray = null, Request $request)
     {
-        if (! empty($relationArray)) {
+        if (!empty($relationArray)) {
             /** @var \ANavallaSuiza\Laravel\Database\Contracts\Repository\Repository $repo */
             $repo = $this->modelManager->getRepository(get_class($this->eloquentRelation->getRelated()));
 
@@ -37,7 +37,7 @@ class SelectMultiple extends Select
             $alreadyAssociated = $this->relatedModel->$relationName;
 
             $search = [];
-            if (! empty($relationArray[$relatedKeyName])) {
+            if (!empty($relationArray[$relatedKeyName])) {
                 $search = $relationArray[$relatedKeyName];
             }
             $results = $repo->pushCriteria(
@@ -46,14 +46,13 @@ class SelectMultiple extends Select
 
             $missing = $alreadyAssociated->diff($results);
 
-
             $keyName = $this->eloquentRelation->getPlainForeignKey();
             foreach ($results as $result) {
                 $result->$keyName = $this->relatedModel->getKey();
                 $result->save();
             }
 
-            if (! $missing->isEmpty()) {
+            if (!$missing->isEmpty()) {
                 foreach ($missing as $result) {
                     $result->$keyName = null;
                     $result->save();
@@ -62,8 +61,6 @@ class SelectMultiple extends Select
         }
     }
 
-
-
     protected function addToArray($arrayKey, $field)
     {
         $select = [];
@@ -71,6 +68,7 @@ class SelectMultiple extends Select
             $arrayKey = $this->name;
         }
         $select[$arrayKey][] = $field;
+
         return $select;
     }
 
@@ -80,25 +78,23 @@ class SelectMultiple extends Select
     protected function getConfig()
     {
         return [
-            'name' => $this->eloquentRelation->getRelated()->getKeyName(),
+            'name'         => $this->eloquentRelation->getRelated()->getKeyName(),
             'presentation' => $this->getPresentation(),
-            'form_type' => 'select',
-            'attr' => [
-                'multiple' => true
+            'form_type'    => 'select',
+            'attr'         => [
+                'multiple' => true,
             ],
             'no_validate' => true,
-            'validation' => null,
-            'functions' => null
+            'validation'  => null,
+            'functions'   => null,
         ];
     }
-
-
 
     protected function setFieldValue($field)
     {
         $results = $this->eloquentRelation->getResults();
 
-        if (! $results->isEmpty()) {
+        if (!$results->isEmpty()) {
             $values = [];
 
             foreach ($results as $result) {
@@ -107,12 +103,13 @@ class SelectMultiple extends Select
 
             $field->setValue($values);
         }
+
         return $field;
     }
 
-
     /**
      * @param \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal
+     *
      * @return Column
      */
     protected function getColumn($dbal)

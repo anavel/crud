@@ -1,16 +1,16 @@
 <?php
+
 namespace Anavel\Crud\Tests\Abstractor\Eloquent;
 
-use Anavel\Crud\Tests\TestBase;
 use Anavel\Crud\Abstractor\Eloquent\Model;
+use Anavel\Crud\Tests\TestBase;
 use Illuminate\Database\Eloquent\Model as LaravelModel;
 use Mockery\Mock;
 use phpmock\mockery\PHPMockery;
 
-
 class ModelTest extends TestBase
 {
-    /** @var  Model */
+    /** @var Model */
     protected $sut;
 
     /** @var Mock */
@@ -30,7 +30,7 @@ class ModelTest extends TestBase
     {
         parent::setUp();
 
-        $config = require __DIR__ . '/../../config.php';
+        $config = require __DIR__.'/../../config.php';
 
         $this->dbalMock = $this->mock('ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer');
         $this->relationFactoryMock = $this->mock('Anavel\Crud\Contracts\Abstractor\RelationFactory');
@@ -38,10 +38,9 @@ class ModelTest extends TestBase
         $this->columnMock = $this->mock('Doctrine\DBAL\Schema\Column');
         $this->generatorMock = $this->mock('Anavel\Crud\Contracts\Form\Generator');
 
-
         $this->getClassMock = PHPMockery::mock('Anavel\Crud\Abstractor\Eloquent', 'get_class');
 
-        $this->sut = \Mockery::mock(Model::class, [$config['Users'], $this->dbalMock, $this->relationFactoryMock, $this->fieldFactoryMock,$this->generatorMock])->makePartial();
+        $this->sut = \Mockery::mock(Model::class, [$config['Users'], $this->dbalMock, $this->relationFactoryMock, $this->fieldFactoryMock, $this->generatorMock])->makePartial();
     }
 
     public function test_implements_model_interface()
@@ -57,7 +56,7 @@ class ModelTest extends TestBase
                 'id'       => $this->columnMock,
                 'username' => $this->columnMock,
                 'fullname' => $this->columnMock,
-                'active'   => $this->columnMock
+                'active'   => $this->columnMock,
             ]);
         $this->dbalMock->shouldReceive('getTableForeignKeys')
             ->andReturn([]);
@@ -90,7 +89,7 @@ class ModelTest extends TestBase
                 'id'       => $this->columnMock,
                 'username' => $this->columnMock,
                 'fullname' => $this->columnMock,
-                'active'   => $this->columnMock
+                'active'   => $this->columnMock,
             ]);
         $this->dbalMock->shouldReceive('getTableForeignKeys')
             ->andReturn([]);
@@ -125,7 +124,7 @@ class ModelTest extends TestBase
                 'password' => $this->columnMock,
                 'fullname' => $this->columnMock,
                 'info'     => $this->columnMock,
-                'active'   => $this->columnMock
+                'active'   => $this->columnMock,
             ]);
         $this->dbalMock->shouldReceive('getTableForeignKeys')
             ->andReturn([]);
@@ -162,7 +161,7 @@ class ModelTest extends TestBase
                 'password' => $this->columnMock,
                 'fullname' => $this->columnMock,
                 'info'     => $this->columnMock,
-                'active'   => $this->columnMock
+                'active'   => $this->columnMock,
             ]);
         $this->dbalMock->shouldReceive('getTableForeignKeys')
             ->andReturn([]);
@@ -233,7 +232,7 @@ class ModelTest extends TestBase
                 'presentation' => null,
                 'form_type'    => null,
                 'validation'   => null,
-                'functions'    => null
+                'functions'    => null,
             ])
             ->andReturn($this->fieldFactoryMock);
 
@@ -245,7 +244,7 @@ class ModelTest extends TestBase
                 'form_type'    => 'email',
                 'validation'   => 'required|email',
                 'functions'    => null,
-                'defaults'     => 'Chompy'
+                'defaults'     => 'Chompy',
             ])
             ->andReturn($this->fieldFactoryMock);
 
@@ -275,11 +274,11 @@ class ModelTest extends TestBase
         // Wit this one we check that file fields generate an extra __delete one
         $fielMock5->shouldReceive('setConfig')
             ->with([
-                'name'         => 'image__delete',
-                'presentation' => null,
-                'form_type'    => 'checkbox',
+                'name'          => 'image__delete',
+                'presentation'  => null,
+                'form_type'     => 'checkbox',
                 'no_validate'   => true,
-                'functions'    => null,
+                'functions'     => null,
             ])
             ->andReturn($this->fieldFactoryMock);
 
@@ -294,7 +293,6 @@ class ModelTest extends TestBase
 
         $this->assertArrayHasKey('username', $fields['main']);
         $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Field', $fields['main']['username']);
-
     }
 
     public function test_returns_edit_fields_as_array_with_key()
@@ -353,7 +351,6 @@ class ModelTest extends TestBase
         foreach ($relations as $relation) {
             $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Relation', $relation);
         }
-
     }
 
     public function test_returns_relations_as_multidimensional_collection()
@@ -376,7 +373,6 @@ class ModelTest extends TestBase
                 $this->assertInstanceOf('Anavel\Crud\Contracts\Abstractor\Relation', $secondaryRelation);
             }
         }
-
     }
 
     public function test_get_form()
@@ -420,7 +416,6 @@ class ModelTest extends TestBase
         $this->assertInstanceOf('FormManager\ElementInterface', $form);
     }
 
-
     public function test_get_form_with_instance()
     {
         $this->generatorMock->shouldReceive('setModelFields', 'setRelatedModelFields')
@@ -462,7 +457,6 @@ class ModelTest extends TestBase
 
         $this->sut->setInstance($modelMock);
 
-
         $form = $this->sut->getForm('crudoado.model.store', 'users');
 
         $this->assertInstanceOf('FormManager\ElementInterface', $form);
@@ -496,7 +490,7 @@ class ModelTest extends TestBase
                 $fieldMock,
                 $fieldMock,
                 $fieldMock,
-            ]
+            ],
         ]);
         $this->sut->shouldReceive('getEditFields')->times(1)->with(false)->andReturn([
             'main' => [
@@ -519,8 +513,6 @@ class ModelTest extends TestBase
         $fieldMock->shouldReceive('getFormField')->andReturn($fieldMock);
 
         $this->getClassMock->andReturn('nomatch');
-
-
 
         $result = $this->sut->persist($requestMock);
 

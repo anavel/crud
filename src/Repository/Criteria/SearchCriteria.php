@@ -1,4 +1,5 @@
 <?php
+
 namespace Anavel\Crud\Repository\Criteria;
 
 use ANavallaSuiza\Laravel\Database\Contracts\Repository\Criteria;
@@ -17,21 +18,23 @@ class SearchCriteria implements Criteria
 
     public function apply($model, Repository $repository)
     {
-        $firstColumn = array_shift($this->columns);
+        $query = $model->where(function ($query) use ($repository) {
+            $firstColumn = array_shift($this->columns);
 
-        if (strpos($firstColumn, '.')) {
-            $query = $this->setRelationFieldCondition($model, $firstColumn, false);
-        } else {
-            $query = $model->where($firstColumn, 'LIKE', '%'.$this->queryString.'%');
-        }
-
-        foreach ($this->columns as $column) {
-            if (strpos($column, '.')) {
-                $query = $this->setRelationFieldCondition($query, $column);
+            if (strpos($firstColumn, '.')) {
+                $query = $this->setRelationFieldCondition($query, $firstColumn, false);
             } else {
-                $query->orWhere($column, 'LIKE', '%'.$this->queryString.'%');
+                $query = $query->where($firstColumn, 'LIKE', '%'.$this->queryString.'%');
             }
-        }
+
+            foreach ($this->columns as $column) {
+                if (strpos($column, '.')) {
+                    $query = $this->setRelationFieldCondition($query, $column);
+                } else {
+                    $query->orWhere($column, 'LIKE', '%'.$this->queryString.'%');
+                }
+            }
+        });
 
         return $query;
     }
@@ -40,16 +43,27 @@ class SearchCriteria implements Criteria
     {
         $columnRelation = explode('.', $column);
 
+        $firstRelation = array_shift($columnRelation);
+
         if ($or) {
-            $query->orWhereHas($columnRelation[0], function ($subquery) use ($columnRelation) {
-                $subquery->where($columnRelation[1], 'LIKE', '%'.$this->queryString.'%');
-            });
+            $query->orWhereHas($firstRelation, $this->getRelationClosure($columnRelation));
         } else {
-            $query->whereHas($columnRelation[0], function ($subquery) use ($columnRelation) {
-                $subquery->where($columnRelation[1], 'LIKE', '%'.$this->queryString.'%');
-            });
+            $query->whereHas($firstRelation, $this->getRelationClosure($columnRelation));
         }
 
         return $query;
+    }
+
+    private function getRelationClosure(array $relations)
+    {
+        return function ($query) use ($relations) {
+            $relation = array_shift($relations);
+
+            if (count($relations) > 0) {
+                $query->whereHas($relation, $this->getRelationClosure($relations));
+            } else {
+                $query->where($relation, 'LIKE', '%'.$this->queryString.'%');
+            }
+        };
     }
 }

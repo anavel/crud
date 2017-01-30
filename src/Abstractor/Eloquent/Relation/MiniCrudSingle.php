@@ -1,20 +1,19 @@
 <?php
+
 namespace Anavel\Crud\Abstractor\Eloquent\Relation;
 
 use Anavel\Crud\Abstractor\Eloquent\Relation\Traits\CheckRelationCompatibility;
 use Anavel\Crud\Contracts\Abstractor\Field;
-use App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 
 class MiniCrudSingle extends Relation
 {
     use CheckRelationCompatibility;
 
-    protected $compatibleEloquentRelations = array(
-        'Illuminate\Database\Eloquent\Relations\MorphOne'
-    );
+    protected $compatibleEloquentRelations = [
+        'Illuminate\Database\Eloquent\Relations\MorphOne',
+    ];
 
     public function setup()
     {
@@ -42,21 +41,20 @@ class MiniCrudSingle extends Relation
             Model::UPDATED_AT,
             $this->eloquentRelation->getPlainForeignKey(),
             $this->eloquentRelation->getPlainMorphType(),
-            $this->eloquentRelation->getParent()->getKeyName()
+            $this->eloquentRelation->getParent()->getKeyName(),
         ];
-
 
         $this->readConfig('edit');
 
-        if (! empty($columns)) {
+        if (!empty($columns)) {
             //Add field for model deletion
             $config = [
-                'name' => '__delete',
+                'name'         => '__delete',
                 'presentation' => 'Delete',
-                'form_type' => 'checkbox',
-                'no_validate' => true,
-                'validation' => null,
-                'functions' => null
+                'form_type'    => 'checkbox',
+                'no_validate'  => true,
+                'validation'   => null,
+                'functions'    => null,
             ];
 
             /** @var Field $field */
@@ -74,11 +72,11 @@ class MiniCrudSingle extends Relation
 
                 $config = [
                     'name'         => $columnName,
-                    'presentation' => $this->name . ' ' . ucfirst(transcrud($columnName)),
+                    'presentation' => $this->name.' '.ucfirst(transcrud($columnName)),
                     'form_type'    => $formType,
                     'no_validate'  => true,
                     'validation'   => null,
-                    'functions'    => null
+                    'functions'    => null,
                 ];
 
                 $config = $this->setConfig($config, $columnName);
@@ -89,7 +87,7 @@ class MiniCrudSingle extends Relation
                     ->setConfig($config)
                     ->get();
 
-                if (! empty($result->id)) {
+                if (!empty($result->id)) {
                     $field->setValue($result->getAttribute($columnName));
                 }
 
@@ -99,19 +97,19 @@ class MiniCrudSingle extends Relation
 
         $fields = $this->addSecondaryRelationFields($fields);
 
-
         return $fields;
     }
 
     /**
      * @param array|null $relationArray
+     *
      * @return mixed
      */
     public function persist(array $relationArray = null, Request $request)
     {
-        if (! empty($relationArray)) {
+        if (!empty($relationArray)) {
             $currentRelation = $this->eloquentRelation->getResults();
-            if (! empty($currentRelation)) {
+            if (!empty($currentRelation)) {
                 $relationModel = $currentRelation;
             } else {
                 $relationModel = $this->eloquentRelation->getRelated()->newInstance();
@@ -133,7 +131,7 @@ class MiniCrudSingle extends Relation
                 $relationModel->setAttribute($fieldKey, $fieldValue);
             }
 
-            if (! $shouldBeSkipped) {
+            if (!$shouldBeSkipped) {
                 $relationModel->save();
             }
         }
