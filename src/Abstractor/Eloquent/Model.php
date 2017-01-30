@@ -397,6 +397,7 @@ class Model implements ModelAbstractorContract
 
 
         $fields = $this->getEditFields(true);
+        $foreignFields = array_diff_key($fields['main'], $this->getEditFields(false)['main']);
         if (empty($fields['main']) && $this->getRelations()->isEmpty()) {
             return;
         }
@@ -411,6 +412,10 @@ class Model implements ModelAbstractorContract
                 }
                 $fieldName = $field->getName();
                 $requestValue = $request->input("main.{$fieldName}");
+
+                if (! empty($foreignFields) && (! empty($foreignFields[$fieldName])) && (empty($requestValue))) {
+                    $requestValue = null;
+                }
 
                 if (get_class($field->getFormField()) === \FormManager\Fields\Checkbox::class) {
                     if (empty($requestValue)) {
@@ -439,7 +444,10 @@ class Model implements ModelAbstractorContract
                     continue;
                 }
 
-                if (! empty($requestValue) || (empty($requestValue) && ! empty($item->getAttribute($fieldName)))) {
+                if (! empty($requestValue)
+                    || (empty($requestValue) && !empty($item->getAttribute($fieldName)))
+                    || (! empty($foreignFields) && (! empty($foreignFields[$fieldName])) && (empty($requestValue)))
+                ) {
                     $item->setAttribute(
                         $fieldName,
                         $field->applyFunctions($requestValue)
