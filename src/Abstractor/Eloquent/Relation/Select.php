@@ -45,6 +45,11 @@ class Select extends Relation
             $options[$result->getKey()] = $this->setDisplay($result);
         }
 
+        // If results are displayed using a field other than id, order by that field
+        if (! empty($this->config['display'])) {
+            asort($options);
+        }
+
         $config = $this->getConfig();
 
         $config = $this->setConfig($config, $column->getName());
