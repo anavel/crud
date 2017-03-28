@@ -498,7 +498,7 @@ class ModelTest extends TestBase
                 $fieldMock,
                 $fieldMock,
                 $fieldMock,
-            ]
+            ],
         ]);
 
         $this->sut->shouldReceive('getRelations')->andReturn(collect(['group' => $relationMock = $this->mock('\Anavel\Crud\Abstractor\Eloquent\Relation\Relation')]));
