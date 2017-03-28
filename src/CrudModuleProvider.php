@@ -59,7 +59,7 @@ class CrudModuleProvider extends ModuleProvider
         if (!self::isAnavel()) {
             return;
         }
-        
+
         $this->mergeConfigFrom(__DIR__.'/../config/anavel-crud.php', 'anavel-crud');
 
         $this->app->register('ANavallaSuiza\Laravel\Database\Manager\ModelManagerServiceProvider');

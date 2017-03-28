@@ -441,7 +441,7 @@ class Model implements ModelAbstractorContract
                 $fieldName = $field->getName();
                 $requestValue = $request->input("main.{$fieldName}");
 
-                if (! empty($foreignFields) && (! empty($foreignFields[$fieldName])) && (empty($requestValue))) {
+                if (!empty($foreignFields) && (!empty($foreignFields[$fieldName])) && (empty($requestValue))) {
                     $requestValue = null;
                 }
 
@@ -471,9 +471,9 @@ class Model implements ModelAbstractorContract
                     continue;
                 }
 
-                if (! empty($requestValue)
+                if (!empty($requestValue)
                     || (empty($requestValue) && !empty($item->getAttribute($fieldName)))
-                    || (! empty($foreignFields) && (! empty($foreignFields[$fieldName])) && (empty($requestValue)))
+                    || (!empty($foreignFields) && (!empty($foreignFields[$fieldName])) && (empty($requestValue)))
                 ) {
                     $item->setAttribute(
                         $fieldName,
