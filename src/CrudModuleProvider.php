@@ -19,9 +19,23 @@ class CrudModuleProvider extends ModuleProvider
      * @var bool
      */
     protected $defer = false;
+    protected static $anavel;
+
+    private function isAnavel()
+    {
+        if (self::$anavel !== null) {
+            return self::$anavel;
+        }
+
+        return self::$anavel = (config('anavel.route_prefix') === Request::segment(1));
+    }
 
     public function boot()
     {
+        if (!self::isAnavel()) {
+            return;
+        }
+
         $this->loadViewsFrom(__DIR__.'/../views', 'anavel-crud');
 
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'anavel-crud');
@@ -42,6 +56,10 @@ class CrudModuleProvider extends ModuleProvider
      */
     public function register()
     {
+        if (!self::isAnavel()) {
+            return;
+        }
+        
         $this->mergeConfigFrom(__DIR__.'/../config/anavel-crud.php', 'anavel-crud');
 
         $this->app->register('ANavallaSuiza\Laravel\Database\Manager\ModelManagerServiceProvider');
@@ -128,11 +146,7 @@ class CrudModuleProvider extends ModuleProvider
     {
         $uri = Request::route()->uri();
 
-        if (strpos($uri, 'crud') !== false) {
-            return true;
-        }
-
-        return false;
+        return self::isAnavel() && (strpos($uri, 'crud') !== false);
     }
 
     /**
