@@ -46,7 +46,7 @@ class Select extends Relation
         }
 
         // If results are displayed using a field other than id, order by that field
-        if (! empty($this->config['display'])) {
+        if (!empty($this->config['display'])) {
             asort($options);
         }
 
