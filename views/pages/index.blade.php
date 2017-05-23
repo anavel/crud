@@ -23,31 +23,29 @@
 
 <div class="box">
     <div class="box-header">
-        <div class="box-title"></div>
-        <div class="box-tools">
-            <div class="btn-group">
-                <form method="get" action="">
-                    <div class="input-group">
-                        <input name="search" type="text" value="{{ Input::get('search') }}" class="form-control pull-right" placeholder="{{ trans('anavel-crud::messages.search_input') }}">
-                        <div class="input-group-btn">
-                            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                        </div>
+        <div class="btn-group">
+            <form method="get">
+                <div class="input-group">
+                    <input name="search" type="text" value="{{ Input::get('search') }}" class="form-control pull-right" placeholder="{{ trans('anavel-crud::messages.search_input') }}">
+                    <div class="input-group-btn">
+                        <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                     </div>
-                </form>
-            </div>
-            <div class="btn-group">
-                @if (array_key_exists('authorize', $config = $abstractor->getConfig()) && $config['authorize'] === true)
-                    @can('adminCreate', $abstractor->getInstance())
-                    <a href="{{ route('anavel-crud.model.create', $abstractor->getSlug()) }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('anavel-crud::messages.create_button') }}</a>
-                    @endcan
-                @else
-                    <a href="{{ route('anavel-crud.model.create', $abstractor->getSlug()) }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('anavel-crud::messages.create_button') }}</a>
-                @endif
-            </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group">
+            @if (array_key_exists('authorize', $config = $abstractor->getConfig()) && $config['authorize'] === true)
+                @can('adminCreate', $abstractor->getInstance())
+                <a href="{{ route('anavel-crud.model.create', $abstractor->getSlug()) }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('anavel-crud::messages.create_button') }}</a>
+                @endcan
+            @else
+                <a href="{{ route('anavel-crud.model.create', $abstractor->getSlug()) }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('anavel-crud::messages.create_button') }}</a>
+            @endif
         </div>
     </div>
 
-    <div class="box-body table-responsive no-padding">
+    <div class="box-body table-responsive">
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
@@ -55,6 +53,7 @@
                         <?php
                         $isSorting = false;
                         $sortDirection = 'asc';
+                        
                         if (Input::get('sort') === $field->getName()) {
                             $isSorting = true;
 
