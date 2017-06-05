@@ -19,7 +19,7 @@ class Translation extends Relation
     public function setup()
     {
         if (empty($this->langs)) {
-            $this->langs = config('anavel.translation_languages');
+            $this->langs = (array)config('anavel.translation_languages');
         }
 
         $this->checkRelationCompatibility();
@@ -31,70 +31,73 @@ class Translation extends Relation
     public function getEditFields($arrayKey = null)
     {
         /** @var \ANavallaSuiza\Laravel\Database\Contracts\Dbal\AbstractionLayer $dbal */
-        $dbal = $this->modelManager->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()));
-
-        $columns = $dbal->getTableColumns();
-
-        $results = $this->eloquentRelation->getResults();
-
-        $results = $results->keyBy('locale');
+        $columns = $this->modelManager
+            ->getAbstractionLayer(get_class($this->eloquentRelation->getRelated()))
+            ->getTableColumns();
 
         $this->readConfig('edit');
+
+        if (empty($columns) || empty($this->langs)) {
+            return array();
+        }
 
         if (empty($arrayKey)) {
             $arrayKey = $this->name;
         }
 
+        $results = $this->eloquentRelation->getResults()->keyBy('locale');
+        
         $translationFields = [];
-        if (!empty($columns)) {
-            foreach ($this->langs as $key => $lang) {
-                $tempFields = [];
-                foreach ($columns as $columnName => $column) {
-                    if ($columnName === $this->eloquentRelation->getPlainForeignKey()) {
-                        continue;
-                    }
 
-                    if ($columnName === $this->eloquentRelation->getParent()->getKeyName()) {
-                        continue;
-                    }
+        foreach ($this->langs as $key => $lang) {
+            $tempFields = [];
 
-                    $formType = null;
-
-                    if ($columnName === 'locale') {
-                        $formType = 'hidden';
-                    }
-
-                    $config = [
-                        'name'         => $columnName,
-                        'presentation' => ucfirst(transcrud($columnName)).' ['.$lang.']',
-                        'form_type'    => $formType,
-                        'no_validate'  => true,
-                        'validation'   => null,
-                        'functions'    => null,
-                    ];
-
-                    $config = $this->setConfig($config, $columnName);
-
-                    /** @var Field $field */
-                    $field = $this->fieldFactory
-                        ->setColumn($column)
-                        ->setConfig($config)
-                        ->get();
-
-                    if ($columnName === 'locale') {
-                        $field->setValue($lang);
-                    }
-
-                    if ($results->has($lang)) {
-                        $item = $results->get($lang);
-
-                        $field->setValue($item->getAttribute($columnName));
-                    }
-
-                    $tempFields[] = $field;
+            foreach ($columns as $columnName => $column) {
+                if ($columnName === $this->eloquentRelation->getPlainForeignKey()) {
+                    continue;
                 }
-                $translationFields[$arrayKey][$lang] = $tempFields;
+
+                if ($columnName === $this->eloquentRelation->getParent()->getKeyName()) {
+                    continue;
+                }
+
+                $formType = null;
+
+                if ($columnName === 'locale') {
+                    $formType = 'hidden';
+                }
+
+                $config = [
+                    'name'         => $columnName,
+                    'presentation' => ucfirst(transcrud($columnName)).' ['.$lang.']',
+                    'form_type'    => $formType,
+                    'no_validate'  => true,
+                    'validation'   => null,
+                    'functions'    => null,
+                ];
+
+                $config = $this->setConfig($config, $columnName);
+
+                /** @var Field $field */
+                $field = $this->fieldFactory
+                    ->setColumn($column)
+                    ->setConfig($config)
+                    ->get();
+
+                if ($columnName === 'locale') {
+                    $field->setValue($lang);
+                }
+
+                if ($results->has($lang)) {
+                    $item = $results->get($lang);
+
+                    $field->setValue($item->getAttribute($columnName));
+                }
+
+                $tempFields[] = $field;
             }
+
+            $translationFields[$arrayKey][$lang] = $tempFields;
         }
 
         return $translationFields;
@@ -107,38 +110,43 @@ class Translation extends Relation
      */
     public function persist(array $relationArray = null, Request $request)
     {
-        if (!empty($relationArray)) {
-            $currentTranslations = $this->eloquentRelation->getResults();
-            $currentTranslations = $currentTranslations->keyBy('locale');
+        if (empty($relationArray)) {
+            return;
+        }
 
-            foreach ($relationArray as $translation) {
-                $isEmpty = true;
+        $currentTranslations = $this->eloquentRelation->getResults()->keyBy('locale');
 
-                foreach ($translation as $fieldKey => $fieldValue) {
-                    if ($isEmpty && $fieldKey != 'locale') {
-                        $isEmpty = ($isEmpty === ($fieldValue === ''));
-                    }
-                }
+        foreach ($relationArray as $translation) {
+            $isEmpty = true;
 
-                if ($currentTranslations->has($translation['locale'])) {
-                    $translationModel = $currentTranslations->get($translation['locale']);
-                    if ($isEmpty) {
-                        $translationModel->delete();
-                        continue;
-                    }
-                } else {
-                    $translationModel = $this->eloquentRelation->getRelated()->newInstance();
-                }
-
-                if ($isEmpty === false) {
-                    $translationModel->setAttribute($this->eloquentRelation->getForeignKey(), $this->relatedModel->id);
-
-                    foreach ($translation as $fieldKey => $fieldValue) {
-                        $translationModel->setAttribute($fieldKey, $fieldValue);
-                    }
-                    $translationModel->save();
+            foreach ($translation as $fieldKey => $fieldValue) {
+                if ($isEmpty && $fieldKey != 'locale') {
+                    $isEmpty = ($isEmpty === ($fieldValue === ''));
                 }
             }
+
+            if ($currentTranslations->has($translation['locale'])) {
+                $translationModel = $currentTranslations->get($translation['locale']);
+                
+                if ($isEmpty) {
+                    $translationModel->delete();
+                    continue;
+                }
+            } else {
+                $translationModel = $this->eloquentRelation->getRelated()->newInstance();
+            }
+
+            if ($isEmpty !== false) {
+                continue;
+            }
+            
+            $translationModel->setAttribute($this->eloquentRelation->getForeignKey(), $this->relatedModel->id);
+
+            foreach ($translation as $fieldKey => $fieldValue) {
+                $translationModel->setAttribute($fieldKey, $fieldValue);
+            }
+
+            $translationModel->save();
         }
     }
 
