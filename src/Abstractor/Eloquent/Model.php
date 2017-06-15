@@ -425,10 +425,22 @@ class Model implements ModelAbstractorContract
         }
 
         $fields = $this->getEditFields(true);
-        $foreignFields = array_diff_key($fields['main'] ?? [], $this->getEditFields(false)['main'] ?? []);
+
         if (empty($fields['main']) && $this->getRelations()->isEmpty()) {
             return;
         }
+
+        $foreigns = $this->getEditFields(false);
+
+        if (empty($fields['main'])) {
+            $fields['main'] = array();
+        }
+
+        if (empty($foreigns['main'])) {
+            $foreigns['main'] = array();
+        }
+
+        $foreignFields = array_diff_key($fields['main'], $foreigns['main']);
 
         if (!empty($fields['main'])) {
             $skip = null;
