@@ -17,6 +17,11 @@ Route::group(
             'uses' => 'ModelController@index',
         ]);
 
+        Route::get('{model}/export/csv', [
+            'as'   => 'anavel-crud.model.export.csv',
+            'uses' => 'ModelController@exportCsv',
+        ]);
+
         Route::get('{model}/create', [
             'as'   => 'anavel-crud.model.create',
             'uses' => 'ModelController@create',
@@ -46,16 +51,5 @@ Route::group(
             'as'   => 'anavel-crud.model.destroy',
             'uses' => 'ModelController@destroy',
         ]);
-
-        // Batch actions
-        /*Route::put('{model}/batch', [
-            'as'   => 'anavel-crud.model.batch-update',
-            'uses' => 'ModelController@batchUpdate'
-        ]);
-
-        Route::delete('{model}/batch', [
-            'as'   => 'anavel-crud.model.batch-delete',
-            'uses' => 'ModelController@batchDestroy'
-        ]);*/
     }
 );

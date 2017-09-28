@@ -103,15 +103,24 @@ $slug = $abstractor->getSlug();
         </table>
     </div>
 
-    @if ($items->total() > $items->perPage())
     <div class="box-footer clearfix">
+        @if ($items->total())
+        <span class="label label-default">{{ $items->total() }} registros</span>
+
+        <div class="pull-right">
+            <a href="{{ route('anavel-crud.model.export.csv', $slug) }}" class="btn btn-default" style="margin-left: 20px">
+                Exportar a CSV
+            </a>
+        </div>
+        @endif
+
+        @if ($items->total() > $items->perPage())
         {!! with(new Anavel\Crud\View\Presenters\Paginator($items))->render() !!}
+        @endif
     </div>
-    @endif
 </div>
 @stop
 
-@section('footer-scripts')
-    @parent
-    <script src="{{ asset('vendor/anavel-crud/js/modals.js') }}" type="text/javascript"></script>
+@section('footer-scripts') @parent
+<script src="{{ asset('vendor/anavel-crud/js/modals.js') }}" type="text/javascript"></script>
 @stop

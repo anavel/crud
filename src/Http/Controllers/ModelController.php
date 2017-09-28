@@ -3,13 +3,16 @@
 namespace Anavel\Crud\Http\Controllers;
 
 use ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager;
+use ANavallaSuiza\Laravel\Database\Repository\Eloquent\Repository;
 use Anavel\Crud\Contracts\Abstractor\Model;
 use Anavel\Crud\Contracts\Abstractor\ModelFactory as ModelAbstractorFactory;
 use Anavel\Crud\Contracts\Controllers\CustomController;
 use Anavel\Crud\Contracts\Form\Generator as FormGenerator;
 use Anavel\Crud\Repository\Criteria\OrderByCriteria;
 use Anavel\Crud\Repository\Criteria\SearchCriteria;
+use Anavel\Crud\Repository\Criteria\WithCriteria;
 use Anavel\Foundation\Http\Controllers\Controller;
+use Anavel\Crud\Services\Export\Csv;
 use App;
 use Illuminate\Http\Request;
 
@@ -28,7 +31,9 @@ class ModelController extends Controller
 
     private function authorizeMethod(Model $modelAbstractor, $methodName)
     {
-        if (array_key_exists('authorize', $config = $modelAbstractor->getConfig()) && $config['authorize'] === true) {
+        $config = $modelAbstractor->getConfig();
+
+        if (array_key_exists('authorize', $config) && $config['authorize'] === true) {
             $this->authorize($methodName, $modelAbstractor->getInstance());
         }
     }
@@ -58,6 +63,39 @@ class ModelController extends Controller
     }
 
     /**
+     * Prepare contents to be used
+     *
+     * @param Request $request
+     * @param Model $modelAbstractor
+     * @param Repository  $repository
+     *
+     * @return void
+     */
+    public function getIndexRequirements(Request $request, Model $modelAbstractor, Repository $repository)
+    {
+        foreach ($modelAbstractor->getListFields()['main'] as $field) {
+            if (strpos($field->getName(), '.')) {
+                $repository->pushCriteria(new WithCriteria(preg_replace('/\.[^\.]+$/', '', $field->getName())));
+            }
+        }
+
+        if ($search = $request->input('search')) {
+            $searchByColumns = [];
+
+            foreach ($modelAbstractor->getListFields()['main'] as $field) {
+                $searchByColumns[] = $field->getName();
+            }
+
+            $repository->pushCriteria(new SearchCriteria($searchByColumns, $search));
+        }
+
+        $sort = $request->input('sort') ?: 'id';
+        $direction = $request->input('direction') ?: 'desc';
+
+        $repository->pushCriteria(new OrderByCriteria($sort, ($direction === 'desc') ? true : false));
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @param Request $request
@@ -77,24 +115,42 @@ class ModelController extends Controller
 
         $repository = $this->modelManager->getRepository($modelAbstractor->getModel());
 
-        if ($search = $request->input('search')) {
-            $searchByColumns = [];
-
-            foreach ($modelAbstractor->getListFields()['main'] as $field) {
-                $searchByColumns[] = $field->getName();
-            }
-
-            $repository->pushCriteria(new SearchCriteria($searchByColumns, $search));
-        }
-
-        $sort = $request->input('sort') ?: 'id';
-        $direction = $request->input('direction') ?: 'desc';
-
-        $repository->pushCriteria(new OrderByCriteria($sort, ($direction === 'desc') ? true : false));
+        $this->getIndexRequirements($request, $modelAbstractor, $repository);
 
         return view('anavel-crud::pages.index', [
             'abstractor' => $modelAbstractor,
             'items'      => $repository->paginate(config('anavel-crud.list_max_results')),
+        ]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param Request $request
+     * @param string  $model
+     *
+     * @return Response
+     */
+    public function exportCsv(Request $request, $model)
+    {
+        $modelAbstractor = $this->modelFactory->getBySlug($model);
+
+        $this->authorizeMethod($modelAbstractor, 'exportCsv');
+
+        if ($customController = $this->customController($modelAbstractor)) {
+            return $customController->exportCsv($request, $model);
+        }
+
+        $repository = $this->modelManager->getRepository($modelAbstractor->getModel());
+
+        $this->getIndexRequirements($request, $modelAbstractor, $repository);
+
+        $csv = (string)(new Csv)->fromArray($repository->all()->toArray());
+
+        return response()->make($csv, 200, [
+            'Content-Encoding' => 'UTF-8',
+            'Content-Type' => 'application/octet-stream',
+            'Content-disposition' => 'attachment; filename='.$model.'.csv',
         ]);
     }
 
