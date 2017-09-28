@@ -40,15 +40,21 @@ class ModelController extends Controller
      */
     private function customController(Model $modelAbstractor)
     {
-        if (!$this instanceof CustomController) { //Avoid infinite recursion
-            if (array_key_exists('controller', $config = $modelAbstractor->getConfig()) && (!empty($config['controller']))) {
-                /** @var CustomController $controller */
-                $controller = App::make($config['controller']);
-                $controller->setAbstractor($modelAbstractor);
-
-                return $controller;
-            }
+        if ($this instanceof CustomController) { //Avoid infinite recursion
+            return;
         }
+
+        $config = $modelAbstractor->getConfig();
+
+        if (!array_key_exists('controller', $config) || empty($config['controller'])) {
+            return;
+        }
+
+        /** @var CustomController $controller */
+        $controller = App::make($config['controller']);
+        $controller->setAbstractor($modelAbstractor);
+
+        return $controller;
     }
 
     /**
@@ -65,31 +71,30 @@ class ModelController extends Controller
 
         $this->authorizeMethod($modelAbstractor, 'adminIndex');
 
-        if (!empty($customController = $this->customController($modelAbstractor))) {
+        if ($customController = $this->customController($modelAbstractor)) {
             return $customController->index($request, $model);
         }
 
         $repository = $this->modelManager->getRepository($modelAbstractor->getModel());
 
-        if ($request->has('search')) {
+        if ($search = $request->input('search')) {
             $searchByColumns = [];
 
             foreach ($modelAbstractor->getListFields()['main'] as $field) {
                 $searchByColumns[] = $field->getName();
             }
 
-            $repository->pushCriteria(new SearchCriteria($searchByColumns, $request->get('search')));
+            $repository->pushCriteria(new SearchCriteria($searchByColumns, $search));
         }
 
-        if ($request->has('sort')) {
-            $repository->pushCriteria(new OrderByCriteria($request->get('sort'), $request->get('direction') === 'desc' ? true : false));
-        }
+        $sort = $request->input('sort') ?: 'id';
+        $direction = $request->input('direction') ?: 'desc';
 
-        $items = $repository->paginate(config('anavel-crud.list_max_results'));
+        $repository->pushCriteria(new OrderByCriteria($sort, ($direction === 'desc') ? true : false));
 
         return view('anavel-crud::pages.index', [
             'abstractor' => $modelAbstractor,
-            'items'      => $items,
+            'items'      => $repository->paginate(config('anavel-crud.list_max_results')),
         ]);
     }
 
@@ -106,7 +111,7 @@ class ModelController extends Controller
 
         $this->authorizeMethod($modelAbstractor, 'adminCreate');
 
-        if (!empty($customController = $this->customController($modelAbstractor))) {
+        if ($customController = $this->customController($modelAbstractor)) {
             return $customController->create($model);
         }
 
@@ -133,7 +138,7 @@ class ModelController extends Controller
 
         $this->authorizeMethod($modelAbstractor, 'adminCreate');
 
-        if (!empty($customController = $this->customController($modelAbstractor))) {
+        if ($customController = $this->customController($modelAbstractor)) {
             return $customController->store($request, $model);
         }
 
@@ -168,7 +173,7 @@ class ModelController extends Controller
 
         $this->authorizeMethod($modelAbstractor, 'adminShow');
 
-        if (!empty($customController = $this->customController($modelAbstractor))) {
+        if ($customController = $this->customController($modelAbstractor)) {
             return $customController->show($model, $id);
         }
 
@@ -196,7 +201,7 @@ class ModelController extends Controller
 
         $this->authorizeMethod($modelAbstractor, 'adminUpdate');
 
-        if (!empty($customController = $this->customController($modelAbstractor))) {
+        if ($customController = $this->customController($modelAbstractor)) {
             return $customController->edit($model, $id);
         }
 
@@ -227,7 +232,7 @@ class ModelController extends Controller
 
         $this->authorizeMethod($modelAbstractor, 'adminUpdate');
 
-        if (!empty($customController = $this->customController($modelAbstractor))) {
+        if ($customController = $this->customController($modelAbstractor)) {
             return $customController->update($request, $model, $id);
         }
 
@@ -263,7 +268,7 @@ class ModelController extends Controller
 
         $this->authorizeMethod($modelAbstractor, 'adminDestroy');
 
-        if (!empty($customController = $this->customController($modelAbstractor))) {
+        if ($customController = $this->customController($modelAbstractor)) {
             return $customController->destroy($request, $model, $id);
         }
 
