@@ -1,9 +1,7 @@
 @extends('anavel::layouts.master')
 
 @section('content-header')
-<h1>
-    {{ $abstractor->getName() }}
-</h1>
+<h1>{{ $abstractor->getName() }}</h1>
 @stop
 
 @section('breadcrumb')
@@ -29,21 +27,19 @@ $slug = $abstractor->getSlug();
 
 <div class="box">
     <div class="box-header">
-        <div class="box-header">
-            <div class="row">
-                <div class="col-sm-9">
-                    <form method="get">
-                        <input name="search" type="text" value="{{ Input::get('search') }}" class="form-control pull-right" placeholder="{{ trans('anavel-crud::messages.search_input') }}" />
-                    </form>
-                </div>
+        <div class="row">
+            <div class="col-sm-9">
+                <form method="get">
+                    <input name="search" type="text" value="{{ Input::get('search') }}" class="form-control pull-right" placeholder="{{ trans('anavel-crud::messages.search_input') }}" />
+                </form>
+            </div>
 
-                <div class="col-sm-1 col-sm-offset-2">
-                    @if ($authorize) @can('adminCreate', $abstractor->getInstance())
-                    <a href="{{ route('anavel-crud.model.create', $slug) }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('anavel-crud::messages.create_button') }}</a>
-                    @endcan @else
-                    <a href="{{ route('anavel-crud.model.create', $slug) }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('anavel-crud::messages.create_button') }}</a>
-                    @endif
-                </div>
+            <div class="col-sm-1 col-sm-offset-2">
+                @if ($authorize) @can('adminCreate', $abstractor->getInstance())
+                <a href="{{ route('anavel-crud.model.create', $slug) }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('anavel-crud::messages.create_button') }}</a>
+                @endcan @else
+                <a href="{{ route('anavel-crud.model.create', $slug) }}" class="btn btn-primary"><i class="fa fa-plus"></i> {{ trans('anavel-crud::messages.create_button') }}</a>
+                @endif
             </div>
         </div>
     </div>
