@@ -18,7 +18,7 @@ class SearchCriteria implements Criteria
 
     public function apply($model, Repository $repository)
     {
-        $query = $model->where(function ($query) use ($repository) {
+        return $model->where(function ($query) {
             $firstColumn = array_shift($this->columns);
 
             if (strpos($firstColumn, '.')) {
@@ -35,14 +35,11 @@ class SearchCriteria implements Criteria
                 }
             }
         });
-
-        return $query;
     }
 
     private function setRelationFieldCondition($query, $column, $or = true)
     {
         $columnRelation = explode('.', $column);
-
         $firstRelation = array_shift($columnRelation);
 
         if ($or) {

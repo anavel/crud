@@ -40,8 +40,6 @@ if (!function_exists('transcrud')) {
      */
     function transcrud($text)
     {
-        $translation = trans('anavel-crud::models.'.$text);
-
-        return str_replace('anavel-crud::models.', '', $translation);
+        return str_replace('anavel-crud::models.', '', trans('anavel-crud::models.'.$text));
     }
 }

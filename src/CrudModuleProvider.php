@@ -40,13 +40,8 @@ class CrudModuleProvider extends ModuleProvider
 
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'anavel-crud');
 
-        $this->publishes([
-            __DIR__.'/../public/' => public_path('vendor/anavel-crud/'),
-        ], 'assets');
-
-        $this->publishes([
-            __DIR__.'/../config/anavel-crud.php' => config_path('anavel-crud.php'),
-        ], 'config');
+        $this->publishes([__DIR__.'/../public/' => public_path('vendor/anavel-crud/')], 'assets');
+        $this->publishes([__DIR__.'/../config/anavel-crud.php' => config_path('anavel-crud.php')], 'config');
     }
 
     /**
@@ -59,48 +54,36 @@ class CrudModuleProvider extends ModuleProvider
         if (!self::isAnavel()) {
             return;
         }
-        
+
         $this->mergeConfigFrom(__DIR__.'/../config/anavel-crud.php', 'anavel-crud');
 
         $this->app->register('ANavallaSuiza\Laravel\Database\Manager\ModelManagerServiceProvider');
 
-        $this->app->bind(
-            'Anavel\Crud\Contracts\Abstractor\FieldFactory',
-            function () {
-                return new FieldAbstractorFactory(new FormFactory());
-            }
-        );
+        $this->app->bind('Anavel\Crud\Contracts\Abstractor\FieldFactory', function () {
+            return new FieldAbstractorFactory(new FormFactory());
+        });
 
-        $this->app->bind(
-            'Anavel\Crud\Contracts\Abstractor\RelationFactory',
-            function () {
-                return new RelationAbstractorFactory(
-                    $this->app['ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'],
-                    $this->app['Anavel\Crud\Contracts\Abstractor\FieldFactory']
-                );
-            }
-        );
+        $this->app->bind('Anavel\Crud\Contracts\Abstractor\RelationFactory', function () {
+            return new RelationAbstractorFactory(
+                $this->app['ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'],
+                $this->app['Anavel\Crud\Contracts\Abstractor\FieldFactory']
+            );
+        });
 
-        $this->app->bind(
-            'Anavel\Crud\Contracts\Abstractor\ModelFactory',
-            function () {
-                return new ModelAbstractorFactory(
-                    config('anavel-crud.models'),
-                    $this->app['ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'],
-                    $this->app['Anavel\Crud\Contracts\Abstractor\RelationFactory'],
-                    $this->app['Anavel\Crud\Contracts\Abstractor\FieldFactory'],
-                    $this->app['Anavel\Crud\Contracts\Form\Generator'],
-                    $this->app['Anavel\Foundation\Contracts\Anavel']
-                );
-            }
-        );
+        $this->app->bind('Anavel\Crud\Contracts\Abstractor\ModelFactory', function () {
+            return new ModelAbstractorFactory(
+                config('anavel-crud.models'),
+                $this->app['ANavallaSuiza\Laravel\Database\Contracts\Manager\ModelManager'],
+                $this->app['Anavel\Crud\Contracts\Abstractor\RelationFactory'],
+                $this->app['Anavel\Crud\Contracts\Abstractor\FieldFactory'],
+                $this->app['Anavel\Crud\Contracts\Form\Generator'],
+                $this->app['Anavel\Foundation\Contracts\Anavel']
+            );
+        });
 
-        $this->app->bind(
-            'Anavel\Crud\Contracts\Form\Generator',
-            function () {
-                return new FormGenerator(new FormFactory());
-            }
-        );
+        $this->app->bind('Anavel\Crud\Contracts\Form\Generator', function () {
+            return new FormGenerator(new FormFactory());
+        });
 
         $this->app->register('Anavel\Crud\Providers\ViewComposersServiceProvider');
 
@@ -144,9 +127,7 @@ class CrudModuleProvider extends ModuleProvider
 
     public function isActive()
     {
-        $uri = Request::route()->uri();
-
-        return self::isAnavel() && (strpos($uri, 'crud') !== false);
+        return self::isAnavel() && (strpos(Request::route()->uri(), 'crud') !== false);
     }
 
     /**
@@ -154,9 +135,9 @@ class CrudModuleProvider extends ModuleProvider
      */
     protected function registerDoctrineTypeMappings()
     {
-        $connection = Schema::getConnection();
-        $platform = $connection->getDoctrineConnection()->getDatabasePlatform();
-
-        $platform->registerDoctrineTypeMapping('enum', 'string');
+        Schema::getConnection()
+            ->getDoctrineConnection()
+            ->getDatabasePlatform()
+            ->registerDoctrineTypeMapping('enum', 'string');
     }
 }
